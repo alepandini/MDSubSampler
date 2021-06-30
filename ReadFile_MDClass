@@ -1,0 +1,32 @@
+import MDAnalysis as mda
+from MDAnalysis.coordinates.memory import MemoryReader
+import numpy as LyzoData
+import numpy as np
+import os
+def initiate_universe(topology, trajectory):
+    universe = mda.Universe(topology, trajectory)
+    return universe
+if __name__ == '__main__':
+    # File Setup
+    current_directory = os.getcwd()
+    
+    topology = os.path.join(current_directory, '/Users/riktapatel/Desktop/Disertation/Data/MD01_1lym_example.gro')
+    trajectory = os.path.join(current_directory, '/Users/riktapatel/Desktop/Disertation/Data/MD01_1lym_example.xtc')
+     
+LyzoData = initiate_universe(topology, trajectory)
+
+#print(LyzoData)
+type(LyzoData)
+LyzoData.atoms.positions
+LyzoData.trajectory
+len(LyzoData.atoms)
+
+list(LyzoData.atoms.names)
+Calpha = LyzoData.select_atoms("name CA")
+# len(u1.atoms)
+
+print(Calpha)
+
+lyzCord = np.random.rand(len(LyzoData.atoms), 3)
+
+print(lyzCord)
