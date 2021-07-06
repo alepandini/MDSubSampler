@@ -6,6 +6,7 @@ import os
 def initiate_universe(topology, trajectory):
     universe = mda.Universe(topology, trajectory)
     return universe
+
 if __name__ == '__main__':
     # File Setup
     current_directory = os.getcwd()
