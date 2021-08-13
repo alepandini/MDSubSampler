@@ -21,26 +21,20 @@ from MDAnalysis.coordinates.memory import MemoryReader
 from MDAnalysis.analysis import distances
 import matplotlib.pyplot as plt
 
-# CODE TO USE LYZO .XTC AND .GRO FILE 
-#config = configparser.ConfigParser()
-#config.read("SAMPLE1.INI",)
-#path = config['PROTEINFILE']
-#trajectory_filename = path["BasePath"]+path["trajectory"]
-#topology_filename = path["BasePath"]+path["topology"]
-# u = mda.Universe(topology_filename,trajectory_filename, topology_format='GRO')
-#CODE ENDS HERE
+# Code to read .XTC (trajectory) and .PDB(topology) file 
+config = configparser.ConfigParser()
+config.read("SAMPLE1.INI",)
+path = config['PROTEINFILE']
+trajectory_filename = path["BasePath"]+path["trajectory"]
+topology_filename = path["BasePath"]+path["topology"]
+print(topology_filename)
+u = mda.Universe(topology_filename,trajectory_filename, topology_format='PDB') # always start with a Universe
 
-u = MDAnalysis.Universe(PSF,DCD)  # always start with a Universe
-
-# can access via segid (4AKE) and atom name
+# can access via atom name
 # we take the first atom named N and the last atom named C
 
-nterm = u.select_atoms('segid 4AKE and name N')[0]
-cterm = u.select_atoms('segid 4AKE and name C')[-1]
-#done some ammendement according to PDB file we have but if we use beloe code - gives below error 
-#IndexError: index 0 is out of bounds for axis 0 with size 0
-#nterm = u.select_atoms('segid 1MET and name N')[0]
-#cterm = u.select_atoms('segid 164LEU and name C')[-1]
+nterm = u.select_atoms('name N')[0]
+cterm = u.select_atoms('name OC2')[-1]
 
 bb = u.select_atoms('name CA')  # a selection (AtomGroup)
 
