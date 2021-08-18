@@ -41,6 +41,10 @@ class Protein_Data:
         print("----------------------")
         print("n frames = {0}\nn atoms = {1}\nn CA atoms = {2}".format(self.trajectory_data.trajectory.n_frames, self.trajectory_data.trajectory.n_atoms, self.ca_atom_group.n_atoms))
 
+    def add_property(self, property_vector, property_name):
+        self.property = property_vector
+        self.property_name = property_name
+
     def _transform_trajectory(self):
         pass
 
@@ -154,6 +158,9 @@ def main():
         pro_data.output_trj_summary()
 
         rmsd_data = Property_RMSD(pro_data)
+        rmsd_vector = rmsd_data.get_rmsd_vector()
+
+        pro_data.add_property(rmsd_vector, "RMSD")
         
 if __name__=='__main__':
     main()
