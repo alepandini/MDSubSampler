@@ -12,7 +12,8 @@ import random
 # This class designed to read trajectory file , topology file and calculate distace measure for particular ATOM (CA).Code is aim # to adapt user atom selection
 class Protein_Data:
     
-    def __init__(self,trajectory_filename,topology_filename):
+    def __init__(self,trajectory_filename,topology_filename, config_parameters):
+        self.config_par = config_parameters
         self.trajectory_filename = trajectory_filename
         self.topology_filename = topology_filename
         self.trajectory_data = self._read_trajectory(self.trajectory_filename,self.topology_filename)
@@ -80,7 +81,7 @@ class Protein_Data:
         print("----------------------")
         print(h)
         # save dataframe as CSV file
-        result.to_csv('file1.csv')
+        # result.to_csv('file1.csv')
         self._statistical_analysis(result)
        
         # calling method to perfrom sampling 
@@ -88,7 +89,7 @@ class Protein_Data:
         # self._bhatt_distance(h)
         # Ploting graph for radius of gyration against time 
         # rgyr_df.plot(title='Radius of gyration')
-        # plt.savefig("rgyrgraph.png")
+        # plt.savefig(self.config_par["ImagePath"]+"rgyrgraph.png")
             
     def _statistical_analysis(self,result):
         print("----------------------")
@@ -97,14 +98,10 @@ class Protein_Data:
         print(result.describe())
         # histogram for full trajectory
         result.hist()
-        plt.savefig("FullTraj_Hist.png")
-        # commented due to dynamic image path giving error 
-        #plt.savefig(path["ImagePath"]+"FullTraj_Hist.png")
+        plt.savefig(self.config_par["ImagePath"]+"FullTraj_Hist.png")
         # scatter matrix for full trajectory
         scatter_matrix(result, alpha=0.2, figsize=(6, 6), diagonal='kde')
-        plt.savefig("FullTraj_Scatter.png")
-        # commented due to dynamic image path giving error 
-        # plt.savefig(path["ImagePath"]+"FullTraj_Scatter.png")
+        plt.savefig(self.config_par["ImagePath"]+"FullTraj_Scatter.png")
     
     def _trajectory_sampling(self,result):
         print("----------------------")
@@ -117,14 +114,10 @@ class Protein_Data:
         print("random sampling",subset)
         # histogram for subset 
         subset.hist()
-        # commented due to dynamic image path giving error 
-        # plt.savefig(path["ImagePath"]+"Sample_Hist.png")
-        plt.savefig("Sample_Hist.png")
+        plt.savefig(self.config_par["ImagePath"]+"Sample_Hist.png")
         # scatter matrix for subset
         scatter_matrix(subset, alpha=0.2, figsize=(6, 6), diagonal='kde')
-        # commented due to dynamic image path giving error 
-        plt.savefig("Sample_Scatter.png")
-        #plt.savefig(path["ImagePath"]+"Sample_Scatter.png")
+        plt.savefig(self.config_par["ImagePath"]+"Sample_Scatter.png")
         
 def main():
         #initialize the parser 
@@ -132,11 +125,11 @@ def main():
         # load the configuration file
         config.read("SAMPLE1.INI",)
         # read values from a relevent section header
-        path = config['PROTEINFILE']
-        trajectory_filename = path["BasePath"]+path["trajectory"]
-        topology_filename = path["BasePath"]+path["topology"]
+        config_par = config['PROTEINFILE']
+        trajectory_filename = config_par["BasePath"]+config_par["trajectory"]
+        topology_filename = config_par["BasePath"]+config_par["topology"]
         
-        prodata = Protein_Data(trajectory_filename,topology_filename)
+        prodata = Protein_Data(trajectory_filename, topology_filename, config_par)
         traj = prodata.trajectory_data
         # selecting atom called "C Aplha" from trajectory file
         len(traj.atoms)
