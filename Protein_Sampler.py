@@ -118,28 +118,22 @@ class Protein_Data:
         # scatter matrix for subset
         scatter_matrix(subset, alpha=0.2, figsize=(6, 6), diagonal='kde')
         plt.savefig(self.config_par["ImagePath"]+"Sample_Scatter.png")
-        
-def main():
+
+def get_config_parameters(config_filename):
         #initialize the parser 
         config = configparser.ConfigParser()
         # load the configuration file
-        config.read("SAMPLE1.INI",)
+        config.read(config_filename,)
         # read values from a relevent section header
         config_par = config['PROTEINFILE']
+        return config_par
+
+def main():
+        config_par = get_config_parameters("SAMPLE1.INI")
+
         trajectory_filename = config_par["BasePath"]+config_par["trajectory"]
         topology_filename = config_par["BasePath"]+config_par["topology"]
-        
         prodata = Protein_Data(trajectory_filename, topology_filename, config_par)
-        traj = prodata.trajectory_data
-        # selecting atom called "C Aplha" from trajectory file
-        len(traj.atoms)
-        # printing coordinated for C Alpha
-        coordinates = np.random.rand(len(traj.atoms), 3)
-        # convert dataframe to numpy array
-        
-        #print(coordinates)
-       
-        print(os.getcwd())
         
 if __name__=='__main__':
     main()
