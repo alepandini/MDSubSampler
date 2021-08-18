@@ -42,87 +42,87 @@ class Protein_Data:
             self.property_dict[property_name] = {}
             self.property_dict[property_name][sample_label] = property_vector
 
-    def _distance_measure(self,u):
-        # can access via atom name
-        # we take the first atom named N and the last atom named C
-        nterm = u.select_atoms('name N')[0]
-        cterm = u.select_atoms('name OC2')[-1]
-
-        bb = u.select_atoms('name CA')  # a selection (AtomGroup)
-        # printing coordinates , based on that information how to pick the frame ?
-        print("----------------------")
-        print("COORDINATES INFORMATION")
-        print("----------------------")
-        print(bb.positions)
-        rgyr1 = []
-        time1 = []
-        d1 = []
-        r1 = []
-        print("----------------------")
-        print("TRAJECTORY INFORMATION")
-        print("----------------------")
-        for ts in u.trajectory[:6]:     # iterate through all frames
-            r = cterm.position - nterm.position # end-to-end vector from atom positions
-            d = numpy.linalg.norm(r)  # end-to-end distance
-            time = u.trajectory.time
-            rgyr = bb.radius_of_gyration()  # method of AtomGroup
-            coordinates = np.random.rand(len(u.atoms), 3)
-            print("frame = {0}: d = {1} A,r = {2}, Rgyr = {3} A, time = {4}".format(ts.frame, d, r, rgyr, time))
-            time1.append(u.trajectory.time)
-            rgyr1.append(bb.radius_of_gyration()) 
-            d1.append(numpy.linalg.norm(r))
-            r1.append(cterm.position - nterm.position) 
-        # saving each attibutes in dataframe  
-        rgyr_df = pd.DataFrame(rgyr1, columns=['Radius of gyration (A)'], index=time1)
-        d_df = pd.DataFrame(d1, columns=['Distance'], index=time1)
-        r_df = pd.DataFrame(r1, columns=['Vector1','Vector2','Vector3'], index=time1)
-        rgyr_df.index.name = 'Time (ps)'
-        #  concat all dataframe into one to create single input file        
-        frames = [d_df,rgyr_df,r_df]
-        result = pd.concat(frames, join='inner', axis=1)
-        h = result.to_numpy();
-        print("----------------------")
-        print("DISTANCE MEASURE")
-        print("----------------------")
-        print(h)
-        # save dataframe as CSV file
-        # result.to_csv('file1.csv')
-        self._statistical_analysis(result)
-       
-        # calling method to perfrom sampling 
-        self._trajectory_sampling(result)
-        # self._bhatt_distance(h)
-        # Ploting graph for radius of gyration against time 
-        # rgyr_df.plot(title='Radius of gyration')
-        # plt.savefig(self.config_par["ImagePath"]+"rgyrgraph.png")
-            
-    def _statistical_analysis(self,result):
-        print("----------------------")
-        print("STATISTICAL ANALYSIS")
-        print("----------------------")
-        print(result.describe())
-        # histogram for full trajectory
-        result.hist()
-        plt.savefig(self.config_par["ImagePath"]+"FullTraj_Hist.png")
-        # scatter matrix for full trajectory
-        scatter_matrix(result, alpha=0.2, figsize=(6, 6), diagonal='kde')
-        plt.savefig(self.config_par["ImagePath"]+"FullTraj_Scatter.png")
-    
-    def _trajectory_sampling(self,result):
-        print("----------------------")
-        print("SAMPLING")
-        print("----------------------")
-        # random sampling 
-        # axis=1  randomly sample columns and axis=0 for rows
-        # seed for the random number generator can be specified using randon_state , same rows & columns retuns each time
-        subset = result.sample(n=5,random_state=0)
-        print("random sampling",subset)
-        # histogram for subset 
-        subset.hist()
-        plt.savefig(self.config_par["ImagePath"]+"Sample_Hist.png")
-        # scatter matrix for subset
-        scatter_matrix(subset, alpha=0.2, figsize=(6, 6), diagonal='kde')
-        plt.savefig(self.config_par["ImagePath"]+"Sample_Scatter.png")
+###    def _distance_measure(self,u):
+###        # can access via atom name
+###        # we take the first atom named N and the last atom named C
+###        nterm = u.select_atoms('name N')[0]
+###        cterm = u.select_atoms('name OC2')[-1]
+###
+###        bb = u.select_atoms('name CA')  # a selection (AtomGroup)
+###        # printing coordinates , based on that information how to pick the frame ?
+###        print("----------------------")
+###        print("COORDINATES INFORMATION")
+###        print("----------------------")
+###        print(bb.positions)
+###        rgyr1 = []
+###        time1 = []
+###        d1 = []
+###        r1 = []
+###        print("----------------------")
+###        print("TRAJECTORY INFORMATION")
+###        print("----------------------")
+###        for ts in u.trajectory[:6]:     # iterate through all frames
+###            r = cterm.position - nterm.position # end-to-end vector from atom positions
+###            d = numpy.linalg.norm(r)  # end-to-end distance
+###            time = u.trajectory.time
+###            rgyr = bb.radius_of_gyration()  # method of AtomGroup
+###            coordinates = np.random.rand(len(u.atoms), 3)
+###            print("frame = {0}: d = {1} A,r = {2}, Rgyr = {3} A, time = {4}".format(ts.frame, d, r, rgyr, time))
+###            time1.append(u.trajectory.time)
+###            rgyr1.append(bb.radius_of_gyration()) 
+###            d1.append(numpy.linalg.norm(r))
+###            r1.append(cterm.position - nterm.position) 
+###        # saving each attibutes in dataframe  
+###        rgyr_df = pd.DataFrame(rgyr1, columns=['Radius of gyration (A)'], index=time1)
+###        d_df = pd.DataFrame(d1, columns=['Distance'], index=time1)
+###        r_df = pd.DataFrame(r1, columns=['Vector1','Vector2','Vector3'], index=time1)
+###        rgyr_df.index.name = 'Time (ps)'
+###        #  concat all dataframe into one to create single input file        
+###        frames = [d_df,rgyr_df,r_df]
+###        result = pd.concat(frames, join='inner', axis=1)
+###        h = result.to_numpy();
+###        print("----------------------")
+###        print("DISTANCE MEASURE")
+###        print("----------------------")
+###        print(h)
+###        # save dataframe as CSV file
+###        # result.to_csv('file1.csv')
+###        self._statistical_analysis(result)
+###       
+###        # calling method to perfrom sampling 
+###        self._trajectory_sampling(result)
+###        # self._bhatt_distance(h)
+###        # Ploting graph for radius of gyration against time 
+###        # rgyr_df.plot(title='Radius of gyration')
+###        # plt.savefig(self.config_par["ImagePath"]+"rgyrgraph.png")
+###            
+###    def _statistical_analysis(self,result):
+###        print("----------------------")
+###        print("STATISTICAL ANALYSIS")
+###        print("----------------------")
+###        print(result.describe())
+###        # histogram for full trajectory
+###        result.hist()
+###        plt.savefig(self.config_par["ImagePath"]+"FullTraj_Hist.png")
+###        # scatter matrix for full trajectory
+###        scatter_matrix(result, alpha=0.2, figsize=(6, 6), diagonal='kde')
+###        plt.savefig(self.config_par["ImagePath"]+"FullTraj_Scatter.png")
+###    
+###    def _trajectory_sampling(self,result):
+###        print("----------------------")
+###        print("SAMPLING")
+###        print("----------------------")
+###        # random sampling 
+###        # axis=1  randomly sample columns and axis=0 for rows
+###        # seed for the random number generator can be specified using randon_state , same rows & columns retuns each time
+###        subset = result.sample(n=5,random_state=0)
+###        print("random sampling",subset)
+###        # histogram for subset 
+###        subset.hist()
+###        plt.savefig(self.config_par["ImagePath"]+"Sample_Hist.png")
+###        # scatter matrix for subset
+###        scatter_matrix(subset, alpha=0.2, figsize=(6, 6), diagonal='kde')
+###        plt.savefig(self.config_par["ImagePath"]+"Sample_Scatter.png")
 
 class Property_RMSD:
     def __init__(self, protein_data, frame_list, atom_selection = "name CA"):
