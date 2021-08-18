@@ -10,7 +10,6 @@ import os
 import configparser
 import random
 
-# This class designed to read trajectory file , topology file and calculate distace measure for particular ATOM (CA).Code is aim # to adapt user atom selection
 class Protein_Data:
     
     def __init__(self,trajectory_filename,topology_filename, config_parameters):
@@ -22,15 +21,8 @@ class Protein_Data:
         self.ca_atom_group = self._select_CA_atoms()
         self.property_dict = {}
 
-        self.transform_data = self._transform_trajectory()
-        # This method take trajectory and topology file as input and return Universe object which can 
-        # be used for further calculation 
-
     def _read_trajectory(self,trajectory_filename,topology_filename):
         trajectory_data = mda.Universe(topology_filename,trajectory_filename,permissive=False, topology_format='PDB')
-        # Call distance measure function and taking universe object as parameter to provide end-to-end vector 
-        # and end-to-end vector distance
-        #self._distance_measure(trajectory_data)
         return trajectory_data
 
     def _select_CA_atoms(self):
@@ -49,9 +41,6 @@ class Protein_Data:
         else:
             self.property_dict[property_name] = {}
             self.property_dict[property_name][sample_label] = property_vector
-
-    def _transform_trajectory(self):
-        pass
 
     def _distance_measure(self,u):
         # can access via atom name
@@ -159,11 +148,8 @@ class Frame_Sampler:
             self.sampled_frame_list = random.sample(self.frame_list, size)
 
 def get_config_parameters(config_filename):
-        #initialize the parser 
         config = configparser.ConfigParser()
-        # load the configuration file
         config.read(config_filename,)
-        # read values from a relevent section header
         config_par = config['PROTEINFILE']
         return config_par
 
