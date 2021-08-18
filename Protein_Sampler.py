@@ -1,39 +1,23 @@
 import MDAnalysis as mda
-import MDAnalysis
-from MDAnalysis.analysis import rms
-from MDAnalysis.coordinates.memory import MemoryReader
-from MDAnalysis.analysis import distances
-from MDAnalysis.tests.datafiles import PSF, DCD
 import numpy.linalg
 import numpy as np
-import numpy as lyzo
 import pandas as pd
-import re
-import csv
-import os
-import pdb
-import math
-from Bio import SeqIO
-#from pudb import set_trace
-from Bio.PDB import *
-from glob import glob
-import configparser
-from sklearn import preprocessing
-import matplotlib.pyplot as plt
-import pdb;
-import random
 from pandas.plotting import scatter_matrix
-# from bhatta_dist import bhatta_dist
+import matplotlib.pyplot as plt
+from sklearn import preprocessing
+import os
+import configparser
+import random
 
 # This class designed to read trajectory file , topology file and calculate distace measure for particular ATOM (CA).Code is aim # to adapt user atom selection
 class Protein_Data:
     
     def __init__(self,trajectory_filename,topology_filename):
-       # pdb.set_trace()
-        self.trajectory_data = self._read_trajectory(trajectory_filename,topology_filename)
+        self.trajectory_filename = trajectory_filename
+        self.topology_filename = topology_filename
+        self.trajectory_data = self._read_trajectory(self.trajectory_filename,self.topology_filename)
         self.transform_data = self._transform_trajectory()
         self.select_atom = self._select_atoms()
-        self.normalise_traj = self._normalise_trajectory(topology_filename)
         
         print("4 constructor exit")
         # This method take trajectory and topology file as input and return Universe object which can 
@@ -47,34 +31,6 @@ class Protein_Data:
         return u
     def _transform_trajectory(self):
         print("3 transform")
-         # This function currently normalise topology file using static file path. 
-    def _normalise_trajectory(self,topology_filename):
-        
-        traj_filename = "/Users/riktapatel/Documents/Disertation/Data/MD01_1lym_example.gro"
-         
-         #  skiprows and skipfooter parameter used to remove top and bottom rows from topology file 
-         #  delim_whitespace specifies whether or not whitespace ,no delimiter parameter if option is true.
-         #  encoding to use for UTF when reading/writing files
-         #  List of column names to use. if file contains a header row, then header=0 to override column name      
-       
-        Cov = pd.read_table(traj_filename, 
-                    header=0, 
-                    skiprows=2,
-                    skipfooter=1,
-                    encoding='utf-8',
-                    delim_whitespace=True,
-                    names=["A", "B", "C", "D", "E", "F", "G","H","I"]
-                    )
-        # axis=1 when drops column 
-        Dropresult = Cov.drop(['A', 'B'], axis=1)
-        # below lines of code used to normalised topology data 
-        d = preprocessing.normalize(Dropresult, axis=0)
-        scaled_df = pd.DataFrame(d, columns=["C", "D", "E", "F", "G","H","I"])
-        scaled_df.head()
-        cAlphaSeq = np.array(scaled_df)
-        # below lines of code used to sample topology data
-        cAlphaSample = scaled_df.sample(frac=0.5, replace=True, random_state=1) 
-        #print(cAlphaSample) 
 
     def _distance_measure(self,u):
         # can access via atom name
@@ -120,7 +76,7 @@ class Protein_Data:
         print("----------------------")
         print(h)
         # save dataframe as CSV file
-        #result.to_csv('file1.csv')
+        result.to_csv('file1.csv')
         self._statistical_analysis(result)
        
         # calling method to perfrom sampling 
@@ -128,7 +84,7 @@ class Protein_Data:
         # self._bhatt_distance(h)
         # Ploting graph for radius of gyration against time 
         # rgyr_df.plot(title='Radius of gyration')
-        # plt.savefig("rgyrgraph.jpg")
+        # plt.savefig("rgyrgraph.png")
             
     def _statistical_analysis(self,result):
         print("----------------------")
@@ -137,14 +93,14 @@ class Protein_Data:
         print(result.describe())
         # histogram for full trajectory
         result.hist()
-        plt.savefig("FullTraj_Hist.jpg")
+        plt.savefig("FullTraj_Hist.png")
         # commented due to dynamic image path giving error 
-        #plt.savefig(path["ImagePath"]+"FullTraj_Hist.jpg")
+        #plt.savefig(path["ImagePath"]+"FullTraj_Hist.png")
         # scatter matrix for full trajectory
         scatter_matrix(result, alpha=0.2, figsize=(6, 6), diagonal='kde')
-        plt.savefig("FullTraj_Scatter.jpg")
+        plt.savefig("FullTraj_Scatter.png")
         # commented due to dynamic image path giving error 
-        # plt.savefig(path["ImagePath"]+"FullTraj_Scatter.jpg")
+        # plt.savefig(path["ImagePath"]+"FullTraj_Scatter.png")
     
     def _trajectroy_sampling(self,result):
         print("----------------------")
@@ -158,13 +114,13 @@ class Protein_Data:
         # histogram for subset 
         subset.hist()
         # commented due to dynamic image path giving error 
-        # plt.savefig(path["ImagePath"]+"Sample_Hist.jpg")
-        plt.savefig("Sample_Hist.jpg")
+        # plt.savefig(path["ImagePath"]+"Sample_Hist.png")
+        plt.savefig("Sample_Hist.png")
         # scatter matrix for subset
         scatter_matrix(subset, alpha=0.2, figsize=(6, 6), diagonal='kde')
         # commented due to dynamic image path giving error 
-        plt.savefig("Sample_Scatter.jpg")
-        #plt.savefig(path["ImagePath"]+"Sample_Scatter.jpg")
+        plt.savefig("Sample_Scatter.png")
+        #plt.savefig(path["ImagePath"]+"Sample_Scatter.png")
         
     def _select_atoms(self):
         print("4 select atoms")
