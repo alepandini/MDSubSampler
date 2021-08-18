@@ -177,12 +177,15 @@ def main():
         pro_data.output_trj_summary()
 
         rmsd_vector = Property_RMSD(pro_data, range(pro_data.n_frames)).rmsd
-
         pro_data.add_property(rmsd_vector, "RMSD", "reference")
-        print(pro_data.property_dict)
 
         frame_sampler = Frame_Sampler(range(pro_data.n_frames))
-        frame_sampler.sample(100)
-        
+
+        for size in [10, 50, 100]:
+            frame_sampler.sample(size)
+
+            sampled_rmsd_vector = Property_RMSD(pro_data, frame_sampler.sampled_frame_list).rmsd
+            pro_data.add_property(sampled_rmsd_vector, "RMSD", "random"+str(size))
+
 if __name__=='__main__':
     main()
