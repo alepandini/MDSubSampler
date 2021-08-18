@@ -145,6 +145,15 @@ class Property_RMSD:
                 )
             )
 
+class Frame_Sampler:
+        def __init__(self, frame_list, seed_number = 1999):
+            random.seed(seed_number)
+            self.frame_list = frame_list
+            self.sampled_frame_list = None
+
+        def sample(self, size):
+            self.sampled_frame_list = random.sample(self.frame_list, size)
+
 def get_config_parameters(config_filename):
         #initialize the parser 
         config = configparser.ConfigParser()
@@ -166,6 +175,9 @@ def main():
         rmsd_vector = Property_RMSD(pro_data, range(pro_data.n_frames)).rmsd
 
         pro_data.add_property(rmsd_vector, "RMSD")
+
+        frame_sampler = Frame_Sampler(range(pro_data.n_frames))
+        frame_sampler.sample(100)
         
 if __name__=='__main__':
     main()
