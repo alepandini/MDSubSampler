@@ -1,4 +1,5 @@
 import MDAnalysis as mda
+from MDAnalysis.analysis import rms
 import numpy.linalg
 import numpy as np
 import pandas as pd
@@ -125,6 +126,15 @@ class Protein_Data:
         scatter_matrix(subset, alpha=0.2, figsize=(6, 6), diagonal='kde')
         plt.savefig(self.config_par["ImagePath"]+"Sample_Scatter.png")
 
+class Property_RMSD:
+    def __init__(self, protein_data, atom_selection = "name CA"):
+        rms_data = rms.RMSD(protein_data.trajectory_data, protein_data.trajectory_data, ref_frame = 0, select = atom_selection)
+        rms_data.run()
+        self.rmsd_data = rms_data.rmsd
+
+    def get_rmsd_vector(self):
+        return self.rmsd_data[:,2]
+
 def get_config_parameters(config_filename):
         #initialize the parser 
         config = configparser.ConfigParser()
@@ -142,6 +152,8 @@ def main():
         prodata = Protein_Data(trajectory_filename, topology_filename, config_par)
 
         prodata.output_trj_summary()
+
+        rmsddata = Property_RMSD(prodata)
         
 if __name__=='__main__':
     main()
