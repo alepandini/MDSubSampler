@@ -16,21 +16,25 @@ class Protein_Data:
         self.trajectory_filename = trajectory_filename
         self.topology_filename = topology_filename
         self.trajectory_data = self._read_trajectory(self.trajectory_filename,self.topology_filename)
+        self.ca_trajectory_data = self._select_CA_atoms()
+
         self.transform_data = self._transform_trajectory()
-        self.select_atom = self._select_atoms()
-        
-        print("4 constructor exit")
         # This method take trajectory and topology file as input and return Universe object which can 
         # be used for further calculation 
+
     def _read_trajectory(self,trajectory_filename,topology_filename):
-        print("2 read")
-        u = mda.Universe(topology_filename,trajectory_filename,permissive=False, topology_format='PDB')
+        trajectory_data = mda.Universe(topology_filename,trajectory_filename,permissive=False, topology_format='PDB')
         # Call distance measure function and taking universe object as parameter to provide end-to-end vector 
         # and end-to-end vector distance
-        self._distance_measure(u)
-        return u
+        self._distance_measure(trajectory_data)
+        return trajectory_data
+
+    def _select_CA_atoms(self):
+        ca_trajectory_data = self.trajectory_data.select_atoms("name CA")
+        return ca_trajectory_data
+
     def _transform_trajectory(self):
-        print("3 transform")
+        pass
 
     def _distance_measure(self,u):
         # can access via atom name
@@ -80,7 +84,7 @@ class Protein_Data:
         self._statistical_analysis(result)
        
         # calling method to perfrom sampling 
-        self._trajectroy_sampling(result)
+        self._trajectory_sampling(result)
         # self._bhatt_distance(h)
         # Ploting graph for radius of gyration against time 
         # rgyr_df.plot(title='Radius of gyration')
@@ -102,7 +106,7 @@ class Protein_Data:
         # commented due to dynamic image path giving error 
         # plt.savefig(path["ImagePath"]+"FullTraj_Scatter.png")
     
-    def _trajectroy_sampling(self,result):
+    def _trajectory_sampling(self,result):
         print("----------------------")
         print("SAMPLING")
         print("----------------------")
@@ -122,9 +126,6 @@ class Protein_Data:
         plt.savefig("Sample_Scatter.png")
         #plt.savefig(path["ImagePath"]+"Sample_Scatter.png")
         
-    def _select_atoms(self):
-        print("4 select atoms")
-        
 def main():
         #initialize the parser 
         config = configparser.ConfigParser()
@@ -138,7 +139,6 @@ def main():
         prodata = Protein_Data(trajectory_filename,topology_filename)
         traj = prodata.trajectory_data
         # selecting atom called "C Aplha" from trajectory file
-        Calpha = traj.select_atoms("name CA")
         len(traj.atoms)
         # printing coordinated for C Alpha
         coordinates = np.random.rand(len(traj.atoms), 3)
