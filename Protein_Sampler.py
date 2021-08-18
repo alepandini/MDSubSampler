@@ -149,11 +149,11 @@ def main():
 
         trajectory_filename = config_par["BasePath"]+config_par["trajectory"]
         topology_filename = config_par["BasePath"]+config_par["topology"]
-        prodata = Protein_Data(trajectory_filename, topology_filename, config_par)
+        pro_data = Protein_Data(trajectory_filename, topology_filename, config_par)
 
-        prodata.output_trj_summary()
+        pro_data.output_trj_summary()
 
-        rmsddata = Property_RMSD(prodata)
+        rmsd_data = Property_RMSD(pro_data)
         
 if __name__=='__main__':
     main()
