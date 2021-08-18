@@ -20,6 +20,7 @@ class Protein_Data:
         self.trajectory_data = self._read_trajectory(self.trajectory_filename,self.topology_filename)
         self.n_frames = self.trajectory_data.trajectory.n_frames
         self.ca_atom_group = self._select_CA_atoms()
+        self.property_dict = {}
 
         self.transform_data = self._transform_trajectory()
         # This method take trajectory and topology file as input and return Universe object which can 
@@ -42,9 +43,12 @@ class Protein_Data:
         print("----------------------")
         print("n frames = {0}\nn atoms = {1}\nn CA atoms = {2}".format(self.n_frames, self.trajectory_data.trajectory.n_atoms, self.ca_atom_group.n_atoms))
 
-    def add_property(self, property_vector, property_name):
-        self.property = property_vector
-        self.property_name = property_name
+    def add_property(self, property_vector, property_name, sample_label):
+        if property_name in self.property_dict:
+            self.property_dict[property_name][sample_label] = property_vector
+        else:
+            self.property_dict[property_name] = {}
+            self.property_dict[property_name][sample_label] = property_vector
 
     def _transform_trajectory(self):
         pass
@@ -174,7 +178,8 @@ def main():
 
         rmsd_vector = Property_RMSD(pro_data, range(pro_data.n_frames)).rmsd
 
-        pro_data.add_property(rmsd_vector, "RMSD")
+        pro_data.add_property(rmsd_vector, "RMSD", "reference")
+        print(pro_data.property_dict)
 
         frame_sampler = Frame_Sampler(range(pro_data.n_frames))
         frame_sampler.sample(100)
