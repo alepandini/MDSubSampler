@@ -17,7 +17,7 @@ class Protein_Data:
         self.trajectory_filename = trajectory_filename
         self.topology_filename = topology_filename
         self.trajectory_data = self._read_trajectory(self.trajectory_filename,self.topology_filename)
-        self.ca_trajectory_data = self._select_CA_atoms()
+        self.ca_atom_group = self._select_CA_atoms()
 
         self.transform_data = self._transform_trajectory()
         # This method take trajectory and topology file as input and return Universe object which can 
@@ -27,12 +27,18 @@ class Protein_Data:
         trajectory_data = mda.Universe(topology_filename,trajectory_filename,permissive=False, topology_format='PDB')
         # Call distance measure function and taking universe object as parameter to provide end-to-end vector 
         # and end-to-end vector distance
-        self._distance_measure(trajectory_data)
+        #self._distance_measure(trajectory_data)
         return trajectory_data
 
     def _select_CA_atoms(self):
-        ca_trajectory_data = self.trajectory_data.select_atoms("name CA")
-        return ca_trajectory_data
+        ca_atom_group = self.trajectory_data.select_atoms("name CA")
+        return ca_atom_group
+
+    def output_trj_summary(self):
+        print("----------------------")
+        print("TRAJECTORY INFORMATION")
+        print("----------------------")
+        print("n frames = {0}\nn atoms = {1}\nn CA atoms = {2}".format(self.trajectory_data.trajectory.n_frames, self.trajectory_data.trajectory.n_atoms, self.ca_atom_group.n_atoms))
 
     def _transform_trajectory(self):
         pass
@@ -134,6 +140,8 @@ def main():
         trajectory_filename = config_par["BasePath"]+config_par["trajectory"]
         topology_filename = config_par["BasePath"]+config_par["topology"]
         prodata = Protein_Data(trajectory_filename, topology_filename, config_par)
+
+        prodata.output_trj_summary()
         
 if __name__=='__main__':
     main()
