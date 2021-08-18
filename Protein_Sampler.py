@@ -18,6 +18,7 @@ class Protein_Data:
         self.trajectory_filename = trajectory_filename
         self.topology_filename = topology_filename
         self.trajectory_data = self._read_trajectory(self.trajectory_filename,self.topology_filename)
+        self.n_frames = self.trajectory_data.trajectory.n_frames
         self.ca_atom_group = self._select_CA_atoms()
 
         self.transform_data = self._transform_trajectory()
@@ -39,7 +40,7 @@ class Protein_Data:
         print("----------------------")
         print("TRAJECTORY INFORMATION")
         print("----------------------")
-        print("n frames = {0}\nn atoms = {1}\nn CA atoms = {2}".format(self.trajectory_data.trajectory.n_frames, self.trajectory_data.trajectory.n_atoms, self.ca_atom_group.n_atoms))
+        print("n frames = {0}\nn atoms = {1}\nn CA atoms = {2}".format(self.n_frames, self.trajectory_data.trajectory.n_atoms, self.ca_atom_group.n_atoms))
 
     def add_property(self, property_vector, property_name):
         self.property = property_vector
@@ -131,13 +132,18 @@ class Protein_Data:
         plt.savefig(self.config_par["ImagePath"]+"Sample_Scatter.png")
 
 class Property_RMSD:
-    def __init__(self, protein_data, atom_selection = "name CA"):
-        rms_data = rms.RMSD(protein_data.trajectory_data, protein_data.trajectory_data, ref_frame = 0, select = atom_selection)
-        rms_data.run()
-        self.rmsd_data = rms_data.rmsd
-
-    def get_rmsd_vector(self):
-        return self.rmsd_data[:,2]
+    def __init__(self, protein_data, frame_list, atom_selection = "name CA"):
+        protein_data.trajectory_data.trajectory[0]
+        ref_coordinates = protein_data.trajectory_data.select_atoms(atom_selection).positions.copy()
+        self.rmsd = []
+        for frame in frame_list:
+            protein_data.trajectory_data.trajectory[frame]
+            self.rmsd.append(
+                rms.rmsd(
+                    protein_data.trajectory_data.select_atoms(atom_selection).positions,
+                    ref_coordinates
+                )
+            )
 
 def get_config_parameters(config_filename):
         #initialize the parser 
@@ -157,8 +163,7 @@ def main():
 
         pro_data.output_trj_summary()
 
-        rmsd_data = Property_RMSD(pro_data)
-        rmsd_vector = rmsd_data.get_rmsd_vector()
+        rmsd_vector = Property_RMSD(pro_data, range(pro_data.n_frames)).rmsd
 
         pro_data.add_property(rmsd_vector, "RMSD")
         
