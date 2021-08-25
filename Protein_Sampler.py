@@ -15,6 +15,11 @@ import random
 import dictances 
 from dictances import bhattacharyya, bhattacharyya_coefficient
 import itertools 
+from math import log2
+from math import sqrt
+from typing import Dict
+from distances_utils import sort
+
 
 
 class Protein_Data:
@@ -76,19 +81,37 @@ class Property_RadiusOfGyration:
        
         protein_data.trajectory_data.trajectory[0]
        
-        nterm = protein_data.trajectory_data.select_atoms(atom_selection)[0]
-        cterm = protein_data.trajectory_data.select_atoms(atom_selection)[-1]
-      
         self.Rgyr = [] 
         for frame in frame_list:
-            protein_data.trajectory_data.trajectory[frame]
-            
+            protein_data.trajectory_data.trajectory[frame] 
             self.Rgyr.append((protein_data.trajectory_data.trajectory.time, 
-                         protein_data.trajectory_data.select_atoms(atom_selection).radius_of_gyration(),
-                         cterm.position - nterm.position))
+                         protein_data.trajectory_data.select_atoms(atom_selection).radius_of_gyration()))
+          
 class Bhatta_Distance: 
-        def __init__(self,protein_data, frame_list, atom_selection = "name CA", verbose=True):
-            print("bdistance as class")
+        
+        def __init__(self,protein_data,rmsd_vector,sampled_rmsd_vector, verbose=True):
+            
+        
+            for size in [10,50,100]:
+                lst_vector = listToDict(rmsd_vector)
+             
+                lst_sample_vector = listToDict(sampled_rmsd_vector)
+                
+                for i,size in enumerate(lst_sample_vector):
+                    
+                    bhatta_coeff = bhattacharyya_coefficient(lst_vector, lst_sample_vector)
+                    
+                    bhatta_dist = bhattacharyya(lst_vector, lst_sample_vector) 
+                
+            print(size+1,bhatta_dist)
+            print(size+1,bhatta_coeff)
+        
+            
+def listToDict(lst):
+        op = { i : lst[i] for i in range(0, len(lst) ) }
+        return op 
+
+
             
 class Frame_Sampler:
         def __init__(self, frame_list, seed_number = 1999):
@@ -104,11 +127,14 @@ def get_config_parameters(config_filename):
         config.read(config_filename,)
         config_par = config['PROTEINFILE']
         return config_par
-
-def listToDict(lst):
-        op = { i : lst[i] for i in range(0, len(lst) ) }
-        return op
-
+def kbinDist(a):   
+            data1=np.array(a)
+            print(len(data1))
+            data1 = data1.reshape((len(data1),1))
+            print(data1)
+            kbins = KBinsDiscretizer(n_bins=10, encode='ordinal', strategy='uniform')
+            data_trans1 = kbins.fit_transform(data1)
+            return data_trans1
 def main():
         config_par = get_config_parameters("SAMPLE1.INI")
         
@@ -130,33 +156,34 @@ def main():
         #       for different values of sample size, the sampler randomly selects frames
         for size in [10, 50, 100]:
             frame_sampler.sample(size)
-        # for each of this values, the RMSD is recalculated only for the subsample of frames and stored in the dictionary
+        # for each of this values, the RMSD is recalculated only for the subsample of frames and 
+        # stored in the dictionary
             sampled_rmsd_vector = Property_RMSD(pro_data, frame_sampler.sampled_frame_list).rmsd
+            
             sampled_rgyr_vector = Property_RadiusOfGyration(pro_data, frame_sampler.sampled_frame_list)
             
             pro_data.add_property(sampled_rmsd_vector, "RMSD", "random"+str(size))
             pro_data.add_property(sampled_rgyr_vector, "Radius Of Gyration", "random"+str(size))
-           
             
-            lst_vector = listToDict(rmsd_vector)
-            lst_sample_vector = listToDict(sampled_rmsd_vector)
             
-        for i in lst_sample_vector:
-                
-            bhatta_coeff = bhattacharyya_coefficient(lst_vector, lst_sample_vector)
-                
-            bhatta_dist = bhattacharyya(lst_vector, lst_sample_vector)
-               
-           
-        print("----------------------")
-        print("BHATTACHARYYA COEFFICIENT")
-        print("----------------------")
-        print(bhatta_coeff)
-        print("----------------------")
-        print("BHATTACHARYYA DISTANCE")
-        print("----------------------")
-        print(bhatta_dist)
+            P1 = kbinDist(rmsd_vector)
+            P2 = kbinDist(sampled_rmsd_vector)
             
+            B_distance =   Bhatta_Distance(pro_data,P1,P2)
+            
+        for size in [100]:
+            frame_sampler.sample(size)
+        # for each of this values, the RMSD is recalculated only for the subsample of frames and 
+        # stored in the dictionary
+            sampled_rmsd_vector100 = Property_RMSD(pro_data, frame_sampler.sampled_frame_list).rmsd
+            
+            sampled_rgyr_vector100 = Property_RadiusOfGyration(pro_data, frame_sampler.sampled_frame_list)
+            
+            pro_data.add_property(sampled_rmsd_vector100, "RMSD", "random"+str(size))
+            pro_data.add_property(sampled_rgyr_vector, "Radius Of Gyration", "random"+str(size))   
+            
+            
+        
         
 if __name__=='__main__':
     main()
