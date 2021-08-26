@@ -18,7 +18,6 @@ import itertools
 from math import log2
 from math import sqrt
 from typing import Dict
-from distances_utils import sort
 
 
 
@@ -127,12 +126,13 @@ def get_config_parameters(config_filename):
         config.read(config_filename,)
         config_par = config['PROTEINFILE']
         return config_par
+
 def kbinDist(a):   
             data1=np.array(a)
             print(len(data1))
             data1 = data1.reshape((len(data1),1))
             print(data1)
-            kbins = KBinsDiscretizer(n_bins=10, encode='ordinal', strategy='uniform')
+            kbins = preprocessing.KBinsDiscretizer(n_bins=10, encode='ordinal', strategy='uniform')
             data_trans1 = kbins.fit_transform(data1)
             return data_trans1
 def main():
