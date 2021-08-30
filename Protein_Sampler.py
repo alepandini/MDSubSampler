@@ -1,5 +1,6 @@
 import MDAnalysis as mda
 from MDAnalysis.analysis import rms
+import MDAnalysis.analysis.pca as pca
 from MDAnalysis.analysis.base import (AnalysisBase,
                                       AnalysisFromFunction,
                                       analysis_class)
@@ -13,12 +14,11 @@ import os
 import configparser
 import random
 import dictances 
-from dictances import bhattacharyya, bhattacharyya_coefficient
+from dictances import bhattacharyya, bhattacharyya_coefficient,kullback_leibler
+from scipy.stats import ks_2samp
 import itertools 
-from math import log2
-from math import sqrt
-from typing import Dict
-
+import seaborn as sns
+from scipy import stats
 
 
 class Protein_Data:
@@ -35,7 +35,7 @@ class Protein_Data:
         self.property_dict = {}
 
     def _read_trajectory(self,trajectory_filename,topology_filename):
-        trajectory_data = mda.Universe(topology_filename,trajectory_filename,permissive=True, topology_format='PDB')
+        trajectory_data = mda.Universe(topology_filename,trajectory_filename,permissive=False, topology_format='PDB')
         return trajectory_data
 
     def _select_CA_atoms(self):
@@ -47,71 +47,158 @@ class Protein_Data:
         print("TRAJECTORY INFORMATION")
         print("----------------------")
         print("n frames = {0}\nn atoms = {1}\nn CA atoms = {2}".format(self.n_frames, self.trajectory_data.trajectory.n_atoms, self.ca_atom_group.n_atoms))
-
-    def statistical_analysis(self):
+        
+    
+    def statistical_analysis(self,stat_vector,stat_sampled_vector,sample_label):
+        
         print("----------------------")
         print("STATISTICAL ANALYSIS")
         print("----------------------")
-        print(result.describe())
+        vector_mean = np.mean(np.array([stat_vector]), axis=0)
+        vector_variance = np.var(stat_vector)
+        
+        print("mean for {0} vector::{1}".format(sample_label,vector_mean))
+        print("variance for {0} vector::{1}".format(sample_label,vector_variance)) 
+        
+        print("----------------------")
+        print("Kolmogorov-Smirnov test")
+        print("----------------------")
+       
+        print(ks_2samp(stat_vector, stat_sampled_vector))
+
+        
+        
     def add_property(self, property_vector, property_name, sample_label):
         if property_name in self.property_dict:
             self.property_dict[property_name][sample_label] = property_vector
+            
         else:
             self.property_dict[property_name] = {}
             self.property_dict[property_name][sample_label] = property_vector
-            
+
+
 
 class Property_RMSD:
-    def __init__(self, protein_data, frame_list, atom_selection = "name CA"):
-        protein_data.trajectory_data.trajectory[0]
-        ref_coordinates = protein_data.trajectory_data.select_atoms(atom_selection).positions.copy()
+        def __init__(self, protein_data, frame_list, atom_selection = "name CA"):
+            protein_data.trajectory_data.trajectory[0]
+            ref_coordinates = protein_data.trajectory_data.select_atoms(atom_selection).positions.copy()
         
-        self.rmsd = []
-        for frame in frame_list:
-            protein_data.trajectory_data.trajectory[frame]
-            self.rmsd.append(
-                rms.rmsd(
-                    protein_data.trajectory_data.select_atoms(atom_selection).positions,
-                    ref_coordinates
-                ) 
-            )
+            self.rmsd = []
+            for frame in frame_list:
+                protein_data.trajectory_data.trajectory[frame]
+                self.rmsd.append(
+                    rms.rmsd(
+                        protein_data.trajectory_data.select_atoms(atom_selection).positions,
+                        ref_coordinates
+                    ) 
+                )
+               
+            
 class Property_RadiusOfGyration:
        def __init__(self,protein_data, frame_list, atom_selection = "name CA", verbose=True):
        
         protein_data.trajectory_data.trajectory[0]
        
-        self.Rgyr = [] 
-        for frame in frame_list:
-            protein_data.trajectory_data.trajectory[frame] 
-            self.Rgyr.append((protein_data.trajectory_data.trajectory.time, 
-                         protein_data.trajectory_data.select_atoms(atom_selection).radius_of_gyration()))
-          
-class Bhatta_Distance: 
-        
-        def __init__(self,protein_data,rmsd_vector,sampled_rmsd_vector, verbose=True):
+        self.rgyr = []
+        self.time = []
+        for _ in protein_data.trajectory_data.trajectory:
             
-        
-            for size in [10,50,100]:
-                lst_vector = listToDict(rmsd_vector)
-             
-                lst_sample_vector = listToDict(sampled_rmsd_vector)
-                
-                for i,size in enumerate(lst_sample_vector):
-                    
-                    bhatta_coeff = bhattacharyya_coefficient(lst_vector, lst_sample_vector)
-                    
-                    bhatta_dist = bhattacharyya(lst_vector, lst_sample_vector) 
-                
-            print(size+1,bhatta_dist)
-            print(size+1,bhatta_coeff)
-        
-            
-def listToDict(lst):
-        op = { i : lst[i] for i in range(0, len(lst) ) }
-        return op 
+            self.time.append(protein_data.trajectory_data.trajectory.time)
+            self.rgyr.append(protein_data.trajectory_data.select_atoms(atom_selection).radius_of_gyration())
+        # ploting radius of Gyration and saving as PDF in root directory
+        ax = plt.subplot(111)
+        ax.plot(self.time,self.rgyr, 'b--', lw=2, label=r"$R_G$")
+        ax.set_xlabel("time (ps)")
+        ax.set_ylabel(r"radius of gyration $R_G$ ($\AA$)")
+        ax.figure.savefig("Rgyr.pdf")
+        plt.draw()
 
-
+class Bhatta_Distance:
+       
+        def __init__(self, Prop_vector, verbose=True):
             
+            min_value = np.min(Prop_vector)
+            max_value = np.max(Prop_vector)
+
+            # discretisation of the original vector with all values
+            freq_prop_vector = discretize_to_dict(Prop_vector, min_value, max_value)
+         
+            # test - the distance should be zero (or close to zero) on itself
+            sample_size = len(Prop_vector)
+            b_distance = dictances.bhattacharyya(freq_prop_vector, freq_prop_vector)
+            print("size: {0:4d} distance: {1:.2f}".format(sample_size, b_distance))
+
+            print("-------------------------")         
+
+            for sample_size in [10,20,50,100,200,500]:
+            
+                sub_prop_vector = random.sample(Prop_vector, sample_size)
+
+            # discretisation of the subsampled vector
+                freq_sub_prop_vector = discretize_to_dict(sub_prop_vector, min_value, max_value)
+                
+                b_distance = dictances.bhattacharyya(freq_prop_vector, freq_sub_prop_vector)
+                print("size: {0:4d} distance: {1:.2f}".format(sample_size, b_distance))
+class KL_diver:
+        def __init__(self, Prop_vector, verbose=True):
+            
+            min_value = np.min(Prop_vector)
+            max_value = np.max(Prop_vector)
+
+            # discretisation of the original vector with all values
+            KL_freq_prop_vector = discretize_to_dict(Prop_vector, min_value, max_value)
+            
+            
+            # test - the distance should be zero (or close to zero) on itself
+            sample_size = len(Prop_vector)
+            
+            
+            kl_pq_distance = dictances.kullback_leibler(KL_freq_prop_vector, KL_freq_prop_vector)
+            
+            print("size: {0:4d} distance: {1:.2f}".format(sample_size, kl_pq_distance))
+            
+            print("-------------------------")         
+
+            for sample_size in [10,20,50,100,200,500]:
+            
+                KL_sub_prop_vector = random.sample(Prop_vector, sample_size)
+
+            # discretisation of the subsampled vector
+                KL_freq_sub_prop_vector = discretize_to_dict(KL_sub_prop_vector, min_value, max_value)
+                
+                kl_pq_distance = dictances.kullback_leibler(KL_freq_prop_vector, KL_freq_sub_prop_vector)
+                print("size: {0:4d} distance: {1:.2f}".format(sample_size, kl_pq_distance))
+            # calculate the kl divergence
+        
+class PCA_analysis:
+    
+        def __init__(self,protein_data, frame_list, atom_selection = "name CA", verbose=True):
+           
+               
+            PSF_pca = pca.PCA(protein_data.trajectory_data, select='name CA',align=False, mean=None).run()
+               
+            n_pcs = np.where(PSF_pca.results.cumulated_variance > 0.95)[0][0]
+               
+            pca_space = PSF_pca.transform(protein_data.trajectory_data.select_atoms('name CA'), n_components=n_pcs)
+                
+            print("----------------------")
+            print("PCA")
+            print("----------------------")
+            print("PCA Shape:",pca_space.shape)
+            print("PCA Variance:",PSF_pca.results.cumulated_variance[0])
+            print("PCA Variance:",PSF_pca.results.cumulated_variance[2])
+            #   reduce component to 5              
+                
+            transformed = PSF_pca.transform(protein_data.trajectory_data.select_atoms('name CA'),
+                                                n_components=5)
+                
+            print("Reduced PCA component shape::",transformed.shape)
+                
+            df = pd.DataFrame(transformed,columns=['PC{}'.format(i+1) for i in range(5)])
+            df['Time (ps)'] = df.index * protein_data.trajectory_data.trajectory.dt
+            print(df.head())
+                
+                
 class Frame_Sampler:
         def __init__(self, frame_list, seed_number = 1999):
             random.seed(seed_number)
@@ -127,14 +214,17 @@ def get_config_parameters(config_filename):
         config_par = config['PROTEINFILE']
         return config_par
 
-def kbinDist(a):   
-            data1=np.array(a)
-            print(len(data1))
-            data1 = data1.reshape((len(data1),1))
-            print(data1)
-            kbins = preprocessing.KBinsDiscretizer(n_bins=10, encode='ordinal', strategy='uniform')
-            data_trans1 = kbins.fit_transform(data1)
-            return data_trans1
+def discretize_to_dict(values, min_value, max_value):
+        bin_size = (max_value - min_value) / 100.0
+        bin_vector = np.arange(min_value, max_value, bin_size)
+        counts, bins  = np.histogram(values, bins = bin_vector)
+        freq_dict = dict(zip(bins, counts/len(values)))
+        return(freq_dict)
+def calculate_statistic(rmsd_vector):
+        summary_stat = np.array(rmsd_vector)
+        res = np.mean(summary_stat)
+        return summary_stat
+
 def main():
         config_par = get_config_parameters("SAMPLE1.INI")
         
@@ -142,48 +232,45 @@ def main():
         topology_filename = config_par["BasePath"]+config_par["topology"]
         #       creates a Protein_Data object
         pro_data = Protein_Data(trajectory_filename, topology_filename, config_par)
-
+       
         pro_data.output_trj_summary()
+        
         #       calculates an example property
         rmsd_vector = Property_RMSD(pro_data, range(pro_data.n_frames)).rmsd
         
         rgyr_vector = Property_RadiusOfGyration(pro_data, range(pro_data.n_frames))
+        
+        
+        print("-----BHATTACHARYA DISTANCE FOR RMSD--------------------")  
+        b_dict = Bhatta_Distance(rmsd_vector)
+        print("-----BHATTACHARYA DISTANCE FOR RGYR--------------------")  
+        b_rgvr_dict = Bhatta_Distance(rgyr_vector.rgyr)
+        print("-----KL divergence DISTANCE FOR RMSD--------------------") 
+        KL_Dict_measure = KL_diver(rmsd_vector)
+        print("-----KL divergence DISTANCE FOR RGYR--------------------")  
+        b_rgvr_dict = KL_diver(rgyr_vector.rgyr)
+        
         
         pro_data.add_property(rmsd_vector, "RMSD", "reference")
         pro_data.add_property(rgyr_vector, "Radius Of Gyration", "reference")
         #       creates a Frame_Sampler object
         frame_sampler = Frame_Sampler(range(pro_data.n_frames))
         #       for different values of sample size, the sampler randomly selects frames
-        for size in [10, 50, 100]:
+
+        for size in [10,20,50,100,200,500]:
             frame_sampler.sample(size)
+            
         # for each of this values, the RMSD is recalculated only for the subsample of frames and 
         # stored in the dictionary
             sampled_rmsd_vector = Property_RMSD(pro_data, frame_sampler.sampled_frame_list).rmsd
             
             sampled_rgyr_vector = Property_RadiusOfGyration(pro_data, frame_sampler.sampled_frame_list)
             
-            pro_data.add_property(sampled_rmsd_vector, "RMSD", "random"+str(size))
-            pro_data.add_property(sampled_rgyr_vector, "Radius Of Gyration", "random"+str(size))
+            pro_data.add_property(sampled_rmsd_vector, "SAMPLED RMSD", "random"+str(size))
+            pro_data.add_property(sampled_rgyr_vector, "SAMPLED Radius Of Gyration", "random"+str(size))
             
-            
-            P1 = kbinDist(rmsd_vector)
-            P2 = kbinDist(sampled_rmsd_vector)
-            
-            B_distance =   Bhatta_Distance(pro_data,P1,P2)
-            
-        for size in [100]:
-            frame_sampler.sample(size)
-        # for each of this values, the RMSD is recalculated only for the subsample of frames and 
-        # stored in the dictionary
-            sampled_rmsd_vector100 = Property_RMSD(pro_data, frame_sampler.sampled_frame_list).rmsd
-            
-            sampled_rgyr_vector100 = Property_RadiusOfGyration(pro_data, frame_sampler.sampled_frame_list)
-            
-            pro_data.add_property(sampled_rmsd_vector100, "RMSD", "random"+str(size))
-            pro_data.add_property(sampled_rgyr_vector, "Radius Of Gyration", "random"+str(size))   
-            
-            
-        
-        
+        pro_data.statistical_analysis(rmsd_vector,sampled_rmsd_vector,"RMSD")    
+        pro_data.statistical_analysis(rgyr_vector.rgyr,sampled_rgyr_vector.rgyr,"RGYR")
+        pca_vector = PCA_analysis(pro_data, range(pro_data.n_frames))
 if __name__=='__main__':
     main()
