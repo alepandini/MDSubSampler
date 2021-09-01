@@ -9,6 +9,7 @@ import numpy as np
 import pandas as pd
 from pandas.plotting import scatter_matrix
 from matplotlib import pyplot
+import matplotlib.pyplot as plt
 from sklearn import preprocessing
 import os
 import configparser
@@ -136,6 +137,7 @@ class Bhatta_Distance:
             print("-------------------------")         
 
             for sample_size in [10,20,50,100,200,500]:
+            #for sample_size in [400,800,1600,2400,4000,5600]:
             
                 sub_prop_vector = random.sample(Prop_vector, sample_size)
 
@@ -168,6 +170,7 @@ class KL_diver:
             print("-------------------------")         
 
             for sample_size in [10,20,50,100,200,500]:
+            #for sample_size in [400,800,1600,2400,4000,5600]:
             
                 KL_sub_prop_vector = random.sample(Prop_vector, sample_size)
 
@@ -179,37 +182,71 @@ class KL_diver:
                 kl_pq_distance = dictances.kullback_leibler(KL_freq_sub_prop_vector_clean, KL_freq_sub_prop_vector_clean)
                 
                 print("size: {0:4d} distance: {1:.2f}".format(sample_size, kl_pq_distance))
-          
+class Pearson_dict:
+        def __init__(self, Prop_vector, verbose=True):
+            
+            min_value = np.min(Prop_vector)
+            max_value = np.max(Prop_vector)
+
+            # discretisation of the original vector with all values
+            KL_freq_prop_vector = discretize_to_dict(Prop_vector, min_value, max_value)
+            
+            #  replace 0 with small number and then rescale values to make the sum equal to 1           
+            KL_freq_prop_vector_clean = replace_zero(KL_freq_prop_vector)
+            
+            # test - the distance should be zero (or close to zero) on itself
+            sample_size = len(Prop_vector)
+            
+            kl_pq_distance = dictances.pearson(KL_freq_prop_vector, KL_freq_prop_vector)
+            
+            print("size: {0:4d} distance: {1:.2f}".format(sample_size, kl_pq_distance))
+            
+            print("-------------------------")         
+
+            for sample_size in [10,20,50,100,200,500]:
+            #for sample_size in [400,800,1600,2400,4000,5600]:
+            
+                KL_sub_prop_vector = random.sample(Prop_vector, sample_size)
+
+                # discretisation of the subsampled vector
+                KL_freq_sub_prop_vector = discretize_to_dict(KL_sub_prop_vector, min_value, max_value)
+                
+                KL_freq_sub_prop_vector_clean = replace_zero(KL_freq_sub_prop_vector)
+                # calculate the kl divergence
+                kl_pq_distance = dictances.pearson(KL_freq_sub_prop_vector, KL_freq_sub_prop_vector)
+                
+                print("size: {0:4d} distance: {1:.2f}".format(sample_size, kl_pq_distance))          
         
-class PCA_analysis:
+
+class Property_PCA_analysis:
     
         def __init__(self,protein_data, frame_list, atom_selection = "name CA", verbose=True):
            
+            #             
+            frame_pca = np.empty([1001, 2645])  
+        
+            for frames in range(protein_data.trajectory_data.trajectory.n_frames):
+                    
+                frame_pca = protein_data.trajectory_data.trajectory[frames]
+                    
+             
+            
+            full_pca = pca.PCA(protein_data.trajectory_data, select='name CA',align=False, mean=None).run()
+            n_pcs = np.where(full_pca.results.cumulated_variance > 0.95)[0][0]
                
-            PSF_pca = pca.PCA(protein_data.trajectory_data, select='name CA',align=False, mean=None).run()
-               
-            n_pcs = np.where(PSF_pca.results.cumulated_variance > 0.95)[0][0]
-               
-            pca_space = PSF_pca.transform(protein_data.trajectory_data.select_atoms('name CA'), n_components=n_pcs)
-                
-            print("----------------------")
-            print("PCA")
-            print("----------------------")
-            print("PCA Shape:",pca_space.shape)
-            print("PCA Variance:",PSF_pca.results.cumulated_variance[0])
-            print("PCA Variance:",PSF_pca.results.cumulated_variance[2])
-            #   reduce component to 5              
-                
-            transformed = PSF_pca.transform(protein_data.trajectory_data.select_atoms('name CA'),
+            pca_space = full_pca.transform(protein_data.trajectory_data.select_atoms('name CA'), n_components=n_pcs)
+            sampled_transformed = full_pca.transform(protein_data.trajectory_data.select_atoms('name CA'),
                                                 n_components=5)
-                
-            print("Reduced PCA component shape::",transformed.shape)
-                
-            df = pd.DataFrame(transformed,columns=['PC{}'.format(i+1) for i in range(5)])
+            df = pd.DataFrame(sampled_transformed,columns=['PC{}'.format(i+1) for i in range(5)])
             df['Time (ps)'] = df.index * protein_data.trajectory_data.trajectory.dt
             print(df.head())
+            
+            pc1 = df[['PC1']]
+            pc2 = df[['PC2']]
                 
+            print(pc1,pc2)  
                 
+        
 class Frame_Sampler:
         def __init__(self, frame_list, seed_number = 1999):
             random.seed(seed_number)
@@ -235,6 +272,15 @@ def calculate_statistic(rmsd_vector):
         summary_stat = np.array(rmsd_vector)
         res = np.mean(summary_stat)
         return summary_stat
+def Property_RMSF(protein_data, frame_list):
+        protein_data.trajectory_data.trajectory[0]
+    
+        rmsf = []
+        for frame in frame_list:
+            protein_data.trajectory_data.trajectory[frame]
+
+            R = rms.RMSF(protein_data.trajectory_data.select_atoms('name CA')).run()
+            return R.rmsf
 
 def replace_zero(freq_vector):
         
@@ -261,42 +307,60 @@ def main():
         
         #       calculates an example property
         rmsd_vector = Property_RMSD(pro_data, range(pro_data.n_frames)).rmsd
+         
+        rmsf_vector = Property_RMSF(pro_data, range(pro_data.n_frames))
         
         rgyr_vector = Property_RadiusOfGyration(pro_data, range(pro_data.n_frames))
         
         
         print("-----BHATTACHARYA DISTANCE FOR RMSD--------------------")  
         b_dict = Bhatta_Distance(rmsd_vector)
+#         print("-----BHATTACHARYA DISTANCE FOR RMSF--------------------")  
+#         b_rmsf_dict = Bhatta_Distance(rmsf_vector)
         print("-----BHATTACHARYA DISTANCE FOR RGYR--------------------")  
         b_rgvr_dict = Bhatta_Distance(rgyr_vector.rgyr)
-        print("-----KL divergence DISTANCE FOR RMSD--------------------") 
+        print("-----Kullback–Leibler divergence FOR RMSD--------------------") 
         KL_Dict_measure = KL_diver(rmsd_vector)
-        print("-----KL divergence DISTANCE FOR RGYR--------------------")  
+        print("-----Kullback–Leibler divergence DISTANCE FOR RGYR--------------------")  
         b_rgvr_dict = KL_diver(rgyr_vector.rgyr)
+        print("-----PEARSON DISTANCE FOR RMSD--------------------") 
+        pearson_dict = Pearson_dict(rmsd_vector)
+        print("-----PEARSON DISTANCE DISTANCE FOR RGYR--------------------")  
+        pearson_rgvr_dict = Pearson_dict(rgyr_vector.rgyr)
+        print("-----PCA--------------------") 
+        
+        pca_vector = Property_PCA_analysis(pro_data, range(pro_data.n_frames))
         
         
         pro_data.add_property(rmsd_vector, "RMSD", "reference")
+        # pro_data.add_property(rmsf_vector, "RMSF", "reference")
         pro_data.add_property(rgyr_vector, "Radius Of Gyration", "reference")
+        pro_data.add_property(pca_vector, "PCA", "reference")
         #       creates a Frame_Sampler object
         frame_sampler = Frame_Sampler(range(pro_data.n_frames))
         #       for different values of sample size, the sampler randomly selects frames
 
         for size in [10,20,50,100,200,500]:
+        
+        #for size in [400,800,1600,2400,4000,5600]:
             frame_sampler.sample(size)
             
         # for each of this values, the RMSD is recalculated only for the subsample of frames and 
         # stored in the dictionary
             sampled_rmsd_vector = Property_RMSD(pro_data, frame_sampler.sampled_frame_list).rmsd
             
+            #sampled_rmsf_vector = Property_RMSF_sampled(pro_data, frame_sampler.sampled_frame_list)
+            
             sampled_rgyr_vector = Property_RadiusOfGyration(pro_data, frame_sampler.sampled_frame_list)
+            sampled_pca_vector = Property_PCA_analysis(pro_data, frame_sampler.sampled_frame_list)
             
             pro_data.add_property(sampled_rmsd_vector, "SAMPLED RMSD", "random"+str(size))
+            #pro_data.add_property(sampled_rmsf_vector, "SAMPLED RMSF", "random"+str(size))
             pro_data.add_property(sampled_rgyr_vector, "SAMPLED Radius Of Gyration", "random"+str(size))
+            pro_data.add_property(sampled_pca_vector, "SAMPLED PCA", "random"+str(size))
             
         pro_data.statistical_analysis(rmsd_vector,sampled_rmsd_vector,"RMSD")    
         pro_data.statistical_analysis(rgyr_vector.rgyr,sampled_rgyr_vector.rgyr,"RGYR")
-       
         
-        pca_vector = PCA_analysis(pro_data, range(pro_data.n_frames))
 if __name__=='__main__':
     main()
