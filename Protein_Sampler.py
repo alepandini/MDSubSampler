@@ -8,7 +8,7 @@ import numpy.linalg
 import numpy as np
 import pandas as pd
 from pandas.plotting import scatter_matrix
-import matplotlib.pyplot as plt
+from matplotlib import pyplot
 from sklearn import preprocessing
 import os
 import configparser
@@ -19,6 +19,9 @@ from scipy.stats import ks_2samp
 import itertools 
 import seaborn as sns
 from scipy import stats
+from scipy.stats import mannwhitneyu
+import pingouin as pg
+import csv
 
 
 class Protein_Data:
@@ -65,8 +68,12 @@ class Protein_Data:
         print("----------------------")
        
         print(ks_2samp(stat_vector, stat_sampled_vector))
-
         
+        print(stats.mannwhitneyu(stat_vector, stat_sampled_vector))
+        print(pg.ttest(x=stat_vector,y=vector_mean))
+        print(pg.ttest(x=stat_vector, y=stat_sampled_vector, correction=False).round(2))
+        print(pg.ttest(x=stat_sampled_vector, y=stat_vector, correction=False).round(2))
+
         
     def add_property(self, property_vector, property_name, sample_label):
         if property_name in self.property_dict:
@@ -75,8 +82,6 @@ class Protein_Data:
         else:
             self.property_dict[property_name] = {}
             self.property_dict[property_name][sample_label] = property_vector
-
-
 
 class Property_RMSD:
         def __init__(self, protein_data, frame_list, atom_selection = "name CA"):
@@ -101,17 +106,17 @@ class Property_RadiusOfGyration:
        
         self.rgyr = []
         self.time = []
-        for _ in protein_data.trajectory_data.trajectory:
-            
+        for frame in frame_list:
+            protein_data.trajectory_data.trajectory[frame]
             self.time.append(protein_data.trajectory_data.trajectory.time)
             self.rgyr.append(protein_data.trajectory_data.select_atoms(atom_selection).radius_of_gyration())
         # ploting radius of Gyration and saving as PDF in root directory
-        ax = plt.subplot(111)
-        ax.plot(self.time,self.rgyr, 'b--', lw=2, label=r"$R_G$")
-        ax.set_xlabel("time (ps)")
-        ax.set_ylabel(r"radius of gyration $R_G$ ($\AA$)")
-        ax.figure.savefig("Rgyr.pdf")
-        plt.draw()
+        #ax = plt.subplot(111)
+        #ax.plot(self.time,self.rgyr, 'b--', lw=2, label=r"$R_G$")
+        #ax.set_xlabel("time (ps)")
+        #ax.set_ylabel(r"radius of gyration $R_G$ ($\AA$)")
+        #ax.figure.savefig("Rgyr.pdf")
+        #plt.draw()
 
 class Bhatta_Distance:
        
@@ -139,6 +144,8 @@ class Bhatta_Distance:
                 
                 b_distance = dictances.bhattacharyya(freq_prop_vector, freq_sub_prop_vector)
                 print("size: {0:4d} distance: {1:.2f}".format(sample_size, b_distance))
+                
+            
 class KL_diver:
         def __init__(self, Prop_vector, verbose=True):
             
@@ -148,12 +155,13 @@ class KL_diver:
             # discretisation of the original vector with all values
             KL_freq_prop_vector = discretize_to_dict(Prop_vector, min_value, max_value)
             
+            #  replace 0 with small number and then rescale values to make the sum equal to 1           
+            KL_freq_prop_vector_clean = replace_zero(KL_freq_prop_vector)
             
             # test - the distance should be zero (or close to zero) on itself
             sample_size = len(Prop_vector)
             
-            
-            kl_pq_distance = dictances.kullback_leibler(KL_freq_prop_vector, KL_freq_prop_vector)
+            kl_pq_distance = dictances.kullback_leibler(KL_freq_prop_vector_clean, KL_freq_prop_vector_clean)
             
             print("size: {0:4d} distance: {1:.2f}".format(sample_size, kl_pq_distance))
             
@@ -163,12 +171,15 @@ class KL_diver:
             
                 KL_sub_prop_vector = random.sample(Prop_vector, sample_size)
 
-            # discretisation of the subsampled vector
+                # discretisation of the subsampled vector
                 KL_freq_sub_prop_vector = discretize_to_dict(KL_sub_prop_vector, min_value, max_value)
                 
-                kl_pq_distance = dictances.kullback_leibler(KL_freq_prop_vector, KL_freq_sub_prop_vector)
+                KL_freq_sub_prop_vector_clean = replace_zero(KL_freq_sub_prop_vector)
+                # calculate the kl divergence
+                kl_pq_distance = dictances.kullback_leibler(KL_freq_sub_prop_vector_clean, KL_freq_sub_prop_vector_clean)
+                
                 print("size: {0:4d} distance: {1:.2f}".format(sample_size, kl_pq_distance))
-            # calculate the kl divergence
+          
         
 class PCA_analysis:
     
@@ -225,6 +236,19 @@ def calculate_statistic(rmsd_vector):
         res = np.mean(summary_stat)
         return summary_stat
 
+def replace_zero(freq_vector):
+        
+        dic_out = {}
+        for x, y in freq_vector.items():
+            if y != 0:
+                dic_out[x] = y 
+            else:
+                dic_out[x] = 0.0001
+    
+        value_sum = sum(dic_out.values())
+        dic_out = {k: v / value_sum for k, v in dic_out.items()}
+        return dic_out 
+    
 def main():
         config_par = get_config_parameters("SAMPLE1.INI")
         
@@ -271,6 +295,8 @@ def main():
             
         pro_data.statistical_analysis(rmsd_vector,sampled_rmsd_vector,"RMSD")    
         pro_data.statistical_analysis(rgyr_vector.rgyr,sampled_rgyr_vector.rgyr,"RGYR")
+       
+        
         pca_vector = PCA_analysis(pro_data, range(pro_data.n_frames))
 if __name__=='__main__':
     main()
