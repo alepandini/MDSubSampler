@@ -1,6 +1,7 @@
 import MDAnalysis as mda
 from MDAnalysis.analysis import rms
 import MDAnalysis.analysis.pca as pca
+from MDAnalysis.coordinates.memory import MemoryReader
 from MDAnalysis.analysis.base import (AnalysisBase,
                                       AnalysisFromFunction,
                                       analysis_class)
@@ -222,30 +223,31 @@ class Property_PCA_analysis:
     
         def __init__(self,protein_data, frame_list, atom_selection = "name CA", verbose=True):
            
-            #             
-            frame_pca = np.empty([1001, 2645])  
-        
-            for frames in range(protein_data.trajectory_data.trajectory.n_frames):
-                    
-                frame_pca = protein_data.trajectory_data.trajectory[frames]
-                    
-             
+            calpha_pca = protein_data.trajectory_data.select_atoms('name CA')    
+            # generate your frames array by any means necessary, this is an example
+            frames = np.array([0, 1, 5, 7, 10, 100])
+                       
+            sliced_traj = protein_data.trajectory_data.trajectory[frames]
+
+            coordinates = np.empty((len(sliced_traj), protein_data.trajectory_data.select_atoms('name CA').n_atoms, 3), dtype=np.float32)
+            for i, ts in enumerate(sliced_traj):
+                coordinates[i] = protein_data.trajectory_data.select_atoms(atom_selection).positions
+            u2 = mda.Merge(calpha_pca)            # create the caplha-only Universe
+            u2.load_new(coordinates, format=MemoryReader)
+            # the u2 universe now contains the c-alpha with only the frames of interest
+            # use the subsampled universe u2 (should also be faster because its in memory)
+            ca = u2.select_atoms("name CA")
             
             full_pca = pca.PCA(protein_data.trajectory_data, select='name CA',align=False, mean=None).run()
-            n_pcs = np.where(full_pca.results.cumulated_variance > 0.95)[0][0]
-               
-            pca_space = full_pca.transform(protein_data.trajectory_data.select_atoms('name CA'), n_components=n_pcs)
-            sampled_transformed = full_pca.transform(protein_data.trajectory_data.select_atoms('name CA'),
-                                                n_components=5)
-            df = pd.DataFrame(sampled_transformed,columns=['PC{}'.format(i+1) for i in range(5)])
+            
+            sampled_transformed = full_pca.transform(ca,n_components=5)
+
+            df = pd.DataFrame(sampled_transformed ,columns=['PC{}'.format(i+1) for i in range(5)])
             df['Time (ps)'] = df.index * protein_data.trajectory_data.trajectory.dt
             print(df.head())
-            
-            pc1 = df[['PC1']]
             pc2 = df[['PC2']]
                 
-            print(pc1,pc2)  
-                
+            print(pc2) 
         
 class Frame_Sampler:
         def __init__(self, frame_list, seed_number = 1999):
