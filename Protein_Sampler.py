@@ -272,13 +272,22 @@ class Property_PCA_analysis:
            
             calpha_pca = protein_data.trajectory_data.select_atoms('name CA')    
             full_pca = pca.PCA(protein_data.trajectory_data, select='name CA',align=False, mean=None).run()
+            print("PCA TYPE ", type(full_pca))
             full_trans = full_pca.transform(calpha_pca,n_components=5)
             df1 = pd.DataFrame(full_trans ,columns=['PC{}'.format(i+1) for i in range(5)])
             df1['Time (ps)'] = df1.index * protein_data.trajectory_data.trajectory.dt
             print(df1.head())
-            # generate your frames array by any means necessary, this is an example
-            frames = np.array([10,50,100,200,400,500,1000])   
-            sliced_traj = protein_data.trajectory_data.trajectory[frames]
+            print("Variance",full_pca.cumulated_variance[5])
+            plt.plot(full_pca.cumulated_variance[:5])
+           
+            # pcgenerate your frames array by any means necessary, this is an example
+            
+class Subsampled_PCA_analysis:
+     def __init__(self,protein_data, frame_list, atom_selection = "name CA", verbose=True):
+            calpha_pca = protein_data.trajectory_data.select_atoms('name CA')
+            full_pca = pca.PCA(protein_data.trajectory_data, select='name CA',align=False, mean=None).run()
+#             frames = np.array([10,50,100,200,400,500,1000])   
+            sliced_traj = protein_data.trajectory_data.trajectory[frame_list]
             print("Slice array",sliced_traj)
             coordinates = np.empty((len(sliced_traj), protein_data.trajectory_data.select_atoms('name CA').n_atoms, 3), dtype=np.float32)
             for i, ts in enumerate(sliced_traj):
@@ -288,23 +297,23 @@ class Property_PCA_analysis:
             # the u2 universe now contains the c-alpha with only the frames of interest
             # use the subsampled universe u2 (should also be faster because its in memory)
             ca = u2.select_atoms("name CA")
+            sampled_pca = pca.PCA(u2, select='name CA',align=False, mean=None).run()
+            print("PCA SAMPLED TYPE ", type(sampled_pca))
+            sampled_transformed = sampled_pca.transform(ca,n_components=5)
             
-            
-            
-            sampled_transformed = full_pca.transform(ca,n_components=5)
-           
-
             df = pd.DataFrame(sampled_transformed ,columns=['PC{}'.format(i+1) for i in range(5)])
             df['Time (ps)'] = df.index * protein_data.trajectory_data.trajectory.dt
             print(df.head())
-            
+#             print("Variance",sampled_transformed.variance[0])
+            print("Variance subsampled ",sampled_pca.cumulated_variance[5])
             print("PCA GRAPH") 
             sns.lmplot( x="PC1", y="PC2",
-                           data=df1, 
+                           data=df, 
                            fit_reg=False, 
                           legend=True
                          ) 
             plt.show()
+
 def get_config_parameters(config_filename):
         config = configparser.ConfigParser()
         config.read(config_filename,)
@@ -452,7 +461,7 @@ def main():
              
             save_output_plot(sampled_rgyr_vector)
             
-            # sampled_pca_vector = Property_PCA_analysis(pro_data, frame_sampler.sampled_frame_list)
+            sampled_pca_vector = Subsampled_PCA_analysis(pro_data, frame_sampler.sampled_frame_list)
             
             pro_data.add_property(sampled_rmsd_vector, "SAMPLED RMSD", "random"+str(size))
             #pro_data.add_property(sampled_rmsf_vector, "SAMPLED RMSF", "random"+str(size))
