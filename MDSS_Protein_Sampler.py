@@ -1,30 +1,11 @@
 import MDAnalysis as mda
-import MDAnalysis.analysis.pca as pca
-import numpy.linalg
 import numpy as np
 import pandas as pd
-import os
-import configparser
 import random
 import dictances
-import itertools
-import seaborn as sns
-import scipy
 import pingouin as pg
-import csv
-import matplotlib.pyplot as plt
 
-
-from sklearn import preprocessing
-from scipy import stats
-from pandas.plotting import scatter_matrix
-from matplotlib import pyplot
 from MDAnalysis.analysis import rms
-from MDAnalysis.coordinates.memory import MemoryReader
-from dictances import bhattacharyya, bhattacharyya_coefficient, kullback_leibler
-from MDAnalysis.analysis.base import AnalysisBase, AnalysisFromFunction, analysis_class
-from scipy.stats import mannwhitneyu, shapiro, ks_2samp, ttest_ind
-from scipy.signal import savgol_filter
 
 
 class ProteinData:
@@ -176,17 +157,24 @@ class RandomSampler(ProteinSampler):
 
 class Distance:
     def __init__(
-        self, Prop_vector, clean=False
+        self, Prop_vector_full, Prop_vector_sample, clean=False
     ):  # pass 2 prop objects one for full protein and one for sample
 
-        min_value = np.min(Prop_vector)
-        max_value = np.max(Prop_vector)
+        min_value = np.min(Prop_vector_full)
+        max_value = np.max(Prop_vector_full)
+        min_value = np.min(Prop_vector_sample)
+        max_value = np.max(Prop_vector_sample)
 
         # discretisation of the original vector with all values
-        freq_prop_vector = discretize_to_dict(Prop_vector, min_value, max_value)
+        freq_prop_vector_full = discretize_to_dict(
+            Prop_vector_full, min_value, max_value
+        )
+        freq_prop_vector_sample = discretize_to_dict(
+            Prop_vector_sample, min_value, max_value
+        )
 
         if clean:
-            freq_prop_vector = replace_zero(freq_prop_vector)
+            freq_prop_vector_full = replace_zero(freq_prop_vector_full)
         # replace 0 with small number and then rescale values to make the sum
         # equal to 1
         # freq_prop_vector_clean = replace_zero(freq_prop_vector)
