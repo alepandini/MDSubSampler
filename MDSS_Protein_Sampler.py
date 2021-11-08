@@ -113,29 +113,27 @@ class ProteinData:
 
 
 class ProteinProperty:
-    """TODO.
+    def __init__(self, protein_data, frame_list, atom_selection):
+        protein_data.trajectory_data.trajectory[0]  # setting us on the first frame
+        self.ref_coordinates = protein_data.trajectory_data.select_atoms(
+            atom_selection
+        ).positions.copy()  # extracting a copy of the coordinates of the first frame only for a selection of atoms
 
-    Attributes:
-        property TODO
-    """
-
-    pass
+        self.property = []
 
 
 class RMSDProperty(ProteinProperty):
     def __init__(self, protein_data, frame_list, atom_selection="name CA"):
-        protein_data.trajectory_data.trajectory[0]
-        ref_coordinates = protein_data.trajectory_data.select_atoms(
-            atom_selection
-        ).positions.copy()
 
-        self.property = []
+        super().__init__(protein_data, frame_list, atom_selection)
+
         for frame in frame_list:
+            # go through the trajectory and for each frame I compare with my reference frame
             protein_data.trajectory_data.trajectory[frame]
             self.property.append(
                 rms.rmsd(
                     protein_data.trajectory_data.select_atoms(atom_selection).positions,
-                    ref_coordinates,
+                    self.ref_coordinates,
                 )
             )
 
@@ -143,9 +141,8 @@ class RMSDProperty(ProteinProperty):
 class RadiusOfGyrationProperty(ProteinProperty):
     def __init__(self, protein_data, frame_list, atom_selection="name CA"):
 
-        protein_data.trajectory_data.trajectory[0]
+        super().__init__(protein_data, frame_list, atom_selection)
 
-        self.property = []
         self.time = []
         for frame in frame_list:
             protein_data.trajectory_data.trajectory[frame]
@@ -170,15 +167,17 @@ class ProteinSampler:
 class RandomSampler(ProteinSampler):
     def __init__(self, frame_list, seed_number=1999):
         random.seed(seed_number)
-        super(frame_list)
+        super().__init__(frame_list)
 
     def sample(self, size):
         self.sampled_frame_list = random.sample(self.frame_list, size)
-        super.sample(size)
+        super().sample(size)
 
 
 class Distance:
-    def __init__(self, Prop_vector, clean=False):
+    def __init__(
+        self, Prop_vector, clean=False
+    ):  # pass 2 prop objects one for full protein and one for sample
 
         min_value = np.min(Prop_vector)
         max_value = np.max(Prop_vector)
@@ -231,7 +230,7 @@ class BhattaDistance(Distance):
 
 class KLDiverDistance(Distance):
     def __init__(self, Prop_vector):
-        super(Prop_vector, clean=True)
+        super().__init__(Prop_vector, clean=True)
 
     def calculate_distance(self, x, y):
         return dictances.kullback_leibler(x, y)
