@@ -102,14 +102,16 @@ class ProteinProperty:
             atom_selection
         ).positions.copy()  # extracting a copy of the coordinates of the first frame only for a selection of atoms
 
-        self.property = []
+        self.property_vector = []
 
         self.min_value = np.min(vector)
         self.max_value = np.max(vector)
         self.avg_value = np.average(vector)
 
-    def discr_vector(vector, min_value, max_value):
-        prop_vector = discretize_to_dict(vector, min_value, max_value)
+        self.property_vector_discretized = self.discretize_vector()
+
+    def discretize_vector(self):
+        return discretize_to_dict(self.property_vector, sefl.min_value, self.max_value)
 
 
 class RMSDProperty(ProteinProperty):
@@ -166,77 +168,63 @@ class RandomSampler(ProteinSampler):
 
 # vector_1 for full protein and vector_2 for sample
 class Distance:
-    def __init__(self, vector_1, vector_2, prop, dist, clean=False):
 
-        self.v1 = vector_1
-        self.v2 = vector_2
-        self.prop = prop
-        self.dist = dist
+    def __init__(self, property_1, property_2, clean=False):
+	self.property_1 = property_1
+	self.property_2 = property_2
+        self.distance = self.calculate_distance()
 
-        self.v1_min = prop.min_value(self.v1)
-        self.v1_max = prop.max_value(self.v1)
-        self.v1_avg = prop.avg_value(self.v1)
-
-        self.v2_min = prop.min_value(self.v2)
-        self.v2_max = prop.max_value(self.v2)
-        self.v2_avg = prop.avg_value(self.v2)
-
-        self.dist_calc = self.v1_avg - self.v2_avg
-
-        # discretisation of the original vector with all values
-        self.prop_vector1 = prop.discr_vector(self.v1, self.v1_min, self.v2_max)
-        self.prop_vector2 = prop.discr_vector(self.v2, self.v2_min, self.v2_max)
-
-        # replace 0 with small number and then rescale values to make the sum equal to 1
-        if clean:
-            self.prop_vector1 = replace_zero(self.freq_prop_vector1)
-            self.prop_vector1 = replace_zero(self.freq_prop_vector1)
-
-        # test - the distance should be zero (or close to zero) on itself
-        sample_size = len(self.prop_vector1)
-
-        distance = self.calculate_distance(freq_prop_vector, freq_prop_vector)
-
-        print("size: {0:6d} distance: {1:.3f}".format(sample_size, distance))
-
-        print("-------------------------")
-
-        for sample_size in [10, 50, 100, 200, 400, 500]:
-            # for sample_size in [800,4000,8000,16000,32000,40000]:
-
-            sub_prop_vector = random.sample(Prop_vector, sample_size)
-
-            # discretisation of the subsampled vector
-            freq_sub_prop_vector = discretize_to_dict(
-                sub_prop_vector, min_value, max_value
-            )
-
-            if clean:
-                freq_sub_prop_vector = replace_zero(freq_sub_prop_vector)
-            # calculate the kl divergence
-            pq_distance = self.calculate_distance(
-                freq_sub_prop_vector, freq_sub_prop_vector
-            )
-
-            print("size: {0:6d} distance: {1:.3f}".format(sample_size, pq_distance))
-
-    def calculate_distance(self, x, y):
-        raise NotImplementedError()
-
+    def calculate_distance(self):
+        return self.property_1.avg_value - self.property_2.avg_value
 
 class BhattaDistance(Distance):
-    def calculate_distance(self, x, y):
-        return dictances.bhattacharyya(x, y)
+    def __init__(self, property_1, property_2):
+        super().__init__(property_1, property_2, clean=True)
+
+    def calculate_distance(self):
+        return dictances.bhattacharyya(self.property_1.property_vector_discretized, self.property_2.property_vector_discretized)
 
 
 class KLDiverDistance(Distance):
-    def __init__(self, Prop_vector):
-        super().__init__(Prop_vector, clean=True)
+    def __init__(self, property_1, property_2):
+        super().__init__(property_1, property_2, clean=True)
 
-    def calculate_distance(self, x, y):
-        return dictances.kullback_leibler(x, y)
+    def calculate_distance(self):
+        return dictances.kullback_leibler(self.property_1.property_vector_discretized, self.property_2.property_vector_discretized)
 
 
 class PearsonDictDistance(Distance):
-    def calculate_distance(self, x, y):
-        return dictances.pearson(x, y)
+    def __init__(self, property_1, property_2):
+        super().__init__(property_1, property_2, clean=True)
+
+    def calculate_distance(self):
+        return dictances.pearson(self.property_1.property_vector_discretized, self.property_2.property_vector_discretized)
+
+
+### # replace 0 with small number and then rescale values to make the sum equal to 1
+### if clean:
+###     self.prop_vector1 = replace_zero(self.freq_prop_vector1)
+###     self.prop_vector1 = replace_zero(self.freq_prop_vector1)
+
+### print("size: {0:6d} distance: {1:.3f}".format(sample_size, distance))
+### 
+### print("-------------------------")
+### 
+### for sample_size in [10, 50, 100, 200, 400, 500]:
+###     # for sample_size in [800,4000,8000,16000,32000,40000]:
+### 
+###     sub_prop_vector = random.sample(Prop_vector, sample_size)
+### 
+###     # discretisation of the subsampled vector
+###     freq_sub_prop_vector = discretize_to_dict(
+### 	sub_prop_vector, min_value, max_value
+###     )
+### 
+###     if clean:
+### 	freq_sub_prop_vector = replace_zero(freq_sub_prop_vector)
+###     # calculate the kl divergence
+###     pq_distance = self.calculate_distance(
+### 	freq_sub_prop_vector, freq_sub_prop_vector
+###     )
+### 
+###     print("size: {0:6d} distance: {1:.3f}".format(sample_size, pq_distance))
