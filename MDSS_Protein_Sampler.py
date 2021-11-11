@@ -6,6 +6,7 @@ import dictances
 import pingouin as pg
 
 from MDAnalysis.analysis import rms
+from Protein_Sampler import discretize_to_dict, replace_zero
 
 
 class ProteinData:
@@ -93,14 +94,22 @@ class ProteinData:
             self.property_dict[property_name][sample_label] = property_vector
 
 
+# Added the vector argument so I can calculate min, max, avg and do discretize_to_dict
 class ProteinProperty:
-    def __init__(self, protein_data, frame_list, atom_selection):
+    def __init__(self, protein_data, vector, frame_list, atom_selection):
         protein_data.trajectory_data.trajectory[0]  # setting us on the first frame
         self.ref_coordinates = protein_data.trajectory_data.select_atoms(
             atom_selection
         ).positions.copy()  # extracting a copy of the coordinates of the first frame only for a selection of atoms
 
         self.property = []
+
+        self.min_value = np.min(vector)
+        self.max_value = np.max(vector)
+        self.avg_value = np.average(vector)
+
+    def discr_vector(vector, min_value, max_value):
+        prop_vector = discretize_to_dict(vector, min_value, max_value)
 
 
 class RMSDProperty(ProteinProperty):
@@ -155,32 +164,36 @@ class RandomSampler(ProteinSampler):
         super().sample(size)
 
 
+# vector_1 for full protein and vector_2 for sample
 class Distance:
-    def __init__(
-        self, Prop_vector_full, Prop_vector_sample, clean=False
-    ):  # pass 2 prop objects one for full protein and one for sample
+    def __init__(self, vector_1, vector_2, prop, dist, clean=False):
 
-        min_value = np.min(Prop_vector_full)
-        max_value = np.max(Prop_vector_full)
-        min_value = np.min(Prop_vector_sample)
-        max_value = np.max(Prop_vector_sample)
+        self.v1 = vector_1
+        self.v2 = vector_2
+        self.prop = prop
+        self.dist = dist
+
+        self.v1_min = prop.min_value(self.v1)
+        self.v1_max = prop.max_value(self.v1)
+        self.v1_avg = prop.avg_value(self.v1)
+
+        self.v2_min = prop.min_value(self.v2)
+        self.v2_max = prop.max_value(self.v2)
+        self.v2_avg = prop.avg_value(self.v2)
+
+        self.dist_calc = self.v1_avg - self.v2_avg
 
         # discretisation of the original vector with all values
-        freq_prop_vector_full = discretize_to_dict(
-            Prop_vector_full, min_value, max_value
-        )
-        freq_prop_vector_sample = discretize_to_dict(
-            Prop_vector_sample, min_value, max_value
-        )
+        self.prop_vector1 = prop.discr_vector(self.v1, self.v1_min, self.v2_max)
+        self.prop_vector2 = prop.discr_vector(self.v2, self.v2_min, self.v2_max)
 
+        # replace 0 with small number and then rescale values to make the sum equal to 1
         if clean:
-            freq_prop_vector_full = replace_zero(freq_prop_vector_full)
-        # replace 0 with small number and then rescale values to make the sum
-        # equal to 1
-        # freq_prop_vector_clean = replace_zero(freq_prop_vector)
+            self.prop_vector1 = replace_zero(self.freq_prop_vector1)
+            self.prop_vector1 = replace_zero(self.freq_prop_vector1)
 
         # test - the distance should be zero (or close to zero) on itself
-        sample_size = len(Prop_vector)
+        sample_size = len(self.prop_vector1)
 
         distance = self.calculate_distance(freq_prop_vector, freq_prop_vector)
 
