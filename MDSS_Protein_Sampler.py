@@ -1,3 +1,4 @@
+
 import MDAnalysis as mda
 import numpy as np
 import pandas as pd
@@ -18,10 +19,8 @@ class ProteinData:
         self.trajectory_data = self._read_trajectory(
             self.trajectory_filename, self.topology_filename
         )
-        self.n_frames = self.trajectory_data.trajectory.n_frames
-        self.ca_atom_group = self._select_CA_atoms()
-        # self.masses = self.ca_atom_group.masses
-        # self.total_mass = np.sum(self.masses)
+        self.n_frames = self.trajectory_data.trajectory.n_frames  ### where is trajectory.n_frames coming from?
+        self.ca_atom_group = self._select_CA_atoms()  
         self.property_dict = {}
 
     def _read_trajectory(self, trajectory_filename, topology_filename):
@@ -106,7 +105,7 @@ class ProteinProperty:
 
         self.min_value = np.min(vector)
         self.max_value = np.max(vector)
-        self.avg_value = np.average(vector)
+        self.avg_value = np.average(vector) 
 
         self.property_vector_discretized = self.discretize_vector()
 
@@ -122,7 +121,7 @@ class RMSDProperty(ProteinProperty):
         for frame in frame_list:
             # go through the trajectory and for each frame I compare with my reference frame
             protein_data.trajectory_data.trajectory[frame]
-            self.property.append(
+            self.property.append(                                                               ##? is this property_vector
                 rms.rmsd(
                     protein_data.trajectory_data.select_atoms(atom_selection).positions,
                     self.ref_coordinates,
@@ -170,8 +169,8 @@ class RandomSampler(ProteinSampler):
 class Distance:
 
     def __init__(self, property_1, property_2, clean=False):
-	self.property_1 = property_1
-	self.property_2 = property_2
+        self.property_1 = property_1
+        self.property_2 = property_2
         self.distance = self.calculate_distance()
 
     def calculate_distance(self):
