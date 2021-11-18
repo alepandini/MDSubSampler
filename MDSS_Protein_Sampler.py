@@ -96,11 +96,8 @@ class ProteinData:
 # Added the vector argument so I can calculate min, max, avg and do discretize_to_dict
 class ProteinProperty:
     def __init__(self, protein_data, vector, frame_list, atom_selection="name CA"):
-        protein_data.trajectory_data.trajectory[0]  # setting us on the first frame
-        self.ref_coordinates = protein_data.trajectory_data.select_atoms(
-            atom_selection
-        ).positions.copy()  # extracting a copy of the coordinates of the first frame only for a selection of atoms
-
+        self.protein_data = protein_data
+        self.atom_selection = atom_selection
         self.property_vector = []
 
     def discretize_vector(self):
@@ -111,17 +108,25 @@ class ProteinProperty:
         self.max_value = np.max(self.property_vector)
         self.avg_value = np.average(self.property_vector) 
 
+    def set_reference_coordinates(self):
+        self.protein_data.trajectory_data.trajectory[0]  # setting us on the first frame
+        self.ref_coordinates = self.protein_data.trajectory_data.select_atoms(
+            self.atom_selection
+        ).positions.copy()  # extracting a copy of the coordinates of the first frame only for a selection of atoms
+
 class RMSDProperty(ProteinProperty):
     def __init__(self, protein_data, frame_list, atom_selection="name CA"):
 
         super().__init__(protein_data, frame_list, atom_selection)
 
+        self.set_reference_coordinates()
+        
         for frame in frame_list:
             # go through the trajectory and for each frame I compare with my reference frame
-            protein_data.trajectory_data.trajectory[frame]
+            self.protein_data.trajectory_data.trajectory[frame]
             self.property_vector.append(                                                              
                 rms.rmsd(
-                    protein_data.trajectory_data.select_atoms(atom_selection).positions,
+                    self.protein_data.trajectory_data.select_atoms(atom_selection).positions,
                     self.ref_coordinates,
                 )
             )
