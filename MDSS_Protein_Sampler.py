@@ -29,7 +29,7 @@ class ProteinData:
             topology_filename,
             trajectory_filename,
             permissive=False,
-            topology_format="PDB",
+            topology_format="GRO",
         )
         return trajectory_data
 
@@ -95,7 +95,7 @@ class ProteinData:
 
 # Added the vector argument so I can calculate min, max, avg and do discretize_to_dict
 class ProteinProperty:
-    def __init__(self, protein_data, vector, frame_list, atom_selection):
+    def __init__(self, protein_data, vector, frame_list, atom_selection="name CA"):
         protein_data.trajectory_data.trajectory[0]  # setting us on the first frame
         self.ref_coordinates = protein_data.trajectory_data.select_atoms(
             atom_selection
@@ -103,15 +103,13 @@ class ProteinProperty:
 
         self.property_vector = []
 
-        self.min_value = np.min(vector)
-        self.max_value = np.max(vector)
-        self.avg_value = np.average(vector) 
-
-        self.property_vector_discretized = self.discretize_vector()
-
     def discretize_vector(self):
-        return discretize_to_dict(self.property_vector, sefl.min_value, self.max_value)
+        self.property_vector_discretized = discretize_to_dict(self.property_vector, self.min_value, self.max_value)
 
+    def _property_statistics(self):
+        self.min_value = np.min(self.property_vector)
+        self.max_value = np.max(self.property_vector)
+        self.avg_value = np.average(self.property_vector) 
 
 class RMSDProperty(ProteinProperty):
     def __init__(self, protein_data, frame_list, atom_selection="name CA"):
@@ -121,13 +119,15 @@ class RMSDProperty(ProteinProperty):
         for frame in frame_list:
             # go through the trajectory and for each frame I compare with my reference frame
             protein_data.trajectory_data.trajectory[frame]
-            self.property.append(                                                               ##? is this property_vector
+            self.property_vector.append(                                                              
                 rms.rmsd(
                     protein_data.trajectory_data.select_atoms(atom_selection).positions,
                     self.ref_coordinates,
                 )
             )
 
+        self._property_statistics()
+        self.discretize_vector()
 
 class RadiusOfGyrationProperty(ProteinProperty):
     def __init__(self, protein_data, frame_list, atom_selection="name CA"):
