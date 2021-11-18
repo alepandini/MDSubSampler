@@ -14,12 +14,12 @@ prot_data.output_trj_summary()
 # Sampling the protein with the Random sampler
 frame_list = list(range(1000))
 prot_sample = MDSS_Protein_Sampler.RandomSampler(frame_list, seed_number=1999)
-sample = prot_sample.sample(100)
+frame_list_sample = prot_sample.sample(100)
 
 # Create a RMSDProperty object for both full protein and sample
 p_property = MDSS_Protein_Sampler.RMSDProperty(p_data, frame_list)
-s_property = MDSS_Protein_Sampler.RMSDProperty(sample, frame_list)
+s_property = MDSS_Protein_Sampler.RMSDProperty(p_data, frame_list_sample)
 
 # Calculate the distance between the two proteins in terms of the RMSD property
 distance = MDSS_Protein_Sampler.BhattaDistance(p_property, s_property)
-print(distance.calculate_distance)
+print(distance.distance)

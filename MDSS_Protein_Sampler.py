@@ -19,7 +19,7 @@ class ProteinData:
         self.trajectory_data = self._read_trajectory(
             self.trajectory_filename, self.topology_filename
         )
-        self.n_frames = self.trajectory_data.trajectory.n_frames  ### where is trajectory.n_frames coming from?
+        self.n_frames = self.trajectory_data.trajectory.n_frames  
         self.ca_atom_group = self._select_CA_atoms()  
         self.property_dict = {}
 
