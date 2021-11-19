@@ -1,9 +1,9 @@
-import MDSS_Protein_Sampler
+import mdss_protein_sampler
 
 # Create a ProteinData object
-p_data = MDSS_Protein_Sampler.ProteinData(
-    "./Testing/MD01_1lym_example_fit_short.xtc",
-    "./Testing/MD01_1lym_example.gro",
+p_data = mdss_protein_sampler.ProteinData(
+    "./data/MD01_1lym_example_fit_short.xtc",
+    "./data/MD01_1lym_example.gro",
     config_parameters=None,
 )
 
@@ -13,13 +13,13 @@ p_data = MDSS_Protein_Sampler.ProteinData(
 
 # Sampling the protein with the Random sampler
 frame_list = list(range(1000))
-prot_sample = MDSS_Protein_Sampler.RandomSampler(frame_list, seed_number=1999)
+prot_sample = mdss_protein_sampler.RandomSampler(frame_list, seed_number=1999)
 prot_sample.sample(100)
 
 # Create a RMSDProperty object for both full protein and sample
-p_property = MDSS_Protein_Sampler.RMSDProperty(p_data, frame_list)
-s_property = MDSS_Protein_Sampler.RMSDProperty(p_data, prot_sample.sampled_frame_list)
+p_property = mdss_protein_sampler.RMSDProperty(p_data, frame_list)
+s_property = mdss_protein_sampler.RMSDProperty(p_data, prot_sample.sampled_frame_list)
 
 # Calculate the distance between the two proteins in terms of the RMSD property
-distance = MDSS_Protein_Sampler.Distance(p_property, s_property)
+distance = mdss_protein_sampler.Distance(p_property, s_property)
 print(distance.distance)

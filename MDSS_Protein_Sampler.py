@@ -7,7 +7,7 @@ import dictances
 import pingouin as pg
 
 from MDAnalysis.analysis import rms
-from Protein_Sampler import discretize_to_dict, replace_zero
+from protein_sampler import discretize_to_dict, replace_zero
 
 
 class ProteinData:
