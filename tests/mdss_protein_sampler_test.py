@@ -5,12 +5,20 @@ import mdss_protein_sampler
 import dictances
 
 
-def test_random_sample():
+def test_random_sampler_sample_has_expected_length():
     frame_list = list(range(1000))
-    random_list = mdss_protein_sampler.RandomSampler(frame_list, seed_number=1999)
-    sample_list = random_list.sample_list.sample(100)
+    random_sampler = mdss_protein_sampler.RandomSampler(frame_list, seed_number=1999)
+    sample_list = random_sampler.sample(100)
 
     assert len(sample_list) == 100
+
+
+def test_random_sampler_sample_returns_subset():
+    frame_list = list(range(1000))
+    random_sampler = mdss_protein_sampler.RandomSampler(frame_list, seed_number=1999)
+    sample_list = random_sampler.sample(100)
+
+    assert all(x in frame_list for x in sample_list)
 
 
 def test_calculate_distance():
