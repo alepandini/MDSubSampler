@@ -1,4 +1,3 @@
-
 import MDAnalysis as mda
 import numpy as np
 import pandas as pd
@@ -19,8 +18,8 @@ class ProteinData:
         self.trajectory_data = self._read_trajectory(
             self.trajectory_filename, self.topology_filename
         )
-        self.n_frames = self.trajectory_data.trajectory.n_frames  
-        self.ca_atom_group = self._select_CA_atoms()  
+        self.n_frames = self.trajectory_data.trajectory.n_frames
+        self.ca_atom_group = self._select_CA_atoms()
         self.property_dict = {}
 
     def _read_trajectory(self, trajectory_filename, topology_filename):
@@ -101,12 +100,14 @@ class ProteinProperty:
         self.property_vector = []
 
     def discretize_vector(self):
-        self.property_vector_discretized = discretize_to_dict(self.property_vector, self.min_value, self.max_value)
+        self.property_vector_discretized = discretize_to_dict(
+            self.property_vector, self.min_value, self.max_value
+        )
 
     def _property_statistics(self):
         self.min_value = np.min(self.property_vector)
         self.max_value = np.max(self.property_vector)
-        self.avg_value = np.average(self.property_vector) 
+        self.avg_value = np.average(self.property_vector)
 
     def set_reference_coordinates(self):
         self.protein_data.trajectory_data.trajectory[0]  # setting us on the first frame
@@ -114,25 +115,29 @@ class ProteinProperty:
             self.atom_selection
         ).positions.copy()  # extracting a copy of the coordinates of the first frame only for a selection of atoms
 
+
 class RMSDProperty(ProteinProperty):
     def __init__(self, protein_data, frame_list, atom_selection="name CA"):
 
         super().__init__(protein_data, frame_list, atom_selection)
 
         self.set_reference_coordinates()
-        
+
         for frame in frame_list:
             # go through the trajectory and for each frame I compare with my reference frame
             self.protein_data.trajectory_data.trajectory[frame]
-            self.property_vector.append(                                                              
+            self.property_vector.append(
                 rms.rmsd(
-                    self.protein_data.trajectory_data.select_atoms(atom_selection).positions,
+                    self.protein_data.trajectory_data.select_atoms(
+                        atom_selection
+                    ).positions,
                     self.ref_coordinates,
                 )
             )
 
         self._property_statistics()
         self.discretize_vector()
+
 
 class RadiusOfGyrationProperty(ProteinProperty):
     def __init__(self, protein_data, frame_list, atom_selection="name CA"):
@@ -168,11 +173,11 @@ class RandomSampler(ProteinSampler):
     def sample(self, size):
         self.sampled_frame_list = random.sample(self.frame_list, size)
         super().sample(size)
+        return self.sampled_frame_list
 
 
 # vector_1 for full protein and vector_2 for sample
 class Distance:
-
     def __init__(self, property_1, property_2, clean=False):
         self.property_1 = property_1
         self.property_2 = property_2
@@ -181,12 +186,16 @@ class Distance:
     def calculate_distance(self):
         return self.property_1.avg_value - self.property_2.avg_value
 
+
 class BhattaDistance(Distance):
     def __init__(self, property_1, property_2):
         super().__init__(property_1, property_2, clean=True)
 
     def calculate_distance(self):
-        return dictances.bhattacharyya(self.property_1.property_vector_discretized, self.property_2.property_vector_discretized)
+        return dictances.bhattacharyya(
+            self.property_1.property_vector_discretized,
+            self.property_2.property_vector_discretized,
+        )
 
 
 class KLDiverDistance(Distance):
@@ -194,7 +203,10 @@ class KLDiverDistance(Distance):
         super().__init__(property_1, property_2, clean=True)
 
     def calculate_distance(self):
-        return dictances.kullback_leibler(self.property_1.property_vector_discretized, self.property_2.property_vector_discretized)
+        return dictances.kullback_leibler(
+            self.property_1.property_vector_discretized,
+            self.property_2.property_vector_discretized,
+        )
 
 
 class PearsonDictDistance(Distance):
@@ -202,7 +214,10 @@ class PearsonDictDistance(Distance):
         super().__init__(property_1, property_2, clean=True)
 
     def calculate_distance(self):
-        return dictances.pearson(self.property_1.property_vector_discretized, self.property_2.property_vector_discretized)
+        return dictances.pearson(
+            self.property_1.property_vector_discretized,
+            self.property_2.property_vector_discretized,
+        )
 
 
 ### # replace 0 with small number and then rescale values to make the sum equal to 1
@@ -211,24 +226,24 @@ class PearsonDictDistance(Distance):
 ###     self.prop_vector1 = replace_zero(self.freq_prop_vector1)
 
 ### print("size: {0:6d} distance: {1:.3f}".format(sample_size, distance))
-### 
+###
 ### print("-------------------------")
-### 
+###
 ### for sample_size in [10, 50, 100, 200, 400, 500]:
 ###     # for sample_size in [800,4000,8000,16000,32000,40000]:
-### 
+###
 ###     sub_prop_vector = random.sample(Prop_vector, sample_size)
-### 
+###
 ###     # discretisation of the subsampled vector
 ###     freq_sub_prop_vector = discretize_to_dict(
 ### 	sub_prop_vector, min_value, max_value
 ###     )
-### 
+###
 ###     if clean:
 ### 	freq_sub_prop_vector = replace_zero(freq_sub_prop_vector)
 ###     # calculate the kl divergence
 ###     pq_distance = self.calculate_distance(
 ### 	freq_sub_prop_vector, freq_sub_prop_vector
 ###     )
-### 
+###
 ###     print("size: {0:6d} distance: {1:.3f}".format(sample_size, pq_distance))
