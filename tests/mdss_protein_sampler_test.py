@@ -1,7 +1,16 @@
 import random
+from mdss_protein_sampler import RandomSampler
 import mdss_protein_sampler
 
 import dictances
+
+
+def test_random_sample():
+    frame_list = list(range(1000))
+    random_list = mdss_protein_sampler.RandomSampler(frame_list, seed_number=1999)
+    sample_list = random_list.sample_list.sample(100)
+
+    assert len(sample_list) == 100
 
 
 def test_calculate_distance():
