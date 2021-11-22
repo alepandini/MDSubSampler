@@ -1,8 +1,7 @@
 import random
 from mdss_protein_sampler import RandomSampler
 import mdss_protein_sampler
-
-import dictances
+import pytest
 
 
 def test_random_sampler_sample_has_expected_length():
@@ -33,17 +32,25 @@ def test_calculate_distance():
     assert distance.distance == property_1.avg_value - property_2.avg_value
 
 
-def test_bhattacharyya_distance(mocker):
+@pytest.mark.parametrize(
+    "mocked_function_name, distance_subclass",
+    [
+        ("dictances.bhattacharyya", mdss_protein_sampler.BhattaDistance),
+        ("dictances.kullback_leibler", mdss_protein_sampler.KLDiverDistance),
+        ("dictances.pearson", mdss_protein_sampler.PearsonDictDistance),
+    ],
+)
+def test_bhattacharyya_distance(mocker, mocked_function_name, distance_subclass):
     class FakeProperty:
         def __init__(self):
             self.property_vector_discretized = random.random()
 
-    mocker.patch("dictances.bhattacharyya")
+    mocked_function = mocker.patch(mocked_function_name)
 
     property_1 = FakeProperty()
     property_2 = FakeProperty()
-    distance = mdss_protein_sampler.BhattaDistance(property_1, property_2)
+    distance_subclass(property_1, property_2)
 
-    dictances.bhattacharyya.assert_called_once_with(
+    mocked_function.assert_called_once_with(
         property_1.property_vector_discretized, property_2.property_vector_discretized
     )
