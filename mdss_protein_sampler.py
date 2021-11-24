@@ -1,9 +1,7 @@
 import MDAnalysis as mda
 import numpy as np
-import pandas as pd
 import random
 import dictances
-import pingouin as pg
 
 from MDAnalysis.analysis import rms
 from protein_sampler import discretize_to_dict, replace_zero
@@ -37,59 +35,13 @@ class ProteinData:
         ca_atom_group = self.trajectory_data.select_atoms("name CA")
         return ca_atom_group
 
-    def output_trj_summary(self):
-        print("----------------------")
-        print("TRAJECTORY INFORMATION")
-        print("----------------------")
-        # Printing total no of frames , atoms and C-Alpha in trajectroy
-        print(
-            "n frames = {0}\nn atoms = {1}\nn CA atoms = {2}".format(
-                self.n_frames,
-                self.trajectory_data.trajectory.n_atoms,
-                self.ca_atom_group.n_atoms,
-            )
-        )
-
-    def statistical_analysis(self, stat_vector, stat_sampled_vector, sample_label):
-
-        print("----------------------")
-        print("STATISTICAL ANALYSIS")
-        print("----------------------")
-        vector_mean = np.mean(np.array([stat_vector]), axis=0)
-        vector_variance = np.var(stat_vector)
-        print("mean for {0} vector::{1}".format(sample_label, vector_mean))
-        print("variance for {0} vector::{1}".format(sample_label, vector_variance))
-        print("----------------------")
-        print("Kolmogorov-Smirnov test")
-        print("----------------------")
-        # perform Kolmogorov-Smirnov test on two vectors
-        KSstat, pvalue = ks_2samp(stat_vector, stat_sampled_vector)
-        print("stat=%.3f, p=%.3f" % (KSstat, pvalue))
-        # interpret the Kolmogorov-Smirnov test results
-        if pvalue > 0.05:
-            print("Probably the same distribution")
-        else:
-            print("Probably different distributions")
-        print("----------------------")
-        print("Student T-test")
-        print("----------------------")
-        # perform t-test on two vectors
-        print(pg.ttest(x=stat_vector, y=stat_sampled_vector, correction=True).round(2))
-        stat, p1 = ttest_ind(stat_vector, stat_sampled_vector)
-        print("stat1=%.3f, p1=%.3f" % (stat, p1))
-        # interpret the t-test results
-        if p1 > 0.05:
-            print("Probably the same distribution")
-        else:
-            print("Probably different distributions")
-
-    def add_property(self, property_vector, property_name, sample_label):
+    def _add_property_dummy(self, protein_property, property_name):
         if property_name in self.property_dict:
-            self.property_dict[property_name][sample_label] = property_vector
+            self.property_dict[property_name][sample_label] = protein_property
 
         else:
             self.property_dict[property_name] = {}
-            self.property_dict[property_name][sample_label] = property_vector
+            self.property_dict[property_name][sample_label] = property_property
 
 
 # Added the vector argument so I can calculate min, max, avg and do discretize_to_dict
@@ -98,6 +50,9 @@ class ProteinProperty:
         self.protein_data = protein_data
         self.atom_selection = atom_selection
         self.property_vector = []
+
+    def _add_reference_to_protein_data(self):
+        self.protein_data._add_property_dummy(self, self.property_name)
 
     def discretize_vector(self):
         self.property_vector_discretized = discretize_to_dict(
@@ -120,6 +75,9 @@ class RMSDProperty(ProteinProperty):
     def __init__(self, protein_data, frame_list, atom_selection="name CA"):
 
         super().__init__(protein_data, frame_list, atom_selection)
+
+        self.property_name = "RMSD"
+        self._add_reference_to_protein_data()
 
         self.set_reference_coordinates()
 
@@ -219,31 +177,3 @@ class PearsonDictDistance(Distance):
             self.property_2.property_vector_discretized,
         )
 
-
-### # replace 0 with small number and then rescale values to make the sum equal to 1
-### if clean:
-###     self.prop_vector1 = replace_zero(self.freq_prop_vector1)
-###     self.prop_vector1 = replace_zero(self.freq_prop_vector1)
-
-### print("size: {0:6d} distance: {1:.3f}".format(sample_size, distance))
-###
-### print("-------------------------")
-###
-### for sample_size in [10, 50, 100, 200, 400, 500]:
-###     # for sample_size in [800,4000,8000,16000,32000,40000]:
-###
-###     sub_prop_vector = random.sample(Prop_vector, sample_size)
-###
-###     # discretisation of the subsampled vector
-###     freq_sub_prop_vector = discretize_to_dict(
-### 	sub_prop_vector, min_value, max_value
-###     )
-###
-###     if clean:
-### 	freq_sub_prop_vector = replace_zero(freq_sub_prop_vector)
-###     # calculate the kl divergence
-###     pq_distance = self.calculate_distance(
-### 	freq_sub_prop_vector, freq_sub_prop_vector
-###     )
-###
-###     print("size: {0:6d} distance: {1:.3f}".format(sample_size, pq_distance))
