@@ -44,12 +44,12 @@ def calculate_property(
     prot_sample.sampled_frame_list,
 )
 
-# (rog_property, rog_sample_property) = calculate_property(
-#     mdss_protein_sampler.RadiusOfGyrationProperty,
-#     p_data,
-#     frame_list,
-#     prot_sample.sampled_frame_list,
-# )
+(rog_property, rog_sample_property) = calculate_property(
+    mdss_protein_sampler.RadiusOfGyrationProperty,
+    p_data,
+    frame_list,
+    prot_sample.sampled_frame_list,
+)
 
 # Create function similar to property
 # Calculate distance between original and sample protein
@@ -68,9 +68,9 @@ distance_rmsd = calculate_distance(
     rmsd_sample_property,
 )
 
-# distance_rog = calculate_distance(
-#     mdss_protein_sampler.Distance, rog_property, rog_sample_property
-# )
+distance_rog = calculate_distance(
+    mdss_protein_sampler.Distance, rog_property, rog_sample_property
+)
 
 print(distance_rmsd)
-# print(distance_rog)
+print(distance_rog)
