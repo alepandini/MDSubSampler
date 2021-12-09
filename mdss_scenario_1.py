@@ -9,8 +9,12 @@ my_parser.add_argument(
 my_parser.add_argument(
     "--top", dest="topology_file", required=True, help="the path to topology file"
 )
+my_parser.add_argument(
+    "--prefix", dest="file_prefix", required=True, help="the prefix for output files"
+)
 
 args = my_parser.parse_args()
+file_prefix = args.file_prefix
 
 # Get the protein data
 p_data = mdss_protein_sampler.ProteinData(
@@ -42,6 +46,13 @@ def calculate_property(property_class, protein_data, frame_list, sampled_frame_l
     frame_list,
     prot_sample.sampled_frame_list,
 )
+
+# Save property values in files
+rmsd_property.write_property_vector('{0}_rmsd.dat'.format(file_prefix))
+rmsd_sample_property.write_property_vector('{0}_rmsd_sample.dat'.format(file_prefix))
+rog_property.write_property_vector('{0}_rog.dat'.format(file_prefix))
+rog_sample_property.write_property_vector('{0}_rog_sample.dat'.format(file_prefix))
+
 
 # Function that calculates the difference between the full trajectory and the sample
 # trajectory of the protein
