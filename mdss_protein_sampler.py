@@ -74,10 +74,9 @@ class ProteinProperty:
         ).positions.copy()  # extracting a copy of the coordinates of the first frame only for a selection of atoms
 
     def write_property_vector(self, outfilename):
-        fout = open(outfilename, "w")
-        for value in self.property_vector:
-            fout.write("{0}\n".format(value))
-        fout.close()
+        with open(outfilename, "w") as f:
+            for i, value in enumerate(self.property_vector):
+                f.write("{} {}\n".format(i, value))
 
 
 class RMSDProperty(ProteinProperty):
