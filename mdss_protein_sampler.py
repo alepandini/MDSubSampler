@@ -58,7 +58,9 @@ class ProteinProperty:
         bin_size = (self.max_value - self.min_value) / 100.0
         bin_vector = np.arange(self.min_value, self.max_value, bin_size)
         counts, bins = np.histogram(self.property_vector, bins=bin_vector)
-        self.property_vector_discretized = dict(zip(bins, counts / len(self.property_vector)))
+        self.property_vector_discretized = dict(
+            zip(bins, counts / len(self.property_vector))
+        )
 
     def _property_statistics(self):
         self.min_value = np.min(self.property_vector)
@@ -72,10 +74,11 @@ class ProteinProperty:
         ).positions.copy()  # extracting a copy of the coordinates of the first frame only for a selection of atoms
 
     def write_property_vector(self, outfilename):
-        fout = open(outfilename, 'w')
+        fout = open(outfilename, "w")
         for value in self.property_vector:
-            fout.write('{0}\n'.format(value))
+            fout.write("{0}\n".format(value))
         fout.close()
+
 
 class RMSDProperty(ProteinProperty):
     def __init__(self, protein_data, frame_list, atom_selection="name CA"):
@@ -140,6 +143,39 @@ class RandomSampler(ProteinSampler):
         return self.sampled_frame_list
 
 
+class StratifiedSampler(ProteinSampler):
+
+    # size = whole sample size
+    # population = whole population size (sum of each layer size)
+    # layer_size = size for current layer
+    def strata_sample_size(size, population, layer_size):
+        cur_size = (size / population) * layer_size
+
+        return round(cur_size)
+
+    # strata_vector = 2D vector
+    # the strata vector consists of multiple layers
+    # each layer is a set of labels for the frames according to the strata
+    # size = whole sample size
+    def stratified_sampling(layers, size):
+        population = sum(len(layer) for layer in layers)
+        samples = []
+
+        for layer in layers:
+            layer_size = len(layer)
+            print(f"layer size: {layer_size}")
+            current_layer_sample_size = self.strata_sample_size(
+                size, population, layer_size
+            )
+            print(f"layer sample size: {current_layer_sample_size }")
+            print(f"proportion: {current_layer_sample_size / layer_size}")
+            current_sample = random.sample(layer, current_layer_sample_size)
+            print(f"sample: {current_sample}")
+            samples.extend(current_sample)
+
+        return samples
+
+
 # vector_1 for full protein and vector_2 for sample
 class Distance:
     def __init__(self, property_1, property_2, clean=False):
@@ -182,4 +218,3 @@ class PearsonDictDistance(Distance):
             self.property_1.property_vector_discretized,
             self.property_2.property_vector_discretized,
         )
-
