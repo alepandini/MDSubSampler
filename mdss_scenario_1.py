@@ -1,19 +1,29 @@
 import mdss_protein_sampler
 import argparse
 
-# Create and call parser
-my_parser = argparse.ArgumentParser()
-my_parser.add_argument(
-    "--traj", dest="trajectory_file", required=True, help="the path to trajectory file"
-)
-my_parser.add_argument(
-    "--top", dest="topology_file", required=True, help="the path to topology file"
-)
-my_parser.add_argument(
-    "--prefix", dest="file_prefix", required=True, help="the prefix for output files"
-)
+# Function that creates the parser
+def parse_args():
+    my_parser = argparse.ArgumentParser()
+    my_parser.add_argument(
+        "--traj",
+        dest="trajectory_file",
+        required=True,
+        help="the path to trajectory file",
+    )
+    my_parser.add_argument(
+        "--top", dest="topology_file", required=True, help="the path to topology file"
+    )
+    my_parser.add_argument(
+        "--prefix",
+        dest="file_prefix",
+        required=True,
+        help="the prefix for output files",
+    )
 
-args = my_parser.parse_args()
+    return my_parser.parse_args()
+
+
+args = parse_args()
 file_prefix = args.file_prefix
 
 # Get the protein data
@@ -26,78 +36,100 @@ frame_list = list(range(1000))
 prot_sample = mdss_protein_sampler.RandomSampler(frame_list, seed_number=1999)
 sample = prot_sample.sample(100)
 
-# Function that calculates the property of the full and the sample protein
-def calculate_property(property_class, protein_data, frame_list, sampled_frame_list):
+# Function that calculates property, distance and save in a file
+def compare_full_and_sample_protein(
+    property_class,
+    prop_name,
+    protein_data,
+    frame_list,
+    sampled_frame_list,
+    distance_class,
+):
+
     prop = property_class(protein_data, frame_list)
     prop_sample = property_class(protein_data, sampled_frame_list)
-    return (prop, prop_sample)
-
-
-(rmsd_property, rmsd_sample_property) = calculate_property(
-    mdss_protein_sampler.RMSDProperty,
-    p_data,
-    frame_list,
-    prot_sample.sampled_frame_list,
-)
-
-(rog_property, rog_sample_property) = calculate_property(
-    mdss_protein_sampler.RadiusOfGyrationProperty,
-    p_data,
-    frame_list,
-    prot_sample.sampled_frame_list,
-)
-
-# Save property values in files
-rmsd_property.write_property_vector('{0}_rmsd.dat'.format(file_prefix))
-rmsd_sample_property.write_property_vector('{0}_rmsd_sample.dat'.format(file_prefix))
-rog_property.write_property_vector('{0}_rog.dat'.format(file_prefix))
-rog_sample_property.write_property_vector('{0}_rog_sample.dat'.format(file_prefix))
-
-
-# Function that calculates the difference between the full trajectory and the sample
-# trajectory of the protein
-def calculate_distance(distance_class, property, sample_property):
-    distance_obj = distance_class(property, sample_property)
+    distance_obj = distance_class(prop, prop_sample)
+    prop.write_property_vector("{}_{}.dat".format(file_prefix, prop_name))
+    prop_sample.write_property_vector("{}_{}_sample.dat".format(file_prefix, prop_name))
     return distance_obj.distance
 
 
-# Calculate simple distance for all properties
-distance_rmsd = calculate_distance(
-    mdss_protein_sampler.Distance, rmsd_property, rmsd_sample_property
+# RMSD property and simple distance
+distance_rmsd = compare_full_and_sample_protein(
+    mdss_protein_sampler.RMSDProperty,
+    "rmsd",
+    p_data,
+    list(range(1000)),
+    prot_sample.sampled_frame_list,
+    mdss_protein_sampler.Distance,
 )
 
-distance_rog = calculate_distance(
-    mdss_protein_sampler.Distance, rog_property, rog_sample_property
-)
-
-# Calculate Bhatta distance for all properties
-bhatta_distance_rmsd = calculate_distance(
-    mdss_protein_sampler.BhattaDistance, rmsd_property, rmsd_sample_property
-)
-
-bhatta_distance_rog = calculate_distance(
-    mdss_protein_sampler.BhattaDistance, rog_property, rog_sample_property
+# Radius of Gyration property and simple distance
+distance_rog = compare_full_and_sample_protein(
+    mdss_protein_sampler.RadiusOfGyrationProperty,
+    "rog",
+    p_data,
+    list(range(1000)),
+    prot_sample.sampled_frame_list,
+    mdss_protein_sampler.Distance,
 )
 
 
-# Calculate KL distance for all properties
-kl_distance_rmsd = calculate_distance(
-    mdss_protein_sampler.KLDiverDistance, rmsd_property, rmsd_sample_property
+# RMSD property and Bhatta distance distance
+distance_rmsd = compare_full_and_sample_protein(
+    mdss_protein_sampler.RMSDProperty,
+    "rmsd",
+    p_data,
+    list(range(1000)),
+    prot_sample.sampled_frame_list,
+    mdss_protein_sampler.BhattaDistance,
 )
 
-kl_distance_rog = calculate_distance(
-    mdss_protein_sampler.KLDiverDistance, rog_property, rog_sample_property
+# Radius of Gyration property and Bhatta distance
+distance_rog = compare_full_and_sample_protein(
+    mdss_protein_sampler.RadiusOfGyrationProperty,
+    "rog",
+    p_data,
+    list(range(1000)),
+    prot_sample.sampled_frame_list,
+    mdss_protein_sampler.BhattaDistance,
 )
 
-# Calculate Pearson distance for all properties
-pears_distance_rmsd = calculate_distance(
-    mdss_protein_sampler.PearsonDictDistance, rmsd_property, rmsd_sample_property
+# RMSD property and KL distance
+distance_rmsd = compare_full_and_sample_protein(
+    mdss_protein_sampler.RMSDProperty,
+    "rmsd",
+    p_data,
+    list(range(1000)),
+    prot_sample.sampled_frame_list,
+    mdss_protein_sampler.KLDiverDistance,
 )
 
-pears_distance_rog = calculate_distance(
-    mdss_protein_sampler.PearsonDictDistance, rog_property, rog_sample_property
+# Radius of Gyration property and KL distance
+distance_rog = compare_full_and_sample_protein(
+    mdss_protein_sampler.RadiusOfGyrationProperty,
+    "rog",
+    p_data,
+    list(range(1000)),
+    prot_sample.sampled_frame_list,
+    mdss_protein_sampler.KLDiverDistance,
 )
-print(distance_rmsd)
-print(bhatta_distance_rmsd)
-print(kl_distance_rmsd)
-print(pears_distance_rmsd)
+# RMSD property and Pearson distance
+distance_rmsd = compare_full_and_sample_protein(
+    mdss_protein_sampler.RMSDProperty,
+    "rmsd",
+    p_data,
+    list(range(1000)),
+    prot_sample.sampled_frame_list,
+    mdss_protein_sampler.PearsonDictDistance,
+)
+
+# Radius of Gyration property and Pearson distance
+distance_rog = compare_full_and_sample_protein(
+    mdss_protein_sampler.RadiusOfGyrationProperty,
+    "rog",
+    p_data,
+    list(range(1000)),
+    prot_sample.sampled_frame_list,
+    mdss_protein_sampler.PearsonDictDistance,
+)
