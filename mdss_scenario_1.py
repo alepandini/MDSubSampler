@@ -51,6 +51,12 @@ def compare_full_and_sample_protein(
     distance_obj = distance_class(prop, prop_sample)
     prop.write_property_vector("{}_{}.dat".format(file_prefix, prop_name))
     prop_sample.write_property_vector("{}_{}_sample.dat".format(file_prefix, prop_name))
+    prop.write_property_discretised_vector(
+        "{}_{}_{}.dat".format(file_prefix, prop_name, "discr")
+    )
+    prop_sample.write_property_discretised_vector(
+        "{}_{}_{}_sample.dat".format(file_prefix, prop_name, "discr")
+    )
     return distance_obj.distance
 
 

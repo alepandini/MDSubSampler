@@ -61,6 +61,7 @@ class ProteinProperty:
         self.property_vector_discretized = dict(
             zip(bins, counts / len(self.property_vector))
         )
+        return self.property_vector_discretized
 
     def _property_statistics(self):
         self.min_value = np.min(self.property_vector)
@@ -77,6 +78,12 @@ class ProteinProperty:
         with open(outfilename, "w") as f:
             for i, value in enumerate(self.property_vector):
                 f.write("{} {}\n".format(i, value))
+
+    def write_property_discretised_vector(self, outfilename):
+        discr_vector = self.discretize_vector()
+        with open(outfilename, "w") as f:
+            for (key, value) in discr_vector.items():
+                f.write("{} {}\n".format(key, value))
 
 
 class RMSDProperty(ProteinProperty):
