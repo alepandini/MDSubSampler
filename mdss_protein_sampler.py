@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import random
 import dictances
+from pprint import pprint
 
 from MDAnalysis.analysis import rms
 
@@ -59,9 +60,15 @@ class ProteinProperty:
         bin_vector = np.arange(self.min_value, self.max_value, bin_size)
         counts, bins = np.histogram(self.property_vector, bins=bin_vector)
         self.property_vector_discretized = dict(
-            zip(bins, counts / len(self.property_vector))
+            zip(bins, (counts / len(self.property_vector)))
         )
         return self.property_vector_discretized
+
+    def normalised_property_vector(self):
+        return {
+            round(k, 3): (v + 0.000001)
+            for k, v in self.property_vector_discretized.items()
+        }
 
     def _property_statistics(self):
         self.min_value = np.min(self.property_vector)
@@ -199,8 +206,8 @@ class BhattaDistance(Distance):
 
     def calculate_distance(self):
         return dictances.bhattacharyya(
-            self.property_1.property_vector_discretized,
-            self.property_2.property_vector_discretized,
+            self.property_1.normalised_property_vector(),
+            self.property_2.normalised_property_vector(),
         )
 
 
