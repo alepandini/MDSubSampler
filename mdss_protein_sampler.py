@@ -3,12 +3,24 @@ import numpy as np
 import pandas as pd
 import random
 import dictances
-from pprint import pprint
 
 from MDAnalysis.analysis import rms
 
 
 class ProteinData:
+    """
+    A class used to represent the protein data
+
+    Attributes
+    ----------
+    trajectory_filename : str
+        the path to the trajectory file of the protein
+    topology_filename : str
+        the path to the topology file of the protein
+    config_parameters : str
+        configuration parameters of the protein
+    """
+
     def __init__(self, trajectory_filename, topology_filename, config_parameters):
 
         self.config_par = config_parameters
@@ -22,7 +34,20 @@ class ProteinData:
         self.property_dict = {}
 
     def _read_trajectory(self, trajectory_filename, topology_filename):
-        # Load trajectory file into Universe
+        """
+        Load trajectory and topology files into Universe to build the object
+
+        Parameters
+        ----------------------------
+        trajectory_filename: str,
+            the path to the trajectory file of the protein.
+        topology_filename: str,
+            the path to the topology file of the protein
+
+        Returns
+        ----------------------------
+        Return the number of atoms exist in the object
+        """
         trajectory_data = mda.Universe(
             topology_filename,
             trajectory_filename,
@@ -32,7 +57,13 @@ class ProteinData:
         return trajectory_data
 
     def _select_CA_atoms(self):
-        # Read C-Alpha from the first frame of trajectory
+        """
+        Read C-Alpha from the first frame of trajectory
+
+        Returns
+        ----------------------------
+        Return the number of CA atoms from the AtomGroup
+        """
         ca_atom_group = self.trajectory_data.select_atoms("name CA")
         return ca_atom_group
 
@@ -45,17 +76,42 @@ class ProteinData:
             self.property_dict[property_name][sample_label] = property_property
 
 
-# Added the vector argument so I can calculate min, max, avg and do discretize_to_dict
 class ProteinProperty:
+    """
+    A class used to calculate a property for the protein based on the frame selection
+    from the protein trajectory
+
+    Attributes
+    ----------
+    protein_data : ProteinData object
+        Contains the trajectory and topology data for the protein
+    vector:
+        Simple vector used to calculate statistics
+    frame_list: list
+        List that contains all the frames from a given protein trajectory
+    atom_selection: str
+        Choice of atoms for calculation of a property on this selection of atoms
+    """
+
     def __init__(self, protein_data, vector, frame_list, atom_selection="name CA"):
         self.protein_data = protein_data
         self.atom_selection = atom_selection
         self.property_vector = []
 
     def _add_reference_to_protein_data(self):
+        """
+        Method that links the ProteinProperty and ProteinData classes
+        """
         self.protein_data._add_property_dummy(self, self.property_name)
 
     def discretize_vector(self):
+        """
+        Method that discretises a vector used for Bhatta and KL distances
+
+        Returns
+        ----------------------------
+        return the discretised vector
+        """
         bin_size = (self.max_value - self.min_value) / 100.0
         bin_vector = np.arange(self.min_value, self.max_value, bin_size)
         counts, bins = np.histogram(self.property_vector, bins=bin_vector)
@@ -65,28 +121,51 @@ class ProteinProperty:
         return self.property_vector_discretized
 
     def normalised_property_vector(self):
+        """
+        Method that adds a small value to key and values in the discretised
+        vector to prevent errors relating to division by 0
+
+        Returns
+        ----------------------------
+        return the normalised version of the discretised vector
+        """
         return {
             round(k, 3): (v + 0.000001)
             for k, v in self.property_vector_discretized.items()
         }
 
     def _property_statistics(self):
+        """
+        Method that calculates the minimum, maximum and average values of a vector
+        """
         self.min_value = np.min(self.property_vector)
         self.max_value = np.max(self.property_vector)
         self.avg_value = np.average(self.property_vector)
 
     def set_reference_coordinates(self):
-        self.protein_data.trajectory_data.trajectory[0]  # setting us on the first frame
+        """
+        Method that sets us on the first frame and extracts a copy of the coordinates
+        of the first frame only for a selection of atoms
+        """
+        self.protein_data.trajectory_data.trajectory[0]
         self.ref_coordinates = self.protein_data.trajectory_data.select_atoms(
             self.atom_selection
-        ).positions.copy()  # extracting a copy of the coordinates of the first frame only for a selection of atoms
+        ).positions.copy()
 
     def write_property_vector(self, outfilename):
+        """
+        Method that saves the vector with the calculations of a specific property for
+        a protein in a file
+        """
         with open(outfilename, "w") as f:
             for i, value in enumerate(self.property_vector):
                 f.write("{} {}\n".format(i, value))
 
     def write_property_discretised_vector(self, outfilename):
+        """
+        Method that saves the discretised vector with the calculations of a specific
+        property for a protein in a file
+        """
         discr_vector = self.discretize_vector()
         with open(outfilename, "w") as f:
             for (key, value) in discr_vector.items():
@@ -94,6 +173,20 @@ class ProteinProperty:
 
 
 class RMSDProperty(ProteinProperty):
+    """
+    A Subclass of ProteinProperty class used to calculate the RMSD value for each frame in the
+    protein trajectory
+
+    Attributes
+    ----------
+    protein_data : ProteinData object
+        Contains the trajectory and topology data for the protein
+    frame_list: list
+        List that contains all the frames from a given protein trajectory
+    atom_selection: str
+        Choice of atoms for calculation of a property on this selection of atoms
+    """
+
     def __init__(self, protein_data, frame_list, atom_selection="name CA"):
 
         super().__init__(protein_data, frame_list, atom_selection)
@@ -101,7 +194,9 @@ class RMSDProperty(ProteinProperty):
         self.set_reference_coordinates()
 
         for frame in frame_list:
-            # go through the trajectory and for each frame I compare with my reference frame
+            """
+            Go through the trajectory and for each frame I compare with my reference frame
+            """
             self.protein_data.trajectory_data.trajectory[frame]
             self.property_vector.append(
                 rms.rmsd(
@@ -117,6 +212,20 @@ class RMSDProperty(ProteinProperty):
 
 
 class RadiusOfGyrationProperty(ProteinProperty):
+    """
+    A Subcalss of ProteinProperty class used to calculate the Radius of Gyration value for each frame
+    in the protein trajectory
+
+    Attributes
+    ----------
+    protein_data : ProteinData object
+        Contains the trajectory and topology data for the protein
+    frame_list: list
+        List that contains all the frames from a given protein trajectory
+    atom_selection: str
+        Choice of atoms for calculation of a property on this selection of atoms
+    """
+
     def __init__(self, protein_data, frame_list, atom_selection="name CA"):
 
         super().__init__(protein_data, frame_list, atom_selection)
@@ -137,6 +246,15 @@ class RadiusOfGyrationProperty(ProteinProperty):
 
 
 class ProteinSampler:
+    """
+    A class used to create a sample of a protein trajectory
+
+    Attributes
+    ----------
+    frame_list: list
+        List that contains all the frames from a given protein trajectory
+    """
+
     def __init__(self, frame_list):
         self.frame_list = frame_list
         self.sampled_frame_list = None
@@ -146,31 +264,82 @@ class ProteinSampler:
 
 
 class RandomSampler(ProteinSampler):
+    """
+    A Subclass of ProteinSampler class that uses Random Sampling
+
+    Attributes
+    ----------
+    frame_list: list
+        List that contains all the frames from a given protein trajectory
+    seed: int
+        Number that initialise a random-number generator
+    """
+
     def __init__(self, frame_list, seed_number=1999):
         random.seed(seed_number)
         super().__init__(frame_list)
 
     def sample(self, size):
+        """
+        Method that generates a random sample of a list
+
+        Attributes
+        ----------
+        size: int
+            The sample size
+
+        Returns
+        ----------
+        return a sample of the frame list with the desired size
+        """
         self.sampled_frame_list = random.sample(self.frame_list, size)
         super().sample(size)
         return self.sampled_frame_list
 
 
 class StratifiedSampler(ProteinSampler):
+    """
+    A Subclass of ProteinSampler class that uses Stratified Sampling
+    """
 
-    # size = whole sample size
-    # population = whole population size (sum of each layer size)
-    # layer_size = size for current layer
     def strata_sample_size(size, population, layer_size):
-        cur_size = (size / population) * layer_size
+        """
+        Method that calculates the sample size of the strata (ie homogeneous groups)
 
+        Attributes
+        ----------
+        size: int
+            Whole sample size
+        population: int
+            Whole population size (sum of each layer - ie strata - size)
+        layer_size: int
+            Size for current layer
+
+        Returns
+        ----------
+        return the rounded sample size of the strata
+
+        """
+        cur_size = (size / population) * layer_size
         return round(cur_size)
 
-    # strata_vector = 2D vector
-    # the strata vector consists of multiple layers
-    # each layer is a set of labels for the frames according to the strata
-    # size = whole sample size
     def stratified_sampling(layers, size):
+        """
+        Method that does the stratified sampling
+
+        Attributes
+        ----------
+        layers: vector
+            This is a 2D vector that consists of multiple layers. Each layer is a set of labels
+            for the frames according to the strata
+        size: int
+            Whole sample size
+
+        Returns
+        ----------
+        return a list of samples
+
+        """
         population = sum(len(layer) for layer in layers)
         samples = []
 
@@ -191,20 +360,51 @@ class StratifiedSampler(ProteinSampler):
 
 # vector_1 for full protein and vector_2 for sample
 class Distance:
+    """
+    A class used to calculate the distance in terms of property between
+    a full protein trajectory and a sample of it to identify the difference
+
+    Attributes
+    ----------
+    property_1 : ProteinProperty object
+        Refers to the calculated property of the full protein trajectory
+    property_1 : ProteinProperty object
+        Refers to the calculated property of the sample protein trajectory
+    """
+
     def __init__(self, property_1, property_2, clean=False):
         self.property_1 = property_1
         self.property_2 = property_2
         self.distance = self.calculate_distance()
 
     def calculate_distance(self):
+        """
+        Method that calculates the difference between the average values of the
+        two calculated property vectors.
+        """
         return self.property_1.avg_value - self.property_2.avg_value
 
 
 class BhattaDistance(Distance):
+    """
+    A Subclass of the Distance class that calculates the Bhattacharya distance between
+    two property vectors
+
+    Attributes
+    ----------
+    property_1 : ProteinProperty object
+        Refers to the calculated property of the full protein trajectory
+    property_1 : ProteinProperty object
+        Refers to the calculated property of the sample protein trajectory
+    """
+
     def __init__(self, property_1, property_2):
         super().__init__(property_1, property_2, clean=True)
 
     def calculate_distance(self):
+        """
+        Method that returns the Bhatta distance between two vectors
+        """
         return dictances.bhattacharyya(
             self.property_1.normalised_property_vector(),
             self.property_2.normalised_property_vector(),
@@ -212,10 +412,25 @@ class BhattaDistance(Distance):
 
 
 class KLDiverDistance(Distance):
+    """
+    A Subclass of the Distance class that calculates the Kullback-Leibler divergence between
+    two property vectors
+
+    Attributes
+    ----------
+    property_1 : ProteinProperty object
+        Refers to the calculated property of the full protein trajectory
+    property_1 : ProteinProperty object
+        Refers to the calculated property of the sample protein trajectory
+    """
+
     def __init__(self, property_1, property_2):
         super().__init__(property_1, property_2, clean=True)
 
     def calculate_distance(self):
+        """
+        Method that returns the KL distance between two vectors
+        """
         return dictances.kullback_leibler(
             self.property_1.property_vector_discretized,
             self.property_2.property_vector_discretized,
@@ -223,10 +438,25 @@ class KLDiverDistance(Distance):
 
 
 class PearsonDictDistance(Distance):
+    """
+    A Subclass of the Distance class that calculates the Pearson distance between
+    two property vectors
+
+    Attributes
+    ----------
+    property_1 : ProteinProperty object
+        Refers to the calculated property of the full protein trajectory
+    property_1 : ProteinProperty object
+        Refers to the calculated property of the sample protein trajectory
+    """
+
     def __init__(self, property_1, property_2):
         super().__init__(property_1, property_2, clean=True)
 
     def calculate_distance(self):
+        """
+        Method that returns the pearson distance between two vectors
+        """
         return dictances.pearson(
             self.property_1.property_vector_discretized,
             self.property_2.property_vector_discretized,
