@@ -391,23 +391,23 @@ class BhattaDistance(Distance):
     """
 
     def __init__(self, property_1, property_2):
+        self.min_value = min(
+            min(property_1.property_vector), min(property_2.property_vector)
+        )
+        self.max_value = max(
+            max(property_1.property_vector), max(property_2.property_vector)
+        )
         super().__init__(property_1, property_2, clean=True)
 
     def calculate_distance(self):
         """
         Method that returns the Bhatta distance between two vectors
         """
-        min_value = min(
-            min(self.property_1.property_vector), min(self.property_2.property_vector)
-        )
-        max_value = max(
-            max(self.property_1.property_vector), max(self.property_2.property_vector)
-        )
         property_1_discretized = self.property_1.discretize_vector(
-            min_value=min_value, max_value=max_value
+            min_value=self.min_value, max_value=self.max_value
         )
         property_2_discretized = self.property_2.discretize_vector(
-            min_value=min_value, max_value=max_value
+            min_value=self.min_value, max_value=self.max_value
         )
 
         return dictances.bhattacharyya(property_1_discretized, property_2_discretized)
