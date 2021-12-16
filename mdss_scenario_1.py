@@ -33,8 +33,8 @@ p_data = mdss_protein_sampler.ProteinData(
 
 # Use Random Sampling to get a sample of the protein trajectory
 frame_list = list(range(1000))
-prot_sample = mdss_protein_sampler.RandomSampler(frame_list, seed_number=1999)
-sample = prot_sample.sample(100)
+size = 100
+prot_sampler = mdss_protein_sampler.RandomSampler(frame_list, seed_number=1999)
 
 # Function that calculates property, distance and save in a file
 def compare_full_and_sample_protein(
@@ -42,10 +42,12 @@ def compare_full_and_sample_protein(
     prop_name,
     protein_data,
     frame_list,
-    sampled_frame_list,
     distance_class,
+    sampler,
+    sample_size,
 ):
 
+    sampled_frame_list = sampler.sample(sample_size)
     prop = property_class(protein_data, frame_list)
     prop_sample = property_class(protein_data, sampled_frame_list)
     distance_obj = distance_class(prop, prop_sample)
@@ -66,8 +68,9 @@ distance_rmsd = compare_full_and_sample_protein(
     "rmsd",
     p_data,
     list(range(1000)),
-    prot_sample.sampled_frame_list,
     mdss_protein_sampler.Distance,
+    prot_sampler,
+    size,
 )
 
 # Radius of Gyration property and simple distance
@@ -76,8 +79,9 @@ distance_rog = compare_full_and_sample_protein(
     "rog",
     p_data,
     list(range(1000)),
-    prot_sample.sampled_frame_list,
     mdss_protein_sampler.Distance,
+    prot_sampler,
+    size,
 )
 
 
@@ -87,8 +91,9 @@ distance_rmsd = compare_full_and_sample_protein(
     "rmsd",
     p_data,
     list(range(1000)),
-    prot_sample.sampled_frame_list,
     mdss_protein_sampler.BhattaDistance,
+    prot_sampler,
+    size,
 )
 
 # Radius of Gyration property and Bhatta distance
@@ -97,8 +102,9 @@ distance_rog = compare_full_and_sample_protein(
     "rog",
     p_data,
     list(range(1000)),
-    prot_sample.sampled_frame_list,
     mdss_protein_sampler.BhattaDistance,
+    prot_sampler,
+    size,
 )
 
 # RMSD property and KL distance
@@ -107,8 +113,9 @@ distance_rmsd = compare_full_and_sample_protein(
     "rmsd",
     p_data,
     list(range(1000)),
-    prot_sample.sampled_frame_list,
     mdss_protein_sampler.KLDiverDistance,
+    prot_sampler,
+    size,
 )
 
 # Radius of Gyration property and KL distance
@@ -117,8 +124,9 @@ distance_rog = compare_full_and_sample_protein(
     "rog",
     p_data,
     list(range(1000)),
-    prot_sample.sampled_frame_list,
     mdss_protein_sampler.KLDiverDistance,
+    prot_sampler,
+    size,
 )
 # RMSD property and Pearson distance
 distance_rmsd = compare_full_and_sample_protein(
@@ -126,8 +134,9 @@ distance_rmsd = compare_full_and_sample_protein(
     "rmsd",
     p_data,
     list(range(1000)),
-    prot_sample.sampled_frame_list,
     mdss_protein_sampler.PearsonDictDistance,
+    prot_sampler,
+    size,
 )
 
 # Radius of Gyration property and Pearson distance
@@ -136,6 +145,7 @@ distance_rog = compare_full_and_sample_protein(
     "rog",
     p_data,
     list(range(1000)),
-    prot_sample.sampled_frame_list,
     mdss_protein_sampler.PearsonDictDistance,
+    prot_sampler,
+    size,
 )
