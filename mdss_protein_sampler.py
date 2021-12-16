@@ -294,7 +294,11 @@ class StratifiedSampler(ProteinSampler):
     A Subclass of ProteinSampler class that uses Stratified Sampling
     """
 
-    def strata_sample_size(size, population, layer_size):
+    def __init__(self, frame_list, layers):
+        self.layers = layers
+        super().__init__(frame_list)
+
+    def strata_sample_size(self, size, population, layer_size):
         """
         Method that calculates the sample size of the strata (ie homogeneous groups)
 
@@ -315,7 +319,7 @@ class StratifiedSampler(ProteinSampler):
         cur_size = (size / population) * layer_size
         return round(cur_size)
 
-    def stratified_sampling(layers, size):
+    def sample(self, size):
         """
         Method that does the stratified sampling
 
@@ -332,19 +336,15 @@ class StratifiedSampler(ProteinSampler):
         return a list of samples
 
         """
-        population = sum(len(layer) for layer in layers)
+        population = sum(len(layer) for layer in self.layers)
         samples = []
 
-        for layer in layers:
+        for layer in self.layers:
             layer_size = len(layer)
-            print(f"layer size: {layer_size}")
             current_layer_sample_size = self.strata_sample_size(
                 size, population, layer_size
             )
-            print(f"layer sample size: {current_layer_sample_size }")
-            print(f"proportion: {current_layer_sample_size / layer_size}")
             current_sample = random.sample(layer, current_layer_sample_size)
-            print(f"sample: {current_sample}")
             samples.extend(current_sample)
 
         return samples
