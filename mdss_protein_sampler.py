@@ -4,6 +4,8 @@ import pandas as pd
 import random
 import dictances
 
+# from pprint import pprint
+
 from MDAnalysis.analysis import rms
 
 
@@ -104,7 +106,7 @@ class ProteinProperty:
         """
         self.protein_data._add_property_dummy(self, self.property_name)
 
-    def discretize_vector(self):
+    def discretize_vector(self, min_value=None, max_value=None):
         """
         Method that discretises a vector used for Bhatta and KL distances
 
@@ -112,27 +114,17 @@ class ProteinProperty:
         ----------------------------
         return the discretised vector
         """
-        bin_size = (self.max_value - self.min_value) / 100.0
-        bin_vector = np.arange(self.min_value, self.max_value, bin_size)
+        if min_value is None:
+            min_value = self.min_value
+        if max_value is None:
+            max_value = self.max_value
+        bin_size = (max_value - min_value) / 100.0
+        bin_vector = np.arange(min_value, max_value, bin_size)
         counts, bins = np.histogram(self.property_vector, bins=bin_vector)
         self.property_vector_discretized = dict(
             zip(bins, (counts / len(self.property_vector)))
         )
         return self.property_vector_discretized
-
-    def normalised_property_vector(self):
-        """
-        Method that adds a small value to key and values in the discretised
-        vector to prevent errors relating to division by 0
-
-        Returns
-        ----------------------------
-        return the normalised version of the discretised vector
-        """
-        return {
-            round(k, 3): (v + 0.000001)
-            for k, v in self.property_vector_discretized.items()
-        }
 
     def _property_statistics(self):
         """
@@ -405,10 +397,20 @@ class BhattaDistance(Distance):
         """
         Method that returns the Bhatta distance between two vectors
         """
-        return dictances.bhattacharyya(
-            self.property_1.normalised_property_vector(),
-            self.property_2.normalised_property_vector(),
+        min_value = min(
+            min(self.property_1.property_vector), min(self.property_2.property_vector)
         )
+        max_value = max(
+            max(self.property_1.property_vector), max(self.property_2.property_vector)
+        )
+        property_1_discretized = self.property_1.discretize_vector(
+            min_value=min_value, max_value=max_value
+        )
+        property_2_discretized = self.property_2.discretize_vector(
+            min_value=min_value, max_value=max_value
+        )
+
+        return dictances.bhattacharyya(property_1_discretized, property_2_discretized)
 
 
 class KLDiverDistance(Distance):
