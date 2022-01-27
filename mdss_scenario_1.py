@@ -39,25 +39,42 @@ prot_sampler = mdss_protein_sampler.RandomSampler(frame_list, seed_number=1999)
 # Function that calculates property, distance and save in a file
 def compare_full_and_sample_protein(
     property_class,
-    prop_name,
     protein_data,
     frame_list,
     distance_class,
     sampler,
     sample_size,
 ):
-
+    print(f"Running {property_class.display_name}")
     sampled_frame_list = sampler.sample(sample_size)
     prop = property_class(protein_data, frame_list)
     prop_sample = property_class(protein_data, sampled_frame_list)
     distance_obj = distance_class(prop, prop_sample)
-    prop.write_property_vector("{}_{}.dat".format(file_prefix, prop_name))
-    prop_sample.write_property_vector("{}_{}_sample.dat".format(file_prefix, prop_name))
+    prop.write_property_vector(
+        "{}_{}_{}.dat".format(
+            file_prefix, property_class.display_name, distance_class.display_name
+        )
+    )
+    prop_sample.write_property_vector(
+        "{}_{}_sample_{}.dat".format(
+            file_prefix, property_class.display_name, distance_class.display_name
+        )
+    )
     prop.write_property_discretised_vector(
-        "{}_{}_{}.dat".format(file_prefix, prop_name, "discr")
+        "{}_{}_{}_{}.dat".format(
+            file_prefix,
+            property_class.display_name,
+            "discr",
+            distance_class.display_name,
+        )
     )
     prop_sample.write_property_discretised_vector(
-        "{}_{}_{}_sample.dat".format(file_prefix, prop_name, "discr")
+        "{}_{}_{}_sample_{}.dat".format(
+            file_prefix,
+            property_class.display_name,
+            "discr",
+            distance_class.display_name,
+        )
     )
     return distance_obj.distance
 
@@ -65,7 +82,16 @@ def compare_full_and_sample_protein(
 # RMSD property and simple distance
 distance_rmsd = compare_full_and_sample_protein(
     mdss_protein_sampler.RMSDProperty,
-    "rmsd",
+    p_data,
+    list(range(1000)),
+    mdss_protein_sampler.Distance,
+    prot_sampler,
+    size,
+)
+
+# RMSF property and simple distance
+distance_rmsf = compare_full_and_sample_protein(
+    mdss_protein_sampler.RMSFProperty,
     p_data,
     list(range(1000)),
     mdss_protein_sampler.Distance,
@@ -76,7 +102,6 @@ distance_rmsd = compare_full_and_sample_protein(
 # Radius of Gyration property and simple distance
 distance_rog = compare_full_and_sample_protein(
     mdss_protein_sampler.RadiusOfGyrationProperty,
-    "rog",
     p_data,
     list(range(1000)),
     mdss_protein_sampler.Distance,
@@ -88,7 +113,6 @@ distance_rog = compare_full_and_sample_protein(
 # RMSD property and Bhatta distance distance
 distance_rmsd = compare_full_and_sample_protein(
     mdss_protein_sampler.RMSDProperty,
-    "rmsd",
     p_data,
     list(range(1000)),
     mdss_protein_sampler.BhattaDistance,
@@ -96,10 +120,19 @@ distance_rmsd = compare_full_and_sample_protein(
     size,
 )
 
+# # RMSF property and Bhatta distance distance
+# distance_rmsf = compare_full_and_sample_protein(
+#     mdss_protein_sampler.RMSFProperty,
+#     p_data,
+#     list(range(1000)),
+#     mdss_protein_sampler.BhattaDistance,
+#     prot_sampler,
+#     size,
+# )
+
 # Radius of Gyration property and Bhatta distance
 distance_rog = compare_full_and_sample_protein(
     mdss_protein_sampler.RadiusOfGyrationProperty,
-    "rog",
     p_data,
     list(range(1000)),
     mdss_protein_sampler.BhattaDistance,
@@ -110,7 +143,6 @@ distance_rog = compare_full_and_sample_protein(
 # RMSD property and KL distance
 distance_rmsd = compare_full_and_sample_protein(
     mdss_protein_sampler.RMSDProperty,
-    "rmsd",
     p_data,
     list(range(1000)),
     mdss_protein_sampler.KLDiverDistance,
@@ -118,10 +150,20 @@ distance_rmsd = compare_full_and_sample_protein(
     size,
 )
 
+# # RMSF property and KL distance
+# distance_rmsf = compare_full_and_sample_protein(
+#     mdss_protein_sampler.RMSFProperty,
+#     p_data,
+#     list(range(1000)),
+#     mdss_protein_sampler.KLDiverDistance,
+#     prot_sampler,
+#     size,
+# )
+
+
 # Radius of Gyration property and KL distance
 distance_rog = compare_full_and_sample_protein(
     mdss_protein_sampler.RadiusOfGyrationProperty,
-    "rog",
     p_data,
     list(range(1000)),
     mdss_protein_sampler.KLDiverDistance,
@@ -131,7 +173,6 @@ distance_rog = compare_full_and_sample_protein(
 # RMSD property and Pearson distance
 distance_rmsd = compare_full_and_sample_protein(
     mdss_protein_sampler.RMSDProperty,
-    "rmsd",
     p_data,
     list(range(1000)),
     mdss_protein_sampler.PearsonDictDistance,
@@ -139,10 +180,19 @@ distance_rmsd = compare_full_and_sample_protein(
     size,
 )
 
+# # RMSF property and Pearson distance
+# distance_rmsf = compare_full_and_sample_protein(
+#     mdss_protein_sampler.RMSFProperty,
+#     p_data,
+#     list(range(1000)),
+#     mdss_protein_sampler.PearsonDictDistance,
+#     prot_sampler,
+#     size,
+# )
+
 # Radius of Gyration property and Pearson distance
 distance_rog = compare_full_and_sample_protein(
     mdss_protein_sampler.RadiusOfGyrationProperty,
-    "rog",
     p_data,
     list(range(1000)),
     mdss_protein_sampler.PearsonDictDistance,
