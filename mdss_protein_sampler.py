@@ -205,6 +205,27 @@ class RMSDProperty(ProteinProperty):
         self.discretize_vector()
 
 
+class DistanceProperty(ProteinProperty):
+    """
+    A Subclass of ProteinProperty class used to calculate the distance value between two
+    atoms or two group of atoms for each frame in the protein trajectory
+
+    Attributes
+    ----------
+    protein_data : ProteinData object
+        Contains the trajectory and topology data for the protein
+    frame_list: list
+        List that contains all the frames from a given protein trajectory
+    atom_selection: str
+        Choice of atoms for calculation of a property on this selection of atoms
+    """
+
+    # def __init__(self, protein_data, frame_list, atom_selection="name CA"):
+
+    # super().__init__(protein_data, frame_list, atom_selection)
+    pass
+
+
 class RMSFProperty(ProteinProperty):
     """
     A Subclass of ProteinProperty class used to calculate the RMSF value for the
