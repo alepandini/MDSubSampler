@@ -6,7 +6,7 @@ import dictances
 
 # from pprint import pprint
 
-from MDAnalysis.analysis import rms
+from MDAnalysis.analysis import rms, align
 
 
 class ProteinData:
@@ -95,6 +95,8 @@ class ProteinProperty:
         Choice of atoms for calculation of a property on this selection of atoms
     """
 
+    display_name = None
+
     def __init__(self, protein_data, vector, frame_list, atom_selection="name CA"):
         self.protein_data = protein_data
         self.atom_selection = atom_selection
@@ -179,10 +181,10 @@ class RMSDProperty(ProteinProperty):
         Choice of atoms for calculation of a property on this selection of atoms
     """
 
+    display_name = "RMSD"
+
     def __init__(self, protein_data, frame_list, atom_selection="name CA"):
-
         super().__init__(protein_data, frame_list, atom_selection)
-
         self.set_reference_coordinates()
 
         for frame in frame_list:
@@ -203,6 +205,41 @@ class RMSDProperty(ProteinProperty):
         self.discretize_vector()
 
 
+class RMSFProperty(ProteinProperty):
+    """
+    A Subclass of ProteinProperty class used to calculate the RMSF value for the
+    atomgroup in each frame in the protein trajectory
+
+    Attributes
+    ----------
+    protein_data : ProteinData object
+        Contains the trajectory and topology data for the protein
+    frame_list: list
+        List that contains all the frames from a given protein trajectory
+    atom_selection: str
+        Choice of atoms for calculation of a property on this selection of atoms
+    """
+
+    display_name = "RMSF"
+
+    def __init__(self, protein_data, frame_list, atom_selection="name CA"):
+        super().__init__(protein_data, frame_list, atom_selection)
+        self.set_reference_coordinates()
+
+        for frame in frame_list:
+            """
+            Go through the trajectory and for each frame I compare with my reference frame
+            """
+            self.protein_data.trajectory_data.trajectory[frame]
+            R = rms.RMSF(
+                self.protein_data.trajectory_data.select_atoms(atom_selection)
+            ).run()
+            self.property_vector.append(R.results.rmsf)
+
+        self._property_statistics()
+        self.discretize_vector()
+
+
 class RadiusOfGyrationProperty(ProteinProperty):
     """
     A Subcalss of ProteinProperty class used to calculate the Radius of Gyration value for each frame
@@ -217,6 +254,8 @@ class RadiusOfGyrationProperty(ProteinProperty):
     atom_selection: str
         Choice of atoms for calculation of a property on this selection of atoms
     """
+
+    display_name = "rog"
 
     def __init__(self, protein_data, frame_list, atom_selection="name CA"):
 
@@ -364,6 +403,8 @@ class Distance:
         Refers to the calculated property of the sample protein trajectory
     """
 
+    display_name = None
+
     def __init__(self, property_1, property_2, clean=False):
         self.property_1 = property_1
         self.property_2 = property_2
@@ -389,6 +430,8 @@ class BhattaDistance(Distance):
     property_1 : ProteinProperty object
         Refers to the calculated property of the sample protein trajectory
     """
+
+    display_name = "bhatta"
 
     def __init__(self, property_1, property_2):
         self.min_value = min(
@@ -426,6 +469,8 @@ class KLDiverDistance(Distance):
         Refers to the calculated property of the sample protein trajectory
     """
 
+    display_name = "kl"
+
     def __init__(self, property_1, property_2):
         super().__init__(property_1, property_2, clean=True)
 
@@ -451,6 +496,8 @@ class PearsonDictDistance(Distance):
     property_1 : ProteinProperty object
         Refers to the calculated property of the sample protein trajectory
     """
+
+    display_name = "pearson"
 
     def __init__(self, property_1, property_2):
         super().__init__(property_1, property_2, clean=True)
