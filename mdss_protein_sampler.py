@@ -4,9 +4,11 @@ import pandas as pd
 import random
 import dictances
 
-# from pprint import pprint
+from pprint import pprint
 
+import MDAnalysis as mda
 from MDAnalysis.analysis import rms, align
+from MDAnalysis.analysis.dihedrals import Ramachandran
 
 
 class ProteinData:
@@ -228,8 +230,8 @@ class DistanceProperty(ProteinProperty):
 
 class RMSFProperty(ProteinProperty):
     """
-    A Subclass of ProteinProperty class used to calculate the RMSF value for the
-    atomgroup in each frame in the protein trajectory
+    A Subclass of ProteinProperty class used to calculate the RMSF value for the particles
+    in the atomgroup in each frame in the protein trajectory
 
     Attributes
     ----------
@@ -247,15 +249,21 @@ class RMSFProperty(ProteinProperty):
         super().__init__(protein_data, frame_list, atom_selection)
         self.set_reference_coordinates()
 
-        for frame in frame_list:
-            """
-            Go through the trajectory and for each frame I compare with my reference frame
-            """
-            self.protein_data.trajectory_data.trajectory[frame]
-            R = rms.RMSF(
-                self.protein_data.trajectory_data.select_atoms(atom_selection)
-            ).run()
-            self.property_vector.append(R.results.rmsf)
+        u = self.protein_data.trajectory_data
+        protein = u.select_atoms("protein")
+        # probably changes the u so maybe I need to make a copy of it
+        prealigner = align.AlignTraj(u, u, select=atom_selection, in_memory=True).run()
+        reference_coordinates = u.trajectory.timeseries(asel=protein).mean(axis=1)
+        reference = mda.Merge(protein).load_new(
+            reference_coordinates[:, None, :], order="afc"
+        )
+        aligner = align.AlignTraj(
+            u, reference, select="protein and name CA", in_memory=True
+        ).run()
+        ca = protein.select_atoms(atom_selection)
+        print(ca)
+        rmsfer = rms.RMSF(ca, verbose=True).run()
+        self.property_vector.append(rmsfer.results.rmsf)
 
         self._property_statistics()
         self.discretize_vector()
@@ -263,7 +271,7 @@ class RMSFProperty(ProteinProperty):
 
 class RadiusOfGyrationProperty(ProteinProperty):
     """
-    A Subcalss of ProteinProperty class used to calculate the Radius of Gyration value for each frame
+    A Subclass of ProteinProperty class used to calculate the Radius of Gyration value for each frame
     in the protein trajectory
 
     Attributes
@@ -292,6 +300,36 @@ class RadiusOfGyrationProperty(ProteinProperty):
                     atom_selection
                 ).radius_of_gyration()
             )
+
+        self._property_statistics()
+        self.discretize_vector()
+
+
+class DihedralAngles(ProteinProperty):
+    """
+    A Subclass of ProteinProperty class used to calculate the angles for selected set of
+    atoms through the protein trajectory
+
+    Attributes
+    ----------
+    protein_data : ProteinData object
+        Contains the trajectory and topology data for the protein
+    frame_list: list
+        List that contains all the frames from a given protein trajectory
+    atom_selection: str
+        Choice of atoms for calculation of a property on this selection of atoms
+    """
+
+    display_name = "dihedral"
+
+    def __init__(self, protein_data, frame_list, atom_selection="name CA"):
+        super().__init__(protein_data, frame_list, atom_selection)
+        self.set_reference_coordinates()
+
+        for frame in frame_list:
+            self.protein_data.trajectory_data.trajectory[frame]
+            R = Ramachandran(atom_selection).run()
+            self.property_vector.append(R.Ramachandran.angles)
 
         self._property_statistics()
         self.discretize_vector()
@@ -531,3 +569,15 @@ class PearsonDictDistance(Distance):
             self.property_1.property_vector_discretized,
             self.property_2.property_vector_discretized,
         )
+
+
+# RMSF original and wrong version
+# for frame in frame_list:
+#     """
+#     Go through the trajectory and for each frame I compare with my reference frame
+#     """
+#     self.protein_data.trajectory_data.trajectory[frame]
+#     R = rms.RMSF(
+#         self.protein_data.trajectory_data.select_atoms(atom_selection)
+#     ).run()
+#     self.property_vector.append(R.results.rmsf)
