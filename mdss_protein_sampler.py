@@ -1,3 +1,4 @@
+from dataclasses import replace
 import MDAnalysis as mda
 import numpy as np
 import pandas as pd
@@ -448,6 +449,62 @@ class StratifiedSampler(ProteinSampler):
         return samples
 
 
+class BootstrappingSampler(ProteinSampler):
+    """
+    A Subclass of ProteinSampler class that uses Bootstrapping Sampling
+
+    Attributes
+    ----------
+    frame_list: list
+        List that contains all the frames from a given protein trajectory
+    """
+
+    def sample(self, size, number_of_iterations):
+        """
+        Method that does the bootstrapping sampling
+
+        Attributes
+        ----------
+        size: int
+            This is the desired size of the sample each time we iterate
+        number_of_iterations: int
+            This is the number of times the random sampling method is performed
+
+        Returns
+        ----------
+        return a list of samples
+
+        """
+        samples = []
+        for i in range(number_of_iterations):
+            current_sample = random.sample(self.frame_list, size)
+            current_sample_mean = self.find_nearest(
+                current_sample, np.mean(current_sample)
+            )
+            samples.append(current_sample_mean)
+
+        return samples
+
+    def find_nearest(self, array, value):
+        """
+        Method that finds the closest number to the mean value
+
+        Attributes
+        ----------
+        array: list
+            This is a list with the data
+        value: float
+            This is the number of times the random sampling method is performed
+
+        Returns
+        ----------
+        return an integer with the frame number that is closest to the mean number
+
+        """
+        idx = (np.abs(array - value)).argmin()
+        return array[idx]
+
+
 # vector_1 for full protein and vector_2 for sample
 class Distance:
     """
@@ -569,15 +626,3 @@ class PearsonDictDistance(Distance):
             self.property_1.property_vector_discretized,
             self.property_2.property_vector_discretized,
         )
-
-
-# RMSF original and wrong version
-# for frame in frame_list:
-#     """
-#     Go through the trajectory and for each frame I compare with my reference frame
-#     """
-#     self.protein_data.trajectory_data.trajectory[frame]
-#     R = rms.RMSF(
-#         self.protein_data.trajectory_data.select_atoms(atom_selection)
-#     ).run()
-#     self.property_vector.append(R.results.rmsf)
