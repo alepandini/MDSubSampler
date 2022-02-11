@@ -7,6 +7,9 @@ import dictances
 
 from pprint import pprint
 
+# import code
+# code.interact(local=locals())
+
 import MDAnalysis as mda
 from MDAnalysis.analysis import rms, align
 from MDAnalysis.analysis.dihedrals import Ramachandran
@@ -79,6 +82,20 @@ class ProteinData:
         else:
             self.property_dict[property_name] = {}
             self.property_dict[property_name][sample_label] = property_property
+
+    def selection_of_frames(self, trajectory, topology):
+        """
+        Frame selection from the trajectory
+
+        Returns
+        ----------------------------
+        Return a dictionary that contains frame number, timestep for the frame
+        """
+        trajectory_data = self._read_trajectory(trajectory, topology)
+        frames = {
+            frame.frame: {"time": frame.time} for frame in trajectory_data.trajectory
+        }
+        return frames
 
 
 class ProteinProperty:
