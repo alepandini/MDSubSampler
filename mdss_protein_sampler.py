@@ -398,7 +398,7 @@ class RandomSampler(ProteinSampler):
 
         Returns
         ----------
-        return a sample of the frame list with the desired size
+        return a single random sample of the frame list with the desired size
         """
         self.sampled_frame_list = random.sample(self.frame_list, size)
         super().sample(size)
@@ -449,7 +449,7 @@ class StratifiedSampler(ProteinSampler):
 
         Returns
         ----------
-        return a list of samples
+        return a single stratified sample
 
         """
         population = sum(len(layer) for layer in self.layers)
@@ -462,7 +462,6 @@ class StratifiedSampler(ProteinSampler):
             )
             current_sample = random.sample(layer, current_layer_sample_size)
             samples.extend(current_sample)
-
         return samples
 
 
@@ -489,37 +488,14 @@ class BootstrappingSampler(ProteinSampler):
 
         Returns
         ----------
-        return a list of samples
+        return a list of bootstrapped samples
 
         """
         samples = []
         for i in range(number_of_iterations):
-            current_sample = random.sample(self.frame_list, size)
-            current_sample_mean = self.find_nearest(
-                current_sample, np.mean(current_sample)
-            )
-            samples.append(current_sample_mean)
-
+            current_sample = np.random.choice(self.frame_list, size, replace=True)
+            samples.append(current_sample)
         return samples
-
-    def find_nearest(self, array, value):
-        """
-        Method that finds the closest number to the mean value
-
-        Attributes
-        ----------
-        array: list
-            This is a list with the data
-        value: float
-            This is the number of times the random sampling method is performed
-
-        Returns
-        ----------
-        return an integer with the frame number that is closest to the mean number
-
-        """
-        idx = (np.abs(array - value)).argmin()
-        return array[idx]
 
 
 # vector_1 for full protein and vector_2 for sample
@@ -643,3 +619,31 @@ class PearsonDictDistance(Distance):
             self.property_1.property_vector_discretized,
             self.property_2.property_vector_discretized,
         )
+
+
+# samples = []
+#         for i in range(number_of_iterations):
+#             current_sample = np.random.choice(self.frame_list, size, replace=True)
+#             current_sample_mean = self.find_nearest(current_sample, np.mean(current_sample))
+#             samples.append(current_sample_mean)
+
+#         return samples
+
+# def find_nearest(self, array, value):
+#     """
+#     Method that finds the closest number to the mean value
+
+#     Attributes
+#     ----------
+#     array: list
+#         This is a list with the data
+#     value: float
+#         This is the number of times the random sampling method is performed
+
+#     Returns
+#     ----------
+#     return an integer with the frame number that is closest to the mean number
+
+#     """
+#     idx = (np.abs(array - value)).argmin()
+#     return array[idx]
