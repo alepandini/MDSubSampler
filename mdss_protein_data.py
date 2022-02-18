@@ -1,4 +1,5 @@
 import MDAnalysis as mda
+import numpy as np
 from pprint import pprint
 
 # import code
@@ -30,6 +31,9 @@ class ProteinData:
         self.n_frames = self.trajectory_data.trajectory.n_frames
         self.ca_atom_group = self._select_CA_atoms()
         self.property_dict = {}
+        self.frames_dict = self._frames_of_trajectory(
+            self.trajectory_filename, self.topology_filename
+        )
 
     def _read_trajectory(self, trajectory_filename, topology_filename):
         """
@@ -54,6 +58,42 @@ class ProteinData:
         )
         return trajectory_data
 
+    def _frames_of_trajectory(self, trajectory, topology):
+        """
+        Method that reads a trajectory and reads the frames that belong to it
+
+        Returns
+        ----------------------------
+        Return a dictionary that contains frame number, timestep for the frame for
+        the whole trajectory
+        """
+        trajectory_data = self._read_trajectory(trajectory, topology)
+        frames = {
+            frame.frame: {"time": frame.time} for frame in trajectory_data.trajectory
+        }
+        return frames
+
+    def frame_selection(self, selection_of_frames):
+        """
+        Method that receives as an input a selection of frames either single frame number
+        or sliced selection of frames over a trajectory
+
+        Returns
+        ----------------------------
+        Return a FrameIteratorIndices object with the selected frames. This object has similar
+        attributes to a trajectory object and can be used for further analysis
+        """
+        trajectory_data = self.trajectory_data.trajectory
+        mask = np.array([False for _ in trajectory_data])
+        for i in selection_of_frames:
+            if isinstance(i, int) or isinstance(i, slice):
+                mask[i] = True
+            else:
+                raise TypeError("Expected int or slice")
+        selected = trajectory_data[np.where(mask)[0]]
+
+        return selected
+
     def _select_CA_atoms(self):
         """
         Read C-Alpha from the first frame of trajectory
@@ -72,17 +112,3 @@ class ProteinData:
         else:
             self.property_dict[property_name] = {}
             self.property_dict[property_name][sample_label] = property_property
-
-    def selection_of_frames(self, trajectory, topology):
-        """
-        Frame selection from the trajectory
-
-        Returns
-        ----------------------------
-        Return a dictionary that contains frame number, timestep for the frame
-        """
-        trajectory_data = self._read_trajectory(trajectory, topology)
-        frames = {
-            frame.frame: {"time": frame.time} for frame in trajectory_data.trajectory
-        }
-        return frames
