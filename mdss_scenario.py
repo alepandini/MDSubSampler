@@ -33,6 +33,8 @@ file_prefix = args.file_prefix
 p_data = mdss_protein_data.ProteinData(
     args.trajectory_file, args.topology_file, config_parameters=None
 )
+# selection = p_data.frame_selection([1, 3, slice(10, 20)])
+# print(selection.frames)
 
 # Use Random Sampling to get a sample of the protein trajectory
 frame_list = list(range(1000))
@@ -105,6 +107,7 @@ distance_rmsd = compare_full_and_sample_protein(
     size,
     number_of_iterations=None,
 )
+
 
 # # RMSF property and simple distance
 # distance_rmsf = compare_full_and_sample_protein(
