@@ -1,6 +1,7 @@
 import numpy as np
 import MDAnalysis as mda
 from MDAnalysis.analysis import rms, align
+from MDAnalysis.analysis import distances
 
 
 class ProteinProperty:
@@ -145,11 +146,14 @@ class DistanceProperty(ProteinProperty):
         Choice of atoms for calculation of a property on this selection of atoms
     """
 
-    # def __init__(self, protein_data, frame_list, atom_selection="name CA"):
+    def __init__(self, protein_data, frame_list, atom_selection_1="name CA", atom_selection_2="name CA"):
+        super().__init__(protein_data, frame_list, atom_selection)
+    
+        selection_of_atoms_1 = protein_data.self.protein_data.trajectory_data.select_atoms(atom_selection_1)
+        selection_of_atoms_2 = protein_data.self.protein_data.trajectory_data.select_atoms(atom_selection_1)
+        dist = MDAnalysis.analysis.distances.distance_array(selection_of_atoms_1.coordinates(), selection_of_atoms_2.coordinates())
 
-    # super().__init__(protein_data, frame_list, atom_selection)
-    pass
-
+        
 
 class RMSFProperty(ProteinProperty):
     """
