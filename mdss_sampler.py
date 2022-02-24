@@ -54,6 +54,50 @@ class RandomSampler(ProteinSampler):
         return self.sampled_frame_list
 
 
+class UniformSampler(ProteinSampler):
+    """
+    A Subclass of ProteinSampler class that uses Uniform Sampling
+
+    Attributes
+    ----------
+    frame_list: list
+        List that contains all the frames from a given protein trajectory
+    seed: int
+        Number that initialise a random-number generator
+
+    """
+
+    def __init__(self, frame_list):
+        self.frame_list = frame_list
+        self.sampled_frame_list = None
+
+    def sample(self, low, high, size, dtype=int):
+        """
+        Method that generates samples from a frame list with uniform distribution.
+        Samples are uniformly distributed over the half-open interval [low, high)
+        (includes low, but excludes high)
+
+        Attributes
+        ----------
+        low: float
+            Lower boundary of the output interval. The default value is 0.
+
+        high: float
+            Upper boundary of the output interval. The default value is 1.0.
+
+        size: int
+            The sample size
+
+        Returns
+        ----------
+        Return random integers from the “discrete uniform” distribution of the specified dtype
+        in the “half-open” interval [low, high).
+        """
+        self.sampled_frame_list = np.random.randint(low, high, size, dtype)
+        super().sample(size)
+        return self.sampled_frame_list
+
+
 class StratifiedSampler(ProteinSampler):
     """
     A Subclass of ProteinSampler class that uses Stratified Sampling
