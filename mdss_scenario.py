@@ -41,6 +41,13 @@ frame_list = list(range(1000))
 size = 100
 prot_sampler = mdss_sampler.RandomSampler(frame_list, seed_number=1999)
 
+# # Use Uniform Sampling to get a sample of the protein trajectory
+# frame_list = list(range(1000))
+# size = 100
+# low = 0
+# high = 1000
+# prot_sampler = mdss_sampler.UniformSampler(frame_list)
+
 # # Use Stratified Sampling to get a sample of the protein trajectory
 # frame_list = list(range(1000))
 # layers = [range(1, 20), range(20, 45), range(45, 100), range(100, 110)]
@@ -64,7 +71,8 @@ def compare_full_and_sample_protein(
     number_of_iterations=None,
 ):
     print(f"Running {property_class.display_name}")
-    sampled_frame_list = sampler.sample(sample_size, number_of_iterations=None)
+    sampled_frame_list = sampler.sample(size, number_of_iterations=None)
+    # sampled_frame_list = sampler.sample(low, high, size, dtype=int)
     prop = property_class(protein_data, frame_list)
     prop_sample = property_class(protein_data, sampled_frame_list)
     distance_obj = distance_class(prop, prop_sample)
@@ -97,9 +105,20 @@ def compare_full_and_sample_protein(
     return distance_obj.distance
 
 
-# RMSD property and simple distance
-distance_rmsd = compare_full_and_sample_protein(
-    mdss_property.RMSDProperty,
+# # RMSD property and simple distance
+# distance_rmsd = compare_full_and_sample_protein(
+#     mdss_property.RMSDProperty,
+#     p_data,
+#     list(range(1000)),
+#     mdss_distance.Distance,
+#     prot_sampler,
+#     size,
+#     number_of_iterations=None,
+# )
+
+# PCA property
+pca = compare_full_and_sample_protein(
+    mdss_property.PCA,
     p_data,
     list(range(1000)),
     mdss_distance.Distance,
@@ -108,6 +127,16 @@ distance_rmsd = compare_full_and_sample_protein(
     number_of_iterations=None,
 )
 
+# # RMSD property and simple distance
+# distance_between_atoms = compare_full_and_sample_protein(
+#     mdss_property.DistanceProperty,
+#     p_data,
+#     list(range(1000)),
+#     mdss_distance.Distance,
+#     prot_sampler,
+#     size,
+#     number_of_iterations=None,
+# )
 
 # # RMSF property and simple distance
 # distance_rmsf = compare_full_and_sample_protein(
