@@ -112,6 +112,12 @@ class RMSDProperty(ProteinProperty):
 
     def __init__(self, protein_data, frame_list, atom_selection="name CA"):
         super().__init__(protein_data, frame_list, atom_selection)
+        
+    def calculate_rmsd(self, protein_data, frame_list, atom_selection="name CA"):
+        """
+        Method that calculates the RMDS proporty of a given frame list for a given
+        selection of atoms
+        """
         self.set_reference_coordinates()
         for frame in frame_list:
             """
@@ -129,8 +135,11 @@ class RMSDProperty(ProteinProperty):
                 )
             )
 
+        return self.property_vector
+        
         self._property_statistics()
         self.discretize_vector()
+     
 
 
 class DistanceProperty(ProteinProperty):
@@ -269,8 +278,10 @@ class PCA(ProteinProperty):
 
         protein_data = protein_data.trajectory_data
         protein_selection_pca = pca.PCA(protein_data, select="backbone")
-        protein_selection_pca.run()
+        pca_run = protein_selection_pca.run()
         n_pcs = np.where(protein_selection_pca.cumulated_variance > 0.95)[0][0]
         protein_data = protein_data.select_atoms("backbone")
         pca_space = protein_selection_pca.transform(protein_data, n_components=n_pcs)
-        print(n_pcs)
+        print(pca_run.cumulated_variance)
+        print(pca_run.variance)
+

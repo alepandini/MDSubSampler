@@ -48,6 +48,7 @@ prot_sampler = mdss_sampler.RandomSampler(frame_list, seed_number=1999)
 # high = 1000
 # prot_sampler = mdss_sampler.UniformSampler(frame_list)
 
+atom_selection = "name CA"
 # # Use Stratified Sampling to get a sample of the protein trajectory
 # frame_list = list(range(1000))
 # layers = [range(1, 20), range(20, 45), range(45, 100), range(100, 110)]
@@ -116,9 +117,33 @@ def compare_full_and_sample_protein(
 #     number_of_iterations=None,
 # )
 
-# PCA property
-pca = compare_full_and_sample_protein(
-    mdss_property.PCA,
+
+# Function that calculates the property
+def calculate_property(
+    property_class,
+    protein_data,
+    frame_list,
+    sampler,
+    sample_size,
+    number_of_iterations=None,
+):
+    print(f"Running {property_class.display_name}")
+    sampled_frame_list = sampler.sample(sample_size, number_of_iterations=None)
+    # prop = property_class(protein_data, frame_list)
+    prop_sample = property_class(protein_data, sampled_frame_list)
+    # prop.write_property_vector(
+    #     "{}_{}_{}.dat".format(
+    #         file_prefix, property_class.display_name, distance_class.display_name
+    #     )
+    # )
+    prop_sample.write_property_vector(
+        "{}_{}_sample.dat".format(file_prefix, property_class.display_name)
+    )
+
+
+# RMSD property and simple distance
+distance_rmsd = compare_full_and_sample_protein(
+    mdss_property.RMSDProperty.calculate_rmsd(p_data, frame_list, atom_selection),
     p_data,
     list(range(1000)),
     mdss_distance.Distance,
@@ -138,14 +163,15 @@ pca = compare_full_and_sample_protein(
 #     number_of_iterations=None,
 # )
 
-# # RMSF property and simple distance
-# distance_rmsf = compare_full_and_sample_protein(
-#     mdss_protein_sampler.RMSFProperty,
+# # PCA property
+# distance_rmsf = calculate_property(
+#     mdss_property.PCA,
 #     p_data,
 #     list(range(1000)),
-#     mdss_protein_sampler.Distance,
 #     prot_sampler,
 #     size,
+#     number_of_iterations=None,
+
 # )
 
 # # Radius of Gyration property and simple distance
