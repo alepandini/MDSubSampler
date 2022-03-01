@@ -2,6 +2,7 @@ import numpy as np
 import MDAnalysis as mda
 from MDAnalysis.analysis import rms, align
 from MDAnalysis.analysis import distances
+import MDAnalysis.analysis.pca as pca
 
 
 class ProteinProperty:
@@ -112,12 +113,13 @@ class RMSDProperty(ProteinProperty):
     def __init__(self, protein_data, frame_list, atom_selection="name CA"):
         super().__init__(protein_data, frame_list, atom_selection)
         self.set_reference_coordinates()
-
         for frame in frame_list:
             """
             Go through the trajectory and for each frame I compare with my reference frame
             """
             self.protein_data.trajectory_data.trajectory[frame]
+            print(protein_data.trajectory_data)
+
             self.property_vector.append(
                 rms.rmsd(
                     self.protein_data.trajectory_data.select_atoms(
@@ -166,6 +168,7 @@ class DistanceProperty(ProteinProperty):
         )
 
         print(type(dist))
+        print(protein_data.trajectory_data)
 
 
 class RMSFProperty(ProteinProperty):
@@ -243,3 +246,31 @@ class RadiusOfGyrationProperty(ProteinProperty):
 
         self._property_statistics()
         self.discretize_vector()
+
+
+class PCA(ProteinProperty):
+    """A Subclass of ProteinProperty class used to perfrom PCA on the protein
+    trajectory
+
+    Attributes
+    ----------
+    protein_data : ProteinData object
+        Contains the trajectory and topology data for the protein
+    frame_list: list
+        List that contains all the frames from a given protein trajectory
+    atom_selection: str
+        Choice of atoms for calculation of a property on this selection of atoms
+    """
+
+    display_name = "pca"
+
+    def __init__(self, protein_data, frame_list, atom_selection="backbone"):
+        super().__init__(protein_data, frame_list, atom_selection)
+
+        protein_data = protein_data.trajectory_data
+        protein_selection_pca = pca.PCA(protein_data, select="backbone")
+        protein_selection_pca.run()
+        n_pcs = np.where(protein_selection_pca.cumulated_variance > 0.95)[0][0]
+        protein_data = protein_data.select_atoms("backbone")
+        pca_space = protein_selection_pca.transform(protein_data, n_components=n_pcs)
+        print(n_pcs)
