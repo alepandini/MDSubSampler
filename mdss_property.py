@@ -24,9 +24,10 @@ class ProteinProperty:
 
     display_name = None
 
-    def __init__(self, protein_data, vector, frame_list, atom_selection="name CA"):
+    def __init__(self, protein_data, frame_list, atom_selection="name CA"):
         self.protein_data = protein_data
         self.atom_selection = atom_selection
+        self.frame_list = frame_list
         self.property_vector = []
 
     def _add_reference_to_protein_data(self):
@@ -110,36 +111,33 @@ class RMSDProperty(ProteinProperty):
 
     display_name = "RMSD"
 
-    def __init__(self, protein_data, frame_list, atom_selection="name CA"):
-        super().__init__(protein_data, frame_list, atom_selection)
-        
-    def calculate_rmsd(self, protein_data, frame_list, atom_selection="name CA"):
+    # def __init__(self, protein_data, frame_list, atom_selection="name CA"):
+    #     super().__init__(protein_data, frame_list, atom_selection)
+
+    def calculate_property(self):
         """
         Method that calculates the RMDS proporty of a given frame list for a given
         selection of atoms
         """
         self.set_reference_coordinates()
-        for frame in frame_list:
+        for frame in self.frame_list:
             """
             Go through the trajectory and for each frame I compare with my reference frame
             """
             self.protein_data.trajectory_data.trajectory[frame]
-            print(protein_data.trajectory_data)
 
             self.property_vector.append(
                 rms.rmsd(
                     self.protein_data.trajectory_data.select_atoms(
-                        atom_selection
+                        self.atom_selection
                     ).positions,
                     self.ref_coordinates,
                 )
             )
 
-        return self.property_vector
-        
         self._property_statistics()
+        print(f"£££££££££££££££££ {self.avg_value}")
         self.discretize_vector()
-     
 
 
 class DistanceProperty(ProteinProperty):
@@ -284,4 +282,3 @@ class PCA(ProteinProperty):
         pca_space = protein_selection_pca.transform(protein_data, n_components=n_pcs)
         print(pca_run.cumulated_variance)
         print(pca_run.variance)
-
