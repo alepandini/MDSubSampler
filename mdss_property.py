@@ -130,7 +130,6 @@ class RMSDProperty(ProteinProperty):
             Go through the trajectory and for each frame I compare with my reference frame
             """
             self.protein_data.trajectory_data.trajectory[frame]
-
             self.property_vector.append(
                 rms.rmsd(
                     self.protein_data.trajectory_data.select_atoms(
@@ -155,8 +154,8 @@ class DistanceProperty(ProteinProperty):
         Contains the trajectory and topology data for the protein
     frame_list: list
         List that contains all the frames from a given protein trajectory
-    atom_selection: str
-        Choice of atoms for calculation of a property on this selection of atoms
+    atom_selection: list
+        A list with selection of atoms for distance calculation between them
     """
 
     display_name = "DistanceProperty"
@@ -193,47 +192,6 @@ class DistanceProperty(ProteinProperty):
         self.discretize_vector()
 
 
-class RMSFProperty(ProteinProperty):
-    """
-    A Subclass of ProteinProperty class used to calculate the RMSF value for the particles
-    in the atomgroup in each frame in the protein trajectory
-
-    Attributes
-    ----------
-    protein_data : ProteinData object
-        Contains the trajectory and topology data for the protein
-    frame_list: list
-        List that contains all the frames from a given protein trajectory
-    atom_selection: str
-        Choice of atoms for calculation of a property on this selection of atoms
-    """
-
-    display_name = "RMSF"
-
-    def __init__(self, protein_data, frame_list, atom_selection="name CA"):
-        super().__init__(protein_data, frame_list, atom_selection)
-        self.set_reference_coordinates()
-
-        u = self.protein_data.trajectory_data
-        protein = u.select_atoms("protein")
-        # probably changes the u so maybe I need to make a copy of it
-        prealigner = align.AlignTraj(u, u, select=atom_selection, in_memory=True).run()
-        reference_coordinates = u.trajectory.timeseries(asel=protein).mean(axis=1)
-        reference = mda.Merge(protein).load_new(
-            reference_coordinates[:, None, :], order="afc"
-        )
-        aligner = align.AlignTraj(
-            u, reference, select="protein and name CA", in_memory=True
-        ).run()
-        ca = protein.select_atoms(atom_selection)
-        print(ca)
-        rmsfer = rms.RMSF(ca, verbose=True).run()
-        self.property_vector.append(rmsfer.results.rmsf)
-
-        self._property_statistics()
-        self.discretize_vector()
-
-
 class RadiusOfGyrationProperty(ProteinProperty):
     """
     A Subclass of ProteinProperty class used to calculate the Radius of Gyration value for each frame
@@ -251,18 +209,20 @@ class RadiusOfGyrationProperty(ProteinProperty):
 
     display_name = "rog"
 
-    def __init__(self, protein_data, frame_list, atom_selection="name CA"):
-
-        super().__init__(protein_data, frame_list, atom_selection)
-
+    def calculate_property(self):
+        """
+        Method that calculates the radius of gyration of the atoms in each frame
+        """
         self.time = []
-        for frame in frame_list:
-            protein_data.trajectory_data.trajectory[frame]
-
-            self.time.append(protein_data.trajectory_data.trajectory.time)
+        for frame in self.frame_list:
+            """
+            Go through the trajectory and for the atoms of each frame the rog is calculated
+            """
+            self.protein_data.trajectory_data.trajectory[frame]
+            self.time.append(self.protein_data.trajectory_data.trajectory.time)
             self.property_vector.append(
-                protein_data.trajectory_data.select_atoms(
-                    atom_selection
+                self.protein_data.trajectory_data.select_atoms(
+                    self.atom_selection
                 ).radius_of_gyration()
             )
 
@@ -297,3 +257,44 @@ class PCA(ProteinProperty):
         pca_space = protein_selection_pca.transform(protein_data, n_components=n_pcs)
         print(pca_run.results.cumulated_variance)
         print(pca_run.results.variance)
+
+
+# class RMSFProperty(ProteinProperty):
+#     """
+#     A Subclass of ProteinProperty class used to calculate the RMSF value for the particles
+#     in the atomgroup in each frame in the protein trajectory
+
+#     Attributes
+#     ----------
+#     protein_data : ProteinData object
+#         Contains the trajectory and topology data for the protein
+#     frame_list: list
+#         List that contains all the frames from a given protein trajectory
+#     atom_selection: str
+#         Choice of atoms for calculation of a property on this selection of atoms
+#     """
+
+#     display_name = "RMSF"
+
+#     def __init__(self, protein_data, frame_list, atom_selection="name CA"):
+#         super().__init__(protein_data, frame_list, atom_selection)
+#         self.set_reference_coordinates()
+
+#         u = self.protein_data.trajectory_data
+#         protein = u.select_atoms("protein")
+#         # probably changes the u so maybe I need to make a copy of it
+#         prealigner = align.AlignTraj(u, u, select=atom_selection, in_memory=True).run()
+#         reference_coordinates = u.trajectory.timeseries(asel=protein).mean(axis=1)
+#         reference = mda.Merge(protein).load_new(
+#             reference_coordinates[:, None, :], order="afc"
+#         )
+#         aligner = align.AlignTraj(
+#             u, reference, select="protein and name CA", in_memory=True
+#         ).run()
+#         ca = protein.select_atoms(atom_selection)
+#         print(ca)
+#         rmsfer = rms.RMSF(ca, verbose=True).run()
+#         self.property_vector.append(rmsfer.results.rmsf)
+
+#         self._property_statistics()
+#         self.discretize_vector()
