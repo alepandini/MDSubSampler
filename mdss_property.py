@@ -1,8 +1,8 @@
 import numpy as np
 import MDAnalysis as mda
+import MDAnalysis.analysis.pca as pca
 from MDAnalysis.analysis import rms, align
 from MDAnalysis.analysis import distances
-import MDAnalysis.analysis.pca as pca
 
 
 class ProteinProperty:
@@ -70,9 +70,17 @@ class ProteinProperty:
         of the first frame only for a selection of atoms
         """
         self.protein_data.trajectory_data.trajectory[0]
-        self.ref_coordinates = self.protein_data.trajectory_data.select_atoms(
-            self.atom_selection
-        ).positions.copy()
+        if isinstance(self.atom_selection, list):
+            self.ref_coordinates = [
+                self.protein_data.trajectory_data.select_atoms(
+                    selection
+                ).positions.copy()
+                for selection in self.atom_selection
+            ]
+        else:
+            self.ref_coordinates = self.protein_data.trajectory_data.select_atoms(
+                self.atom_selection
+            ).positions.copy()
 
     def write_property_vector(self, outfilename):
         """
@@ -110,9 +118,6 @@ class RMSDProperty(ProteinProperty):
     """
 
     display_name = "RMSD"
-
-    # def __init__(self, protein_data, frame_list, atom_selection="name CA"):
-    #     super().__init__(protein_data, frame_list, atom_selection)
 
     def calculate_property(self):
         """
@@ -163,22 +168,29 @@ class DistanceProperty(ProteinProperty):
         super().__init__(protein_data, frame_list, atom_selection)
 
     def calculate_property(self):
+        """
+        Method that calculates the distance between two given set of atoms
+        """
+        self.set_reference_coordinates()
         atom_selection_1 = self.protein_data.trajectory_data.select_atoms(
             self.atom_selection[0]
         )
-
         atom_selection_2 = self.protein_data.trajectory_data.select_atoms(
             self.atom_selection[1]
         )
-        dist = distances.distance_array(
-            atom_selection_1.positions[0], atom_selection_2.positions[1]
-        )
+        for frame in self.frame_list:
+            """
+            Go through the trajectory and for each frame the distance between the given
+            atoms is calculated
+            """
+            self.protein_data.trajectory_data.trajectory[frame]
+            dist = distances.distance_array(
+                atom_selection_1.positions[0], atom_selection_2.positions[1]
+            )
+            self.property_vector.append(dist)
 
-        # self._property_statistics()
-        # self.discretize_vector()
-
-        # print(type(dist))
-        # print(self.protein_data.trajectory_data)
+        self._property_statistics()
+        self.discretize_vector()
 
 
 class RMSFProperty(ProteinProperty):
@@ -280,8 +292,8 @@ class PCA(ProteinProperty):
         protein_data = protein_data.trajectory_data
         protein_selection_pca = pca.PCA(protein_data, select="backbone")
         pca_run = protein_selection_pca.run()
-        n_pcs = np.where(protein_selection_pca.cumulated_variance > 0.95)[0][0]
+        n_pcs = np.where(protein_selection_pca.results.cumulated_variance > 0.95)[0][0]
         protein_data = protein_data.select_atoms("backbone")
         pca_space = protein_selection_pca.transform(protein_data, n_components=n_pcs)
-        print(pca_run.cumulated_variance)
-        print(pca_run.variance)
+        print(pca_run.results.cumulated_variance)
+        print(pca_run.results.variance)
