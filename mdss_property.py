@@ -136,7 +136,6 @@ class RMSDProperty(ProteinProperty):
             )
 
         self._property_statistics()
-        print(f"£££££££££££££££££ {self.avg_value}")
         self.discretize_vector()
 
 
@@ -155,27 +154,31 @@ class DistanceProperty(ProteinProperty):
         Choice of atoms for calculation of a property on this selection of atoms
     """
 
-    def __init__(
-        self,
-        protein_data,
-        frame_list,
-        atom_selection_1="name CA",
-        atom_selection_2="name CA",
-    ):
+    display_name = "DistanceProperty"
 
-        selection_of_atoms_1 = protein_data.trajectory_data.select_atoms(
-            atom_selection_1
+    def __init__(self, protein_data, frame_list, atom_selection):
+        if not isinstance(atom_selection, list) or len(atom_selection) != 2:
+            raise RuntimeError("Expecting atom_selection to be a list of 2 selections")
+
+        super().__init__(protein_data, frame_list, atom_selection)
+
+    def calculate_property(self):
+        atom_selection_1 = self.protein_data.trajectory_data.select_atoms(
+            self.atom_selection[0]
         )
 
-        selection_of_atoms_2 = protein_data.trajectory_data.select_atoms(
-            atom_selection_2
+        atom_selection_2 = self.protein_data.trajectory_data.select_atoms(
+            self.atom_selection[1]
         )
         dist = distances.distance_array(
-            selection_of_atoms_1.positions, selection_of_atoms_2.positions
+            atom_selection_1.positions[0], atom_selection_2.positions[1]
         )
 
-        print(type(dist))
-        print(protein_data.trajectory_data)
+        # self._property_statistics()
+        # self.discretize_vector()
+
+        # print(type(dist))
+        # print(self.protein_data.trajectory_data)
 
 
 class RMSFProperty(ProteinProperty):
