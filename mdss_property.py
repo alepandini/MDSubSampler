@@ -246,17 +246,14 @@ class PCA(ProteinProperty):
 
     display_name = "pca"
 
-    def __init__(self, protein_data, frame_list, atom_selection="backbone"):
-        super().__init__(protein_data, frame_list, atom_selection)
+    def calculate_property(self):
 
-        protein_data = protein_data.trajectory_data
-        protein_selection_pca = pca.PCA(protein_data, select="backbone")
-        pca_run = protein_selection_pca.run()
+        prot_data = self.protein_data.trajectory_data
+        protein_selection_pca = pca.PCA(prot_data, select="backbone")
+        protein_selection_pca.run()
         n_pcs = np.where(protein_selection_pca.results.cumulated_variance > 0.95)[0][0]
-        protein_data = protein_data.select_atoms("backbone")
-        pca_space = protein_selection_pca.transform(protein_data, n_components=n_pcs)
-        print(pca_run.results.cumulated_variance)
-        print(pca_run.results.variance)
+        atomgroup = self.protein_data.trajectory_data.select_atoms("backbone")
+        pca_space = protein_selection_pca.transform(atomgroup, n_components=n_pcs)
 
 
 # class RMSFProperty(ProteinProperty):
