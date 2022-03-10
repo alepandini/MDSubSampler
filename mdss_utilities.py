@@ -13,3 +13,47 @@ The utilities file consists of the following functions:
 - Funtion that checks if all given XTC files have the same number of atoms.
 
 """
+import os
+import psutil
+import mdss_protein_data
+
+
+def check_memory_size():
+    # Getting loadover15 minutes
+    # Results get updated every 5 minutes
+    load1, load5, load15 = psutil.getloadavg()
+    cpu_usage = (load15 / os.cpu_count()) * 100
+    print("The CPU usage is: ", cpu_usage)
+    print("RAM memory % used:", psutil.virtual_memory().percent)
+    print(
+        "The percentage of available memory is:",
+        psutil.virtual_memory().available * 100 / psutil.virtual_memory().total,
+    )
+
+
+# Next step: Make this for a list of trajectory files
+def check_trajectory_size(trajectory_file_path, topology_file_path):
+    protein_data = mdss_protein_data.ProteinData(
+        trajectory_file_path,
+        topology_file_path,
+        config_parameters=None,
+    )
+    trajectory_size = len(
+        protein_data._frames_of_trajectory(trajectory_file_path, topology_file_path)
+    )
+    print("The size of the trajectory is:", trajectory_size)
+
+
+# Testing
+trajectory_file_path = "data/MD01_1lym_example_fit_short.xtc"
+topology_file_path = "data/MD01_1lym_example.gro"
+print("")
+print("--------------------------------")
+print("Checking the memory:")
+print("--------------------------------")
+check_memory_size()
+print("")
+print("--------------------------------")
+print("Checking the trajectory size:")
+print("--------------------------------")
+check_trajectory_size(trajectory_file_path, topology_file_path)
