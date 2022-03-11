@@ -12,3 +12,4 @@ sklearn
 MDAnalysis
 pytest
 pytest-mock
+psutil
