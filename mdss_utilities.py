@@ -32,7 +32,6 @@ def check_memory_size(trajectory_file_path, topology_file_path):
         )
 
 
-# Next step: Make this for a list of trajectory files
 def check_trajectory_size(trajectory_file_path, topology_file_path):
     protein_data = mdss_protein_data.ProteinData(
         trajectory_file_path,
@@ -40,39 +39,12 @@ def check_trajectory_size(trajectory_file_path, topology_file_path):
         config_parameters=None,
     )
     trajectory_size = len(
-        protein_data._frames_of_trajectory(trajectory_file_path, topology_file_path)
+        protein_data._read_trajectory(
+            trajectory_file_path, topology_file_path
+        ).trajectory
     )
-    print("The trajectory has {} number of frames:".format(trajectory_size))
-
-
-# for loop
-# Next step: Make this for a list of trajectory files
-def check_content_exists_trajectory(trajectory_file_path, topology_file_path):
-    protein_data = mdss_protein_data.ProteinData(
-        trajectory_file_path,
-        topology_file_path,
-        config_parameters=None,
-    )
-    # initialise the len
-    if (
-        len(
-            protein_data._read_trajectory(
-                trajectory_file_path, topology_file_path
-            ).trajectory
-        )
-        == 0
-    ):
-        print("The trajectory file is empty and it has no frames")
-    else:
-        print(
-            "The trajectory file has {} frames".format(
-                len(
-                    protein_data._read_trajectory(
-                        trajectory_file_path, topology_file_path
-                    ).trajectory
-                )
-            )
-        )
+    if trajectory_size == 0:
+        raise Exception("The trajectory file is empty and has no frames in it")
 
 
 # add error (exception file not exist)
@@ -87,7 +59,7 @@ def check_files_exist(trajectory_file_path, topology_file_path):
 if __name__ == "__main__":
     trajectory_file_path = "data/MD01_1lym_example_fit_short.xtc"
     topology_file_path = "data/MD01_1lym_example.gro"
-    check_memory_size(trajectory_file_path, topology_file_path)
-    # check_trajectory_size(trajectory_file_path, topology_file_path)
+    # check_memory_size(trajectory_file_path, topology_file_path)
+    check_trajectory_size(trajectory_file_path, topology_file_path)
     # check_content_exists_trajectory(trajectory_file_path, topology_file_path)
     # check_files_exist(trajectory_file_path, topology_file_path)
