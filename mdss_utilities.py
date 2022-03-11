@@ -18,17 +18,20 @@ import psutil
 import mdss_protein_data
 
 
-def check_memory_size(trajectory_file_path, topology_file_path):
+class NotEnoughMemoryError(Exception):
+    pass
+
+
+class EmptyTrajectoryError(Exception):
+    pass
+
+
+def check_file_size(filepath):
     mem = psutil.virtual_memory()
-    file_size_trajectory = os.path.getsize(trajectory_file_path)
-    file_size_topology = os.path.getsize(topology_file_path)
-    if file_size_trajectory > mem.available:
-        raise Exception(
-            "The size of the trajectory file is larger than the available memory"
-        )
-    if file_size_topology > mem.available:
-        raise Exception(
-            "The size of the topology file is larger than the available memory"
+    file_size = os.path.getsize(filepath)
+    if file_size > mem:
+        raise NotEnoughMemoryError(
+            "The size of {} is larger than the available memory".format(filepath)
         )
 
 
@@ -44,22 +47,44 @@ def check_trajectory_size(trajectory_file_path, topology_file_path):
         ).trajectory
     )
     if trajectory_size == 0:
-        raise Exception("The trajectory file is empty and has no frames in it")
+        raise EmptyTrajectoryError(
+            "The trajectory has no frames in it "
+            "(trajectory file = {}, "
+            "topology file = {})".format(trajectory_file_path, topology_file_path)
+        )
 
 
-# add error (exception file not exist)
-def check_files_exist(trajectory_file_path, topology_file_path):
-    if not os.path.isfile(trajectory_file_path):
-        print("The XTC trajectory file was not found in the directory")
-    if not os.path.isfile(topology_file_path):
-        print("The PDB topology file was not found in the directory")
+def check_multiple_trajectories_size(list_of_traj, list_of_top):
+    errors = []
+    for traj, top in zip(list_of_traj, list_of_top):
+        try:
+            check_trajectory_size(traj, top)
+        except EmptyTrajectoryError as e:
+            errors.add(e)
+
+    if not errors:
+        return
+
+    for error in errors:
+        print(error)
+        raise RuntimeError()
+
+
+def check_file_exists(filepath):
+    if not os.path.isfile(filepath):
+        raise FileNotFoundError("File {} does not exist".format(filepath))
 
 
 # This will run only if this file is run as a script
 if __name__ == "__main__":
     trajectory_file_path = "data/MD01_1lym_example_fit_short.xtc"
     topology_file_path = "data/MD01_1lym_example.gro"
-    # check_memory_size(trajectory_file_path, topology_file_path)
+    list_of_trajectories = [
+        "data/MD01_1lym_example_fit_short.xtc",
+        "data/MD01_1lym_example_fit_short.xtc",
+    ]
+    list_of_topologies = ["data/MD01_1lym_example.gro", "data/MD01_1lym_example.gro"]
+    check_file_size(trajectory_file_path, topology_file_path)
     check_trajectory_size(trajectory_file_path, topology_file_path)
-    # check_content_exists_trajectory(trajectory_file_path, topology_file_path)
-    # check_files_exist(trajectory_file_path, topology_file_path)
+    check_file_exists(trajectory_file_path, topology_file_path)
+    check_multiple_trajectories_size(list_of_trajectories, list_of_topologies)
