@@ -10,7 +10,7 @@ The utilities file consists of the following functions:
 - Function that checks that the number of selected residues that are used as an
   input matches the number of residues in the XTC file.
 - Function that checks that the PDB/XTC files are present in the given directory.
-- Funtion that checks if all given XTC files have the same number of atoms.
+- Function that checks if all given XTC files have the same number of atoms.
 
 """
 import os
@@ -18,17 +18,18 @@ import psutil
 import mdss_protein_data
 
 
-def check_memory_size():
-    # Getting loadover15 minutes
-    # Results get updated every 5 minutes
-    load1, load5, load15 = psutil.getloadavg()
-    cpu_usage = (load15 / os.cpu_count()) * 100
-    print("The CPU usage is: ", cpu_usage)
-    print("RAM memory % used:", psutil.virtual_memory().percent)
-    print(
-        "The percentage of available memory is:",
-        psutil.virtual_memory().available * 100 / psutil.virtual_memory().total,
-    )
+def check_memory_size(trajectory_file_path, topology_file_path):
+    mem = psutil.virtual_memory()
+    file_size_trajectory = os.path.getsize(trajectory_file_path)
+    file_size_topology = os.path.getsize(topology_file_path)
+    if file_size_trajectory > mem.available:
+        raise Exception(
+            "The size of the trajectory file is larger than the available memory"
+        )
+    if file_size_topology > mem.available:
+        raise Exception(
+            "The size of the topology file is larger than the available memory"
+        )
 
 
 # Next step: Make this for a list of trajectory files
@@ -41,9 +42,10 @@ def check_trajectory_size(trajectory_file_path, topology_file_path):
     trajectory_size = len(
         protein_data._frames_of_trajectory(trajectory_file_path, topology_file_path)
     )
-    print("The size of the trajectory is:", trajectory_size)
+    print("The trajectory has {} number of frames:".format(trajectory_size))
 
 
+# for loop
 # Next step: Make this for a list of trajectory files
 def check_content_exists_trajectory(trajectory_file_path, topology_file_path):
     protein_data = mdss_protein_data.ProteinData(
@@ -51,6 +53,7 @@ def check_content_exists_trajectory(trajectory_file_path, topology_file_path):
         topology_file_path,
         config_parameters=None,
     )
+    # initialise the len
     if (
         len(
             protein_data._read_trajectory(
@@ -72,30 +75,19 @@ def check_content_exists_trajectory(trajectory_file_path, topology_file_path):
         )
 
 
+# add error (exception file not exist)
 def check_files_exist(trajectory_file_path, topology_file_path):
-    if (
-        os.path.isfile(trajectory_file_path) == False
-        and os.path.isfile(topology_file_path) == False
-    ):
-        print("The trajectory and topology files were not found in the directory")
-    elif os.path.isfile(trajectory_file_path) == False:
+    if not os.path.isfile(trajectory_file_path):
         print("The XTC trajectory file was not found in the directory")
-    elif os.path.isfile(topology_file_path) == False:
+    if not os.path.isfile(topology_file_path):
         print("The PDB topology file was not found in the directory")
 
 
-# Testing
-trajectory_file_path = "data/MD01_1lym_example_fit_short.xtc"
-topology_file_path = "data/MD01_1lym_example.gro"
-print("")
-# print("--------------------------------")
-# print("Checking the memory:")
-# print("--------------------------------")
-# check_memory_size()
-# print("")
-# print("--------------------------------")
-# print("Checking the trajectory size:")
-# print("--------------------------------")
-# check_trajectory_size(trajectory_file_path, topology_file_path)
-# check_content_exists_trajectory(trajectory_file_path, topology_file_path)
-check_files_exist(trajectory_file_path, topology_file_path)
+# This will run only if this file is run as a script
+if __name__ == "__main__":
+    trajectory_file_path = "data/MD01_1lym_example_fit_short.xtc"
+    topology_file_path = "data/MD01_1lym_example.gro"
+    check_memory_size(trajectory_file_path, topology_file_path)
+    # check_trajectory_size(trajectory_file_path, topology_file_path)
+    # check_content_exists_trajectory(trajectory_file_path, topology_file_path)
+    # check_files_exist(trajectory_file_path, topology_file_path)
