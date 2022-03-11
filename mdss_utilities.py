@@ -44,16 +44,45 @@ def check_trajectory_size(trajectory_file_path, topology_file_path):
     print("The size of the trajectory is:", trajectory_size)
 
 
+# Next step: Make this for a list of trajectory files
+def check_content_exists_trajectory(trajectory_file_path, topology_file_path):
+    protein_data = mdss_protein_data.ProteinData(
+        trajectory_file_path,
+        topology_file_path,
+        config_parameters=None,
+    )
+    if (
+        len(
+            protein_data._read_trajectory(
+                trajectory_file_path, topology_file_path
+            ).trajectory
+        )
+        == 0
+    ):
+        print("The trajectory file is empty and it has no frames")
+    else:
+        print(
+            "The trajectory file has {} frames".format(
+                len(
+                    protein_data._read_trajectory(
+                        trajectory_file_path, topology_file_path
+                    ).trajectory
+                )
+            )
+        )
+
+
 # Testing
 trajectory_file_path = "data/MD01_1lym_example_fit_short.xtc"
 topology_file_path = "data/MD01_1lym_example.gro"
 print("")
-print("--------------------------------")
-print("Checking the memory:")
-print("--------------------------------")
-check_memory_size()
-print("")
-print("--------------------------------")
-print("Checking the trajectory size:")
-print("--------------------------------")
-check_trajectory_size(trajectory_file_path, topology_file_path)
+# print("--------------------------------")
+# print("Checking the memory:")
+# print("--------------------------------")
+# check_memory_size()
+# print("")
+# print("--------------------------------")
+# print("Checking the trajectory size:")
+# print("--------------------------------")
+# check_trajectory_size(trajectory_file_path, topology_file_path)
+check_content_exists_trajectory(trajectory_file_path, topology_file_path)
