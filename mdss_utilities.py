@@ -72,6 +72,18 @@ def check_content_exists_trajectory(trajectory_file_path, topology_file_path):
         )
 
 
+def check_files_exist(trajectory_file_path, topology_file_path):
+    if (
+        os.path.isfile(trajectory_file_path) == False
+        and os.path.isfile(topology_file_path) == False
+    ):
+        print("The trajectory and topology files were not found in the directory")
+    elif os.path.isfile(trajectory_file_path) == False:
+        print("The XTC trajectory file was not found in the directory")
+    elif os.path.isfile(topology_file_path) == False:
+        print("The PDB topology file was not found in the directory")
+
+
 # Testing
 trajectory_file_path = "data/MD01_1lym_example_fit_short.xtc"
 topology_file_path = "data/MD01_1lym_example.gro"
@@ -85,4 +97,5 @@ print("")
 # print("Checking the trajectory size:")
 # print("--------------------------------")
 # check_trajectory_size(trajectory_file_path, topology_file_path)
-check_content_exists_trajectory(trajectory_file_path, topology_file_path)
+# check_content_exists_trajectory(trajectory_file_path, topology_file_path)
+check_files_exist(trajectory_file_path, topology_file_path)
