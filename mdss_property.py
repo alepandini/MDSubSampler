@@ -3,6 +3,7 @@ import MDAnalysis as mda
 import MDAnalysis.analysis.pca as pca
 from MDAnalysis.analysis import rms, align
 from MDAnalysis.analysis import distances
+from MDAnalysis.analysis import dihedrals
 
 
 class ProteinProperty:
@@ -114,7 +115,7 @@ class RMSDProperty(ProteinProperty):
     frame_list: list
         List that contains all the frames from a given protein trajectory
     atom_selection: str
-        Choice of atoms for calculation of a property on this selection of atoms
+        Selection of atoms for calculation of the property
     """
 
     display_name = "RMSD"
@@ -158,7 +159,7 @@ class DistanceProperty(ProteinProperty):
         A list with selection of atoms for distance calculation between them
     """
 
-    display_name = "DistanceProperty"
+    display_name = "DistProp"
 
     def __init__(self, protein_data, frame_list, atom_selection):
         if not isinstance(atom_selection, list) or len(atom_selection) != 2:
@@ -204,7 +205,7 @@ class RadiusOfGyrationProperty(ProteinProperty):
     frame_list: list
         List that contains all the frames from a given protein trajectory
     atom_selection: str
-        Choice of atoms for calculation of a property on this selection of atoms
+        Selection of atoms for calculation of the property
     """
 
     display_name = "rog"
@@ -252,8 +253,39 @@ class PCA(ProteinProperty):
         n_pcs = np.where(protein_selection_pca.results.cumulated_variance > 0.95)[0][0]
         atomgroup = self.protein_data.trajectory_data.select_atoms("backbone")
         pca_vector = protein_selection_pca.transform(atomgroup, n_components=n_pcs)
-
+        self.property_vector = pca_vector
         return pca_vector
+
+
+class DihedralAngles(ProteinProperty):
+    """
+    A Subclass of ProteinProperty class that calculates the angles between 4 selected atoms
+    in the protein structure
+
+    Attributes
+    ----------
+    protein_data : ProteinData object
+        Contains the trajectory and topology data for the protein
+    frame_list: list
+        List that contains all the frames from a given protein trajectory
+    atom_selection: str
+        Selection of atoms for calculation of the property
+    """
+
+    display_name = "DihAng"
+
+    def calculate_property(self):
+
+        protein = self.protein_data.trajectory_data.select_atoms(self.atom_selection)
+        omegas = [res.omega_selection() for res in protein.residues]
+        omegas = [omega for omega in omegas if omega is not None]
+        dihs = dihedrals.Dihedral(omegas).run()
+        # print(dihs.angles.shape)
+        self.property_vector = dihs.angles
+        return dihs.angles
+
+        # self._property_statistics()
+        # self.discretize_vector()
 
 
 # class RMSFProperty(ProteinProperty):
