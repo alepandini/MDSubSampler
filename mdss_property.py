@@ -231,17 +231,15 @@ class RadiusOfGyrationProperty(ProteinProperty):
 
 
 class PCA(ProteinProperty):
-    """A Subclass of ProteinProperty class used to perfrom PCA on the protein
-    trajectory
+    """
+    A Subclass of ProteinProperty class used to perform PCA on the protein
+    trajectory and calculates a pca_space vector with number of columns equal
+    the number of PCs and the number of rows equal the number of frames in the
+    trajectory.
 
-    Attributes
+    Returns
     ----------
-    protein_data : ProteinData object
-        Contains the trajectory and topology data for the protein
-    frame_list: list
-        List that contains all the frames from a given protein trajectory
-    atom_selection: str
-        Choice of atoms for calculation of a property on this selection of atoms
+    pca_vector: A vector that will be used to sample the trajectory of the protein
     """
 
     display_name = "pca"
@@ -253,7 +251,9 @@ class PCA(ProteinProperty):
         protein_selection_pca.run()
         n_pcs = np.where(protein_selection_pca.results.cumulated_variance > 0.95)[0][0]
         atomgroup = self.protein_data.trajectory_data.select_atoms("backbone")
-        pca_space = protein_selection_pca.transform(atomgroup, n_components=n_pcs)
+        pca_vector = protein_selection_pca.transform(atomgroup, n_components=n_pcs)
+
+        return pca_vector
 
 
 # class RMSFProperty(ProteinProperty):
