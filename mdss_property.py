@@ -131,6 +131,7 @@ class RMSDProperty(ProteinProperty):
             Go through the trajectory and for each frame I compare with my reference frame
             """
             self.protein_data.trajectory_data.trajectory[frame]
+
             self.property_vector.append(
                 rms.rmsd(
                     self.protein_data.trajectory_data.select_atoms(
@@ -178,6 +179,7 @@ class DistanceProperty(ProteinProperty):
         atom_selection_2 = self.protein_data.trajectory_data.select_atoms(
             self.atom_selection[1]
         )
+
         for frame in self.frame_list:
             """
             Go through the trajectory and for each frame the distance between the given
@@ -262,14 +264,10 @@ class DihedralAngles(ProteinProperty):
     A Subclass of ProteinProperty class that calculates the angles between 4 selected atoms
     in the protein structure
 
-    Attributes
+    Returns
     ----------
-    protein_data : ProteinData object
-        Contains the trajectory and topology data for the protein
-    frame_list: list
-        List that contains all the frames from a given protein trajectory
-    atom_selection: str
-        Selection of atoms for calculation of the property
+    dihs.angles: A list with all the angle calculation for the selection of atoms throughout
+    the trajectory
     """
 
     display_name = "DihAng"
