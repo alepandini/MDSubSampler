@@ -84,8 +84,8 @@ class ProteinData:
         Return a FrameIteratorIndices object with the selected frames. This object has similar
         attributes to a trajectory object and can be used for further analysis
         """
-        traj_data = self.trajectory_data
-        trajectory_data = self.trajectory_data.trajectory
+        traj_data = self.trajectory_data  # universe
+        trajectory_data = self.trajectory_data.trajectory  # trajectory data
         mask = np.array([False for _ in trajectory_data])
         for i in selection_of_frames:
             if isinstance(i, int) or isinstance(i, slice):
@@ -94,34 +94,35 @@ class ProteinData:
                 raise TypeError("Expected int or slice")
         # Selected is a list with the indices from the selected frames from the original trajectory
         selected = trajectory_data[np.where(mask)[0]]
-
+        # selected.frames is a tuple, turning it into a list will help create a list with the selection of
+        # timesteps/frames from the original trajectory
         frames = list(selected.frames)
         selected_frames = []
         for frame in frames:
             selected_frames.append(
                 traj_data.trajectory.ts.from_timestep(traj_data.trajectory[frame])
             )
-
+        # Create a list with all the frames from the original trajectory
         ts = []
         for x in range(len(selected.trajectory)):
             _ = selected.trajectory[x]
             ts.append((x, selected.trajectory.ts.from_timestep(selected.trajectory[x])))
 
-        with mda.Writer("file.xtc", traj_data.trajectory.n_atoms) as w:
+        # Go through the list with all the frames and when a timestep belongs to the selected_frames
+        # list then get a copy of it into the new trajectory/universe that we are writing
+        with mda.Writer("new_trajectory.xtc", traj_data.trajectory.n_atoms) as w:
             for x, t in ts:
                 if t in selected_frames:
                     _ = traj_data.trajectory[x]
                     w.write(traj_data.select_atoms("all"))
             w.close()
 
-        data = ProteinData(
-            "file.xtc", "data/MD01_1lym_example.gro", config_parameters=None
+        new_traj = ProteinData(
+            "new_trajectory.xtc", "data/MD01_1lym_example.gro", config_parameters=None
         )
+        sample_trajectory = new_traj.trajectory_data
 
-        import code
-
-        code.interact(local=locals())
-        return selected
+        return sample_trajectory
 
     def _select_CA_atoms(self):
         """
