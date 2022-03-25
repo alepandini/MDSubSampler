@@ -1,3 +1,4 @@
+from re import T
 import MDAnalysis as mda
 import numpy as np
 from pprint import pprint
@@ -83,6 +84,7 @@ class ProteinData:
         Return a FrameIteratorIndices object with the selected frames. This object has similar
         attributes to a trajectory object and can be used for further analysis
         """
+        traj_data = self.trajectory_data
         trajectory_data = self.trajectory_data.trajectory
         mask = np.array([False for _ in trajectory_data])
         for i in selection_of_frames:
@@ -90,8 +92,35 @@ class ProteinData:
                 mask[i] = True
             else:
                 raise TypeError("Expected int or slice")
+        # Selected is a list with the indices from the selected frames from the original trajectory
         selected = trajectory_data[np.where(mask)[0]]
 
+        frames = list(selected.frames)
+        selected_frames = []
+        for frame in frames:
+            selected_frames.append(
+                traj_data.trajectory.ts.from_timestep(traj_data.trajectory[frame])
+            )
+
+        ts = []
+        for x in range(len(selected.trajectory)):
+            _ = selected.trajectory[x]
+            ts.append((x, selected.trajectory.ts.from_timestep(selected.trajectory[x])))
+
+        with mda.Writer("file.xtc", traj_data.trajectory.n_atoms) as w:
+            for x, t in ts:
+                if t in selected_frames:
+                    _ = traj_data.trajectory[x]
+                    w.write(traj_data.select_atoms("all"))
+            w.close()
+
+        data = ProteinData(
+            "file.xtc", "data/MD01_1lym_example.gro", config_parameters=None
+        )
+
+        import code
+
+        code.interact(local=locals())
         return selected
 
     def _select_CA_atoms(self):
