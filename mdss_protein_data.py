@@ -32,7 +32,7 @@ class ProteinData:
         self.n_frames = self.trajectory_data.trajectory.n_frames
         self.ca_atom_group = self._select_CA_atoms()
         self.property_dict = {}
-        self.frames_dict = self._frames_of_trajectory(
+        self.frames = self._frames_of_trajectory(
             self.trajectory_filename, self.topology_filename
         )
 
@@ -69,9 +69,16 @@ class ProteinData:
         the whole trajectory
         """
         trajectory_data = self._read_trajectory(trajectory, topology)
-        frames = {
-            frame.frame: {"time": frame.time} for frame in trajectory_data.trajectory
-        }
+        # frames = {
+        #     frame.frame: {"time": frame.time} for frame in trajectory_data.trajectory
+        # }
+        frames = []
+        for x in range(len(trajectory_data.trajectory)):
+            frames.append(
+                trajectory_data.trajectory.ts.from_timestep(
+                    trajectory_data.trajectory[x]
+                )
+            )
         return frames
 
     def frame_selection(self, selection_of_frames):
@@ -121,7 +128,9 @@ class ProteinData:
             "new_trajectory.xtc", "data/MD01_1lym_example.gro", config_parameters=None
         )
         sample_trajectory = new_traj.trajectory_data
+        import code
 
+        code.interact(local=locals())
         return sample_trajectory
 
     def _select_CA_atoms(self):
