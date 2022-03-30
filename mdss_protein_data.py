@@ -1,7 +1,6 @@
-from re import T
 import MDAnalysis as mda
 import numpy as np
-from pprint import pprint
+# from pprint import pprint
 
 # import code
 # code.interact(local=locals())
