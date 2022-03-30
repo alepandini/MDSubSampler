@@ -286,6 +286,80 @@ class DihedralAngles(ProteinProperty):
         # self.discretize_vector()
 
 
+class Angles(ProteinProperty):
+    """
+    A Subclass of ProteinProperty class that calculates the angles between 3 selected atoms
+    in the protein structure
+
+    Returns
+    ----------
+    angles: A list with the angle calculation for the selection of atoms throughout
+    the trajectory
+    """
+    display_name = "Ang"
+
+    def __init__(self, protein_data, frame_list, atom_selection):
+        if not isinstance(atom_selection, list) or len(atom_selection) != 3:
+            raise RuntimeError("Expecting atom_selection to be a list of 3 selections")
+
+        super().__init__(protein_data, frame_list, atom_selection)
+
+    def calculate_property(self):
+        """
+        Method that calculates the angle between three given atoms
+        """
+        self.set_reference_coordinates()
+        atom_selection_1 = self.protein_data.trajectory_data.select_atoms(
+            self.atom_selection[0]
+        )
+        atom_selection_2 = self.protein_data.trajectory_data.select_atoms(
+            self.atom_selection[1]
+        )
+        atom_selection_3 = self.protein_data.trajectory_data.select_atoms(
+            self.atom_selection[3]
+        )
+
+        for frame in self.frame_list:
+            """
+            Go through the trajectory and for each frame the angle between the given
+            atoms is calculated
+            """
+            
+            self.protein_data.trajectory_data.trajectory[frame]
+            
+            atom_1_coordinates = atom_selection_1.positions[0]
+            atom_2_coordinates = atom_selection_2.positions[1]
+            atom_3_coordinates = atom_selection_4.positions[2]
+
+            atoms_2_1 = atom_1_coordinates - atom_2_coordinates
+            atoms_2_3 = atom_3_coordinates - atom_2_coordinates
+
+            cosine_angle = np.dot(atoms_2_1, atoms_2_3) / (np.linalg.norm(atoms_2_1) * np.linalg.norm(atoms_2_3))
+            angle = np.arccos(cosine_angle)
+            print(np.degrees(angle))
+
+            # angle = distances.distance_array(
+            #     atom_selection_1.positions[0], atom_selection_2.positions[1]
+            # )
+            # self.property_vector.append(angle)
+
+        # self._property_statistics()
+        # self.discretize_vector()
+
+
+
+
+# a = np.array([32.49, -39.96,-3.86])
+# b = np.array([31.39, -39.28, -4.66])
+# c = np.array([31.14, -38.09,-4.49])
+
+# ba = a - b
+# bc = c - b
+
+# cosine_angle = np.dot(ba, bc) / (np.linalg.norm(ba) * np.linalg.norm(bc))
+# angle = np.arccos(cosine_angle)
+
+print np.degrees(angle)
 # class RMSFProperty(ProteinProperty):
 #     """
 #     A Subclass of ProteinProperty class used to calculate the RMSF value for the particles
