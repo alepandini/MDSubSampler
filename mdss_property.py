@@ -1,5 +1,6 @@
 import numpy as np
 import MDAnalysis as mda
+import mdss_protein_data
 import MDAnalysis.analysis.pca as pca
 from MDAnalysis.analysis import rms, align
 from MDAnalysis.analysis import distances
@@ -272,15 +273,24 @@ class DihedralAngles(ProteinProperty):
 
     display_name = "DihAng"
 
+    def __init__(self, protein_data, frame_list, atom_selection):
+        if not isinstance(atom_selection, list) or len(atom_selection) != 4:
+            raise RuntimeError("Expecting atom_selection to be a list of 4 selections")
+
+        super().__init__(protein_data, frame_list, atom_selection)
+
     def calculate_property(self):
 
-        protein = self.protein_data.trajectory_data.select_atoms(self.atom_selection)
-        omegas = [res.omega_selection() for res in protein.residues]
-        omegas = [omega for omega in omegas if omega is not None]
-        dihs = dihedrals.Dihedral(omegas).run()
-        # print(dihs.angles.shape)
-        self.property_vector = dihs.angles
-        return dihs.angles
+        self.set_reference_coordinates()
+        u = self.protein_data.trajectory_data
+        # protein = self.protein_data.trajectory_data.select_atoms(self.atom_selection)
+        for frame in self.frame_list:
+            phi_ags = [res.phi_selection() for res in u.residues]
+            phi_ags = [phi for phi in phi_ags if phi is not None]
+            dihs = dihedrals.Dihedral(phi_ags).run()
+            self.property_vector.append(dihs.results.angles)
+
+        # # print(dihs.angle s.shape)
 
         # self._property_statistics()
         # self.discretize_vector()
@@ -327,7 +337,6 @@ class Angles(ProteinProperty):
             """
 
             self.protein_data.trajectory_data.trajectory[frame]
-            # self.set_reference_coordinates()
             atom_1_coordinates = atom_selection_1.positions[0]
             atom_2_coordinates = atom_selection_2.positions[1]
             atom_3_coordinates = atom_selection_3.positions[2]
@@ -339,8 +348,8 @@ class Angles(ProteinProperty):
                 np.linalg.norm(atoms_2_1) * np.linalg.norm(atoms_2_3)
             )
             angle = np.arccos(cosine_angle)
-            angle_degress = np.degrees(angle)
-            self.property_vector.append(angle_degress)
+            angle_degrees = np.degrees(angle)
+            self.property_vector.append(angle_degrees)
 
         self._property_statistics()
         self.discretize_vector()
