@@ -1,6 +1,8 @@
 import numpy as np
 import MDAnalysis as mda
 import mdss_protein_data
+import seaborn as sns
+import matplotlib.pyplot as plt
 import MDAnalysis.analysis.pca as pca
 from MDAnalysis.analysis import rms, align
 from MDAnalysis.analysis import distances
@@ -102,6 +104,15 @@ class ProteinProperty:
         with open(outfilename, "w") as f:
             for (key, value) in discr_vector.items():
                 f.write("{} {}\n".format(key, value))
+
+    def plot_property(self, data_file_path, prop_name):
+        """
+        Method that plots the distribution of values for a given property
+        """
+        property_data = np.loadtxt(data_file_path, unpack=True)
+        plt.hist(property_data[1])
+        plt.title("Distribution of values for {} property".format(prop_name))
+        plt.savefig("{}.png".format(prop_name))
 
 
 class RMSDProperty(ProteinProperty):
