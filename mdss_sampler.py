@@ -16,7 +16,7 @@ class ProteinSampler:
         self.frame_list = frame_list
         self.sampled_frame_list = None
 
-    def sample(self, size, number_of_iterations=None):
+    def sample(self, size):
         self.sampled_frame_list.sort()
 
 
@@ -36,7 +36,7 @@ class RandomSampler(ProteinSampler):
         random.seed(seed_number)
         super().__init__(frame_list)
 
-    def sample(self, size, number_of_iterations=None):
+    def sample(self, size):
         """
         Method that generates a random sample of a list
 
@@ -67,11 +67,13 @@ class UniformSampler(ProteinSampler):
 
     """
 
-    def __init__(self, frame_list):
-        self.frame_list = frame_list
-        self.sampled_frame_list = None
+    def __init__(self, frame_list, low, high, dtype=int):
+        self.low = low
+        self.high = high
+        self.dtype = dtype
+        super().__init__(frame_list)
 
-    def sample(self, low, high, size, dtype=int):
+    def sample(self, size):
         """
         Method that generates samples from a frame list with uniform distribution.
         Samples are uniformly distributed over the half-open interval [low, high)
@@ -93,7 +95,9 @@ class UniformSampler(ProteinSampler):
         Return random integers from the “discrete uniform” distribution of the specified dtype
         in the “half-open” interval [low, high).
         """
-        self.sampled_frame_list = np.random.randint(low, high, size, dtype)
+        self.sampled_frame_list = np.random.randint(
+            self.low, self.high, size, self.dtype
+        )
         super().sample(size)
         return self.sampled_frame_list
 
@@ -128,7 +132,7 @@ class StratifiedSampler(ProteinSampler):
         cur_size = (size / population) * layer_size
         return round(cur_size)
 
-    def sample(self, size, number_of_iterations=None):
+    def sample(self, size):
         """
         Method that does the stratified sampling
 
@@ -168,7 +172,11 @@ class BootstrappingSampler(ProteinSampler):
         List that contains all the frames from a given protein trajectory
     """
 
-    def sample(self, size, number_of_iterations):
+    def __init__(self, frame_list, number_of_iterations):
+        self.number_of_iterations = number_of_iterations
+        super().__init__(frame_list)
+
+    def sample(self, size):
         """
         Method that does the bootstrapping sampling
 
@@ -185,7 +193,7 @@ class BootstrappingSampler(ProteinSampler):
 
         """
         samples = []
-        for i in range(number_of_iterations):
+        for i in range(self.number_of_iterations):
             current_sample = np.random.choice(self.frame_list, size, replace=True)
             samples.append(current_sample)
         return samples
