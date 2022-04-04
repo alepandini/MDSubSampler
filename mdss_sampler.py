@@ -56,14 +56,19 @@ class RandomSampler(ProteinSampler):
 
 class UniformSampler(ProteinSampler):
     """
-    A Subclass of ProteinSampler class that uses Uniform Sampling
+    A Subclass of ProteinSampler class that uses Uniform Sampling. A sample is generated
+    from a frame list with uniform distribution.Samples are uniformly distributed over the
+    half-open interval [low, high) (includes low, but excludes high)
 
     Attributes
     ----------
     frame_list: list
         List that contains all the frames from a given protein trajectory
-    seed: int
-        Number that initialise a random-number generator
+    low: float
+        Lower boundary of the output interval. The default value is 0.
+
+    high: float
+        Upper boundary of the output interval. The default value is 1.0.
 
     """
 
@@ -75,18 +80,10 @@ class UniformSampler(ProteinSampler):
 
     def sample(self, size):
         """
-        Method that generates samples from a frame list with uniform distribution.
-        Samples are uniformly distributed over the half-open interval [low, high)
-        (includes low, but excludes high)
+        Method that generates a uniform sample of a list
 
         Attributes
         ----------
-        low: float
-            Lower boundary of the output interval. The default value is 0.
-
-        high: float
-            Upper boundary of the output interval. The default value is 1.0.
-
         size: int
             The sample size
 
@@ -104,43 +101,27 @@ class UniformSampler(ProteinSampler):
 
 class StratifiedSampler(ProteinSampler):
     """
-    A Subclass of ProteinSampler class that uses Stratified Sampling
+     A Subclass of ProteinSampler class that uses Stratified Sampling
+
+    Attributes
+         ----------
+         frame_list: int
+             List that contains all the frames from a given protein trajectory
+         layers: list
+            2D list that consists of multiple layers where eachlayer is a set of
+            labels for the frames according to the strata
     """
 
     def __init__(self, frame_list, layers):
         self.layers = layers
         super().__init__(frame_list)
 
-    def strata_sample_size(self, size, population, layer_size):
-        """
-        Method that calculates the sample size of the strata (ie homogeneous groups)
-
-        Attributes
-        ----------
-        size: int
-            Whole sample size
-        population: int
-            Whole population size (sum of each layer - ie strata - size)
-        layer_size: int
-            Size for current layer
-
-        Returns
-        ----------
-        return the rounded sample size of the strata
-
-        """
-        cur_size = (size / population) * layer_size
-        return round(cur_size)
-
     def sample(self, size):
         """
-        Method that does the stratified sampling
+        Method that performs the stratified sampling
 
         Attributes
         ----------
-        layers: vector
-            This is a 2D vector that consists of multiple layers. Each layer is a set of labels
-            for the frames according to the strata
         size: int
             Whole sample size
 
@@ -154,11 +135,12 @@ class StratifiedSampler(ProteinSampler):
 
         for layer in self.layers:
             layer_size = len(layer)
-            current_layer_sample_size = self.strata_sample_size(
-                size, population, layer_size
-            )
+            # the sample size of the strata (ie homogeneous groups)
+            cur_size = round((size / population) * layer_size)
+            current_layer_sample_size = cur_size
             current_sample = random.sample(layer, current_layer_sample_size)
             samples.extend(current_sample)
+
         return samples
 
 
@@ -170,6 +152,8 @@ class BootstrappingSampler(ProteinSampler):
     ----------
     frame_list: list
         List that contains all the frames from a given protein trajectory
+    number_of_iterations: int
+        This is the number of times the random sampling method is performed
     """
 
     def __init__(self, frame_list, number_of_iterations):
@@ -184,8 +168,6 @@ class BootstrappingSampler(ProteinSampler):
         ----------
         size: int
             This is the desired size of the sample each time we iterate
-        number_of_iterations: int
-            This is the number of times the random sampling method is performed
 
         Returns
         ----------
