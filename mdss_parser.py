@@ -2,7 +2,6 @@ from numpy import require
 import mdss_protein_data
 import mdss_property
 import mdss_sampler
-import mdss_distance
 import argparse
 import sys
 import operator as op
@@ -65,7 +64,10 @@ def parse_args():
     parser.add_argument(
         "--atom-selection",
         dest="atom_selection",
-        help="Atom selection",
+        help=(
+            "Atom selection for calculation of any geometric property, "
+            "If a selection is not specified then the default CA is used"
+        ),
     )
     parser.add_argument(
         "--sampler",
@@ -77,7 +79,7 @@ def parse_args():
         "--seed-number", dest="seed_number", type=int, help="Seed number"
     )
     parser.add_argument(
-        "--low", dest="low", type=float, help="Lower boundary of the output interval."
+        "--low", dest="low", type=float, help="Lower boundary of the output interval"
     )
     parser.add_argument(
         "--high", dest="high", type=float, help="Higher boundary of the output interval"
@@ -125,11 +127,23 @@ def parse_args():
             print("{} is required for {}".format(argument, sampler.__name__))
             sys.exit(1)
 
+    def require_property_argument(property, argument):
+        value = op.attrgetter(argument)(args)
+        if args.property == property.__name__ and value is None:
+            parser.print_help()
+            print()
+            print("{} is required for {}".format(argument, property.__name__))
+            sys.exit(1)
+
     require_sampler_argument(mdss_sampler.RandomSampler, "seed_number")
     require_sampler_argument(mdss_sampler.UniformSampler, "low")
     require_sampler_argument(mdss_sampler.UniformSampler, "high")
     require_sampler_argument(mdss_sampler.StratifiedSampler, "layers")
     require_sampler_argument(mdss_sampler.BootstrappingSampler, "number_of_iterations")
+
+    require_property_argument(mdss_property.DistanceProperty, "atom_selection")
+    require_property_argument(mdss_property.DihedralAngles, "atom_selection")
+    require_property_argument(mdss_property.Angles, "atom_selection")
 
     return args
 
