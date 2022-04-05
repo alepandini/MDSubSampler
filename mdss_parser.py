@@ -174,48 +174,16 @@ if __name__ == "__main__":
         sampler = sampler_class(frame_list, args.number_of_iterations)
     ##################
 
-    # Function that calculates property, distance and save in a file
-    def compare_full_and_sample_protein(
-        property_class,
-        protein_data,
-        frame_list,
-        distance_class,
-        sampler,
-        sample_size,
-        number_of_iterations=None,
-    ):
-        print(f"Running {property_class.display_name}")
-        sampled_frame_list = sampler.sample(size)
-        # sampled_frame_list = sampler.sample(low, high, size, dtype=int)
-        prop = property_class(protein_data, frame_list, atom_selection)
-        prop.calculate_property()
-        prop_sample = property_class(protein_data, sampled_frame_list, atom_selection)
-        prop_sample.calculate_property()
-        distance_obj = distance_class(prop, prop_sample)
-        prop.write_property_vector(
-            "{}_{}_{}.dat".format(
-                file_prefix, property_class.display_name, distance_class.display_name
-            )
-        )
-        prop_sample.write_property_vector(
-            "{}_{}_sample_{}.dat".format(
-                file_prefix, property_class.display_name, distance_class.display_name
-            )
-        )
-        prop.write_property_discretised_vector(
-            "{}_{}_{}_{}.dat".format(
-                file_prefix,
-                property_class.display_name,
-                "discr",
-                distance_class.display_name,
-            )
-        )
-        prop_sample.write_property_discretised_vector(
-            "{}_{}_{}_sample_{}.dat".format(
-                file_prefix,
-                property_class.display_name,
-                "discr",
-                distance_class.display_name,
-            )
-        )
-        return distance_obj.distance
+    # Method that uses the user input for property calculation, sampling method 
+    # and size of sample and returns a subsample trajectory along with a log
+    # file with diagnostics for the particular property.
+    def run_subsampler(protein_data, property_class, sampler_class):
+        print(f"Calculating {property_class.display_name}") # Will be replaced with log file
+        print(f"Applying {property_class.display_name}")
+        prop.calculate_property() # add this to the distribution class and just call the class here
+    
+    
+    
+    
+    
+    
