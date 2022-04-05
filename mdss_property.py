@@ -157,7 +157,7 @@ class RMSDProperty(ProteinProperty):
         self.discretize_vector()
 
 
-class DistanceProperty(ProteinProperty):
+class DistanceBetweenAtoms(ProteinProperty):
     """
     A Subclass of ProteinProperty class used to calculate the distance value between two
     atoms or two group of atoms for each frame in the protein trajectory
@@ -172,7 +172,7 @@ class DistanceProperty(ProteinProperty):
         A list with selection of atoms for distance calculation between them
     """
 
-    display_name = "DistProp"
+    display_name = "Distance between atoms"
 
     def __init__(self, protein_data, frame_list, atom_selection):
         if not isinstance(atom_selection, list) or len(atom_selection) != 2:
@@ -222,7 +222,7 @@ class RadiusOfGyrationProperty(ProteinProperty):
         Selection of atoms for calculation of the property
     """
 
-    display_name = "rog"
+    display_name = "Radius of Gyration"
 
     def calculate_property(self):
         """
@@ -257,7 +257,7 @@ class PCA(ProteinProperty):
     pca_vector: A vector that will be used to sample the trajectory of the protein
     """
 
-    display_name = "pca"
+    display_name = "PCA"
 
     def calculate_property(self):
 
@@ -282,7 +282,7 @@ class DihedralAngles(ProteinProperty):
     the trajectory
     """
 
-    display_name = "DihAng"
+    display_name = "Dihedral Angle between 4 atoms"
 
     def __init__(self, protein_data, frame_list, atom_selection):
         if not isinstance(atom_selection, list) or len(atom_selection) != 4:
@@ -318,7 +318,7 @@ class Angles(ProteinProperty):
     the trajectory
     """
 
-    display_name = "Ang"
+    display_name = "Angle between 3 atoms"
 
     def __init__(self, protein_data, frame_list, atom_selection):
         if not isinstance(atom_selection, list) or len(atom_selection) != 3:
