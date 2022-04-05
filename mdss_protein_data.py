@@ -86,50 +86,26 @@ class ProteinData:
 
         return frames
 
-    def frame_selection(self, selection_of_frames):
+    def frame_selection_iterator(self, selection_of_frames):
         """
         Method that receives as an input a selection of frames either single frame number
         or sliced selection of frames over a trajectory.
 
-        For a selection of frames from the inputed trajectory file, it writes a new
-        trajectory/universe that contain only the inputed selection of frames
-
         Returns
         ----------------------------
-        A subsampled trajectory in a form of XTC file that contains only a selection of frames
+        A FrameIteratorIndices object with the selected frames. This object has similar
+        attributes to a trajectory object and can be used for further analysis.
         """
-        traj_data = self.trajectory_data  # universe
-        trajectory_data = self.trajectory_data.trajectory  # trajectory data
+        trajectory_data = self.trajectory_data.trajectory
         mask = np.array([False for _ in trajectory_data])
         for i in selection_of_frames:
             if isinstance(i, int) or isinstance(i, slice):
                 mask[i] = True
             else:
                 raise TypeError("Expected int or slice")
-        selected = trajectory_data[
-            np.where(mask)[0]
-        ]  # list of indices from selected frames from original trajectory
+        selected_frames = trajectory_data[np.where(mask)[0]]
 
-        frames = list(selected.frames)
-        selected_frames = []
-        for frame in frames:
-            selected_frames.append(
-                traj_data.trajectory.ts.from_timestep(traj_data.trajectory[frame])
-            )
-
-        full_frame_list = self.frames
-        with mda.Writer("new_trajectory.xtc", traj_data.trajectory.n_atoms) as w:
-            for x, t in full_frame_list:
-                if t in selected_frames:
-                    _ = traj_data.trajectory[x]
-                    w.write(traj_data.select_atoms("all"))
-            w.close()
-
-        new_traj = ProteinData(
-            "new_trajectory.xtc", "data/MD01_1lym_example.gro", config_parameters=None
-        )
-        sample_trajectory = new_traj.trajectory_data
-        return sample_trajectory
+        return selected_frames
 
     def _select_CA_atoms(self):
         """
