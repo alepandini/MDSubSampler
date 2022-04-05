@@ -104,8 +104,27 @@ class ProteinData:
             else:
                 raise TypeError("Expected int or slice")
         selected_frames = trajectory_data[np.where(mask)[0]]
-
         return selected_frames
+
+    def frame_selection_indices(self, selection_of_frames):
+        """
+        Method that receives as an input a selection of frames either single frame number
+        or sliced selection of frames over a trajectory.
+
+        Returns
+        ----------------------------
+        A list with the indices of the selected frames
+        """
+        trajectory_data = self.trajectory_data.trajectory
+        mask = np.array([False for _ in trajectory_data])
+        for i in selection_of_frames:
+            if isinstance(i, int) or isinstance(i, slice):
+                mask[i] = True
+            else:
+                raise TypeError("Expected int or slice")
+        selected_frames = trajectory_data[np.where(mask)[0]]
+        indices_of_selected_frames = [ts.frame for ts in selected_frames]
+        return indices_of_selected_frames
 
     def _select_CA_atoms(self):
         """
