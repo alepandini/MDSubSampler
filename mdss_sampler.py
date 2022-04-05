@@ -11,6 +11,7 @@ class ProteinSampler:
     frame_list: list
         List that contains all the frames from a given protein trajectory
     """
+    display_name = None
 
     def __init__(self, frame_list):
         self.frame_list = frame_list
@@ -31,6 +32,7 @@ class RandomSampler(ProteinSampler):
     seed: int
         Number that initialise a random-number generator
     """
+    display_name = "Random Sampling"
 
     def __init__(self, frame_list, seed_number=1999):
         random.seed(seed_number)
@@ -71,6 +73,7 @@ class UniformSampler(ProteinSampler):
         Upper boundary of the output interval. The default value is 1.0.
 
     """
+    display_name = "Uniform Sampling"
 
     def __init__(self, frame_list, low, high, dtype=int):
         self.low = low
@@ -111,6 +114,7 @@ class StratifiedSampler(ProteinSampler):
             2D list that consists of multiple layers where eachlayer is a set of
             labels for the frames according to the strata
     """
+    display_name = "Stratified Sampling"
 
     def __init__(self, frame_list, layers):
         self.layers = layers
@@ -155,6 +159,7 @@ class BootstrappingSampler(ProteinSampler):
     number_of_iterations: int
         This is the number of times the random sampling method is performed
     """
+    display_name = "Bootstrapping Sampling"
 
     def __init__(self, frame_list, number_of_iterations):
         self.number_of_iterations = number_of_iterations
