@@ -35,6 +35,9 @@ class ProteinData:
         self.frames = self._frames_of_trajectory(
             self.trajectory_filename, self.topology_filename
         )
+        self.frame_indices = self._frame_indices_of_trajectory(
+            self.trajectory_filename, self.topology_filename
+        )
 
     def _read_trajectory(self, trajectory_filename, topology_filename):
         """
@@ -85,6 +88,21 @@ class ProteinData:
             )
 
         return frames
+
+    def _frame_indices_of_trajectory(self, trajectory, topology):
+        """
+        Method that reads a trajectory and reads the frames that belong to it
+
+        Returns
+        ----------------------------
+        Return a list with the frame indices
+        """
+        trajectory_data = self._read_trajectory(trajectory, topology)
+        # _ = trajectory_data.trajectory[x]
+        frame_indices = []
+        for x in range(len(trajectory_data.trajectory)):
+            frame_indices.append(x)
+        return frame_indices
 
     def frame_selection_iterator(self, selection_of_frames):
         """
