@@ -253,8 +253,8 @@ class PCA(ProteinProperty):
 
 class DihedralAngles(ProteinProperty):
     """
-    A Subclass of ProteinProperty class that calculates the angles between 4 selected atoms
-    in the protein structure
+    A Subclass of ProteinProperty class that calculates the dihedral angle
+    between 4 selected atoms in the protein structure
 
     Attributes
     ----------
@@ -265,13 +265,20 @@ class DihedralAngles(ProteinProperty):
         A list with selection of atoms for calculation of dihedral angle they form
     """
 
-    display_name = "Dihedral Angle between 4 atoms"
-
     def __init__(self, protein_data, atom_selection):
         if not isinstance(atom_selection, list) or len(atom_selection) != 4:
             raise RuntimeError("Expecting atom_selection to be a list of 4 selections")
 
         super().__init__(protein_data, atom_selection)
+
+
+class DihedralAnglePhi(DihedralAngles):
+    """
+    A Subclass of DihedralAngles class that calculates the dihedral angle phi
+    between 4 selected atoms in the protein structure
+    """
+
+    display_name = "Dihedral Angle phi between 4 selected atoms"
 
     def calculate_property(self):
 
@@ -281,6 +288,28 @@ class DihedralAngles(ProteinProperty):
             phi_ags = [res.phi_selection() for res in u.residues]
             phi_ags = [phi for phi in phi_ags if phi is not None]
             dihs = dihedrals.Dihedral(phi_ags).run()
+            self.property_vector.append(dihs.results.angles)
+
+        # self._property_statistics()
+        # self.discretize_vector()
+
+
+class DihedralAnglePsi(DihedralAngles):
+    """
+    A Subclass of DihedralAngles class that calculates the dihedral angle psi
+    between 4 selected atoms in the protein structure
+    """
+
+    display_name = "Dihedral Angle psi between 4 selected atoms"
+
+    def calculate_property(self):
+
+        self.set_reference_coordinates()
+        u = self.protein_data.trajectory_data
+        for frame in self.protein_data.frames:
+            psi_ags = [res.psi_selection() for res in u.residues]
+            psi_ags = [psi for psi in psi_ags if psi is not None]
+            dihs = dihedrals.Dihedral(psi_ags).run()
             self.property_vector.append(dihs.results.angles)
 
         # self._property_statistics()
