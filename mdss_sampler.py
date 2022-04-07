@@ -8,13 +8,14 @@ class ProteinSampler:
 
     Attributes
     ----------
-    frame_list: list
-        List that contains all the frames from a given protein trajectory
+    protein_data: ProteinData class object
+        The frame_list can be accessed through this object
     """
+
     display_name = None
 
-    def __init__(self, frame_list):
-        self.frame_list = frame_list
+    def __init__(self, protein_data):
+        self.protein_data = protein_data
         self.sampled_frame_list = None
 
     def sample(self, size):
@@ -23,20 +24,22 @@ class ProteinSampler:
 
 class RandomSampler(ProteinSampler):
     """
-    A Subclass of ProteinSampler class that uses Random Sampling
+     A Subclass of ProteinSampler class that uses Random Sampling
 
-    Attributes
-    ----------
-    frame_list: list
-        List that contains all the frames from a given protein trajectory
-    seed: int
-        Number that initialise a random-number generator
+     Attributes
+     ----------
+    protein_data: ProteinData class object
+         The frame_list can be accessed through this object
+
+     seed: int
+         Number that initialise a random-number generator
     """
+
     display_name = "Random Sampling"
 
-    def __init__(self, frame_list, seed_number=1999):
+    def __init__(self, protein_data, seed_number=1999):
         random.seed(seed_number)
-        super().__init__(frame_list)
+        super().__init__(protein_data)
 
     def sample(self, size):
         """
@@ -51,7 +54,7 @@ class RandomSampler(ProteinSampler):
         ----------
         return a single random sample of the frame list with the desired size
         """
-        self.sampled_frame_list = random.sample(self.frame_list, size)
+        self.sampled_frame_list = random.sample(self.protein_data.frames, size)
         super().sample(size)
         return self.sampled_frame_list
 
@@ -64,8 +67,9 @@ class UniformSampler(ProteinSampler):
 
     Attributes
     ----------
-    frame_list: list
-        List that contains all the frames from a given protein trajectory
+    protein_data: ProteinData class object
+        The frame_list can be accessed through this object
+
     low: float
         Lower boundary of the output interval. The default value is 0.
 
@@ -73,13 +77,14 @@ class UniformSampler(ProteinSampler):
         Upper boundary of the output interval. The default value is 1.0.
 
     """
+
     display_name = "Uniform Sampling"
 
-    def __init__(self, frame_list, low, high, dtype=int):
+    def __init__(self, protein_data, low, high, dtype=int):
         self.low = low
         self.high = high
         self.dtype = dtype
-        super().__init__(frame_list)
+        super().__init__(protein_data)
 
     def sample(self, size):
         """
@@ -108,17 +113,19 @@ class StratifiedSampler(ProteinSampler):
 
     Attributes
          ----------
-         frame_list: int
-             List that contains all the frames from a given protein trajectory
+        protein_data: ProteinData class object
+            The frame_list can be accessed through this object
+
          layers: list
             2D list that consists of multiple layers where eachlayer is a set of
             labels for the frames according to the strata
     """
+
     display_name = "Stratified Sampling"
 
-    def __init__(self, frame_list, layers):
+    def __init__(self, protein_data, layers):
         self.layers = layers
-        super().__init__(frame_list)
+        super().__init__(protein_data)
 
     def sample(self, size):
         """
@@ -154,16 +161,19 @@ class BootstrappingSampler(ProteinSampler):
 
     Attributes
     ----------
-    frame_list: list
-        List that contains all the frames from a given protein trajectory
+    protein_data: object
+        ProteinData class object that has access to all methods and attributes
+        of ProteinData class. The frame_list can be accessed through it.
+
     number_of_iterations: int
         This is the number of times the random sampling method is performed
     """
+
     display_name = "Bootstrapping Sampling"
 
-    def __init__(self, frame_list, number_of_iterations):
+    def __init__(self, protein_data, number_of_iterations):
         self.number_of_iterations = number_of_iterations
-        super().__init__(frame_list)
+        super().__init__(protein_data)
 
     def sample(self, size):
         """
@@ -181,7 +191,9 @@ class BootstrappingSampler(ProteinSampler):
         """
         samples = []
         for i in range(self.number_of_iterations):
-            current_sample = np.random.choice(self.frame_list, size, replace=True)
+            current_sample = np.random.choice(
+                self.protein_data.frames, size, replace=True
+            )
             samples.append(current_sample)
         return samples
 

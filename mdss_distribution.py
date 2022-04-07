@@ -24,9 +24,8 @@ class DistributionDistance:
 
         self.property_full_traj = property_full_traj
         self.property_sam_traj = property_sam_traj
-        self.property_full_traj = mdss_property.ProteinProperty(self.property_full_traj)
-        self.property_sam_traj = mdss_property.ProteinProperty(self.property_sam_traj)
-
+        # self.property_full_traj = mdss_property.ProteinProperty(self.property_full_traj)
+        # self.property_sam_traj = mdss_property.ProteinProperty(self.property_sam_traj)
 
 
 # def compare_full_and_sample_protein(

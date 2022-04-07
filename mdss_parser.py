@@ -162,28 +162,23 @@ if __name__ == "__main__":
     )
 
     ##################
-    frame_list = p_data.frames
     property_class = PROPERTY_CLASS_MAPPING[args.property]
-    property = property_class(p_data, frame_list, args.atom_selection)
+    property = property_class(p_data, args.atom_selection)
     sampler_class = SAMPLER_CLASS_MAPPING[args.sampler]
     if args.sampler == "UniformSampler":
-        sampler = sampler_class(frame_list, args.low, args.high, args.dtype)
+        sampler = sampler_class(p_data, args.low, args.high, args.dtype)
     elif args.sampler == "StratifiedSampler":
-        sampler = sampler_class(frame_list, args.layers)
+        sampler = sampler_class(p_data, args.layers)
     elif args.sampler == "BootstrappingSampler":
-        sampler = sampler_class(frame_list, args.number_of_iterations)
+        sampler = sampler_class(p_data, args.number_of_iterations)
     ##################
 
-    # Method that uses the user input for property calculation, sampling method 
+    # Method that uses the user input for property calculation, sampling method
     # and size of sample and returns a subsample trajectory along with a log
     # file with diagnostics for the particular property.
     def run_subsampler(protein_data, property_class, sampler_class):
-        print(f"Calculating {property_class.display_name}") # Will be replaced with log file
+        print(
+            f"Calculating {property_class.display_name}"
+        )  # Will be replaced with log file
         print(f"Applying {property_class.display_name}")
-        prop.calculate_property() # add this to the distribution class and just call the class here
-    
-    
-    
-    
-    
-    
+        property.calculate_property()  # add this to the distribution class and just call the class here

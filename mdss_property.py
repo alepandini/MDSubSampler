@@ -16,22 +16,21 @@ class ProteinProperty:
 
     Attributes
     ----------
-    protein_data : ProteinData object
-        Contains the trajectory and topology data for the protein
+    protein_data: ProteinData class object
+        The object has access to all methods and attributes of ProteinData class
+
     vector:
         Simple vector used to calculate statistics
-    frame_list: list
-        List that contains all the frames from a given protein trajectory
+
     atom_selection: str
         Choice of atoms for calculation of a property on this selection of atoms
     """
 
     display_name = None
 
-    def __init__(self, protein_data, frame_list, atom_selection="name CA"):
+    def __init__(self, protein_data, atom_selection="name CA"):
         self.protein_data = protein_data
         self.atom_selection = atom_selection
-        self.frame_list = frame_list
         self.property_vector = []
 
     def _add_reference_to_protein_data(self):
@@ -119,15 +118,6 @@ class RMSDProperty(ProteinProperty):
     """
     A Subclass of ProteinProperty class used to calculate the RMSD value for each frame in the
     protein trajectory
-
-    Attributes
-    ----------
-    protein_data : ProteinData object
-        Contains the trajectory and topology data for the protein
-    frame_list: list
-        List that contains all the frames from a given protein trajectory
-    atom_selection: str
-        Selection of atoms for calculation of the property
     """
 
     display_name = "RMSD"
@@ -138,7 +128,7 @@ class RMSDProperty(ProteinProperty):
         selection of atoms
         """
         self.set_reference_coordinates()
-        for frame in self.frame_list:
+        for frame in self.protein_data.frames:
             """
             Go through the trajectory and for each frame I compare with my reference frame
             """
@@ -164,21 +154,20 @@ class DistanceBetweenAtoms(ProteinProperty):
 
     Attributes
     ----------
-    protein_data : ProteinData object
-        Contains the trajectory and topology data for the protein
-    frame_list: list
-        List that contains all the frames from a given protein trajectory
+    protein_data: ProteinData class object
+        The object has access to all methods and attributes of ProteinData class
+
     atom_selection: list
         A list with selection of atoms for distance calculation between them
     """
 
     display_name = "Distance between atoms"
 
-    def __init__(self, protein_data, frame_list, atom_selection):
+    def __init__(self, protein_data, atom_selection):
         if not isinstance(atom_selection, list) or len(atom_selection) != 2:
             raise RuntimeError("Expecting atom_selection to be a list of 2 selections")
 
-        super().__init__(protein_data, frame_list, atom_selection)
+        super().__init__(protein_data, atom_selection)
 
     def calculate_property(self):
         """
@@ -192,7 +181,7 @@ class DistanceBetweenAtoms(ProteinProperty):
             self.atom_selection[1]
         )
 
-        for frame in self.frame_list:
+        for frame in self.protein_data.frames:
             """
             Go through the trajectory and for each frame the distance between the given
             atoms is calculated
@@ -209,17 +198,8 @@ class DistanceBetweenAtoms(ProteinProperty):
 
 class RadiusOfGyrationProperty(ProteinProperty):
     """
-    A Subclass of ProteinProperty class used to calculate the Radius of Gyration value for each frame
-    in the protein trajectory
-
-    Attributes
-    ----------
-    protein_data : ProteinData object
-        Contains the trajectory and topology data for the protein
-    frame_list: list
-        List that contains all the frames from a given protein trajectory
-    atom_selection: str
-        Selection of atoms for calculation of the property
+    A Subclass of ProteinProperty class used to calculate the Radius of Gyration value
+    for each frame in the protein trajectory
     """
 
     display_name = "Radius of Gyration"
@@ -229,7 +209,7 @@ class RadiusOfGyrationProperty(ProteinProperty):
         Method that calculates the radius of gyration of the atoms in each frame
         """
         self.time = []
-        for frame in self.frame_list:
+        for frame in self.protein_data.frames:
             """
             Go through the trajectory and for the atoms of each frame the rog is calculated
             """
@@ -276,32 +256,32 @@ class DihedralAngles(ProteinProperty):
     A Subclass of ProteinProperty class that calculates the angles between 4 selected atoms
     in the protein structure
 
-    Returns
+    Attributes
     ----------
-    dihs.angles: A list with all the angle calculation for the selection of atoms throughout
-    the trajectory
+    protein_data: ProteinData class object
+        The object has access to all methods and attributes of ProteinData class
+
+    atom_selection: list
+        A list with selection of atoms for calculation of dihedral angle they form
     """
 
     display_name = "Dihedral Angle between 4 atoms"
 
-    def __init__(self, protein_data, frame_list, atom_selection):
+    def __init__(self, protein_data, atom_selection):
         if not isinstance(atom_selection, list) or len(atom_selection) != 4:
             raise RuntimeError("Expecting atom_selection to be a list of 4 selections")
 
-        super().__init__(protein_data, frame_list, atom_selection)
+        super().__init__(protein_data, atom_selection)
 
     def calculate_property(self):
 
         self.set_reference_coordinates()
         u = self.protein_data.trajectory_data
-        # protein = self.protein_data.trajectory_data.select_atoms(self.atom_selection)
-        for frame in self.frame_list:
+        for frame in self.protein_data.frames:
             phi_ags = [res.phi_selection() for res in u.residues]
             phi_ags = [phi for phi in phi_ags if phi is not None]
             dihs = dihedrals.Dihedral(phi_ags).run()
             self.property_vector.append(dihs.results.angles)
-
-        # # print(dihs.angle s.shape)
 
         # self._property_statistics()
         # self.discretize_vector()
@@ -312,19 +292,22 @@ class Angles(ProteinProperty):
     A Subclass of ProteinProperty class that calculates the angles between 3 selected atoms
     in the protein structure
 
-    Returns
+    Attributes
     ----------
-    angles: A list with the angle calculation for the selection of atoms throughout
-    the trajectory
+    protein_data: ProteinData class object
+        The object has access to all methods and attributes of ProteinData class
+
+    atom_selection: list
+        A list with selection of atoms for calculation of angle they form
     """
 
     display_name = "Angle between 3 atoms"
 
-    def __init__(self, protein_data, frame_list, atom_selection):
+    def __init__(self, protein_data, atom_selection):
         if not isinstance(atom_selection, list) or len(atom_selection) != 3:
             raise RuntimeError("Expecting atom_selection to be a list of 3 selections")
 
-        super().__init__(protein_data, frame_list, atom_selection)
+        super().__init__(protein_data, atom_selection)
 
     def calculate_property(self):
         """
@@ -341,7 +324,7 @@ class Angles(ProteinProperty):
             self.atom_selection[2]
         )
 
-        for frame in self.frame_list:
+        for frame in self.protein_data.frames:
             """
             Go through the trajectory and for each frame the angle between the given
             atoms is calculated
