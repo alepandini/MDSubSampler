@@ -128,7 +128,7 @@ class RMSDProperty(ProteinProperty):
         selection of atoms
         """
         self.set_reference_coordinates()
-        for frame in self.protein_data.frames:
+        for frame in self.protein_data.frame_indices:
             """
             Go through the trajectory and for each frame I compare with my reference frame
             """
@@ -181,7 +181,7 @@ class DistanceBetweenAtoms(ProteinProperty):
             self.atom_selection[1]
         )
 
-        for frame in self.protein_data.frames:
+        for frame in self.protein_data.frame_indices:
             """
             Go through the trajectory and for each frame the distance between the given
             atoms is calculated
@@ -209,7 +209,7 @@ class RadiusOfGyrationProperty(ProteinProperty):
         Method that calculates the radius of gyration of the atoms in each frame
         """
         self.time = []
-        for frame in self.protein_data.frames:
+        for frame in self.protein_data.frame_indices:
             """
             Go through the trajectory and for the atoms of each frame the rog is calculated
             """
@@ -284,7 +284,7 @@ class DihedralAnglePhi(DihedralAngles):
 
         self.set_reference_coordinates()
         u = self.protein_data.trajectory_data
-        for frame in self.protein_data.frames:
+        for frame in self.protein_data.frame_indices:
             phi_ags = [res.phi_selection() for res in u.residues]
             phi_ags = [phi for phi in phi_ags if phi is not None]
             dihs = dihedrals.Dihedral(phi_ags).run()
@@ -306,7 +306,7 @@ class DihedralAnglePsi(DihedralAngles):
 
         self.set_reference_coordinates()
         u = self.protein_data.trajectory_data
-        for frame in self.protein_data.frames:
+        for frame in self.protein_data.frame_indices:
             psi_ags = [res.psi_selection() for res in u.residues]
             psi_ags = [psi for psi in psi_ags if psi is not None]
             dihs = dihedrals.Dihedral(psi_ags).run()
@@ -353,7 +353,7 @@ class Angles(ProteinProperty):
             self.atom_selection[2]
         )
 
-        for frame in self.protein_data.frames:
+        for frame in self.protein_data.frame_indices:
             """
             Go through the trajectory and for each frame the angle between the given
             atoms is calculated
