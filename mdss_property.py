@@ -85,22 +85,22 @@ class ProteinProperty:
                 self.atom_selection
             ).positions.copy()
 
-    def write_property_vector(self, outfilename):
+    def write_property_vector(self, outfilepath):
         """
         Method that saves the vector with the calculations of a specific property for
         a protein in a file
         """
-        with open(outfilename, "w") as f:
+        with open(outfilepath, "w") as f:
             for i, value in enumerate(self.property_vector):
                 f.write("{} {}\n".format(i, value))
 
-    def write_property_discretised_vector(self, outfilename):
+    def write_property_discretised_vector(self, outfilepath):
         """
         Method that saves the discretised vector with the calculations of a specific
         property for a protein in a file
         """
         discr_vector = self.discretize_vector()
-        with open(outfilename, "w") as f:
+        with open(outfilepath, "w") as f:
             for (key, value) in discr_vector.items():
                 f.write("{} {}\n".format(key, value))
 
