@@ -14,12 +14,12 @@ class ProteinSampler:
 
     display_name = None
 
-    def __init__(self, protein_data):
-        self.protein_data = protein_data
-        self.sampled_frame_list = None
+    def __init__(self, property_vector):
+        self.property_vector = list(property_vector)
+        self.sampled_property_vector = None
 
     def sample(self, size):
-        self.sampled_frame_list.sort()
+        self.sampled_property_vector.sort()
 
 
 class RandomSampler(ProteinSampler):
@@ -37,9 +37,9 @@ class RandomSampler(ProteinSampler):
 
     display_name = "Random Sampling"
 
-    def __init__(self, protein_data, seed_number=1999):
+    def __init__(self, property_vector, seed_number=1999):
         random.seed(seed_number)
-        super().__init__(protein_data)
+        super().__init__(property_vector)
 
     def sample(self, size):
         """
@@ -54,9 +54,9 @@ class RandomSampler(ProteinSampler):
         ----------
         return a single random sample of the frame list with the desired size
         """
-        self.sampled_frame_list = random.sample(self.protein_data.frames, size)
+        self.sampled_property_vector = random.sample(self.property_vector, size)
         super().sample(size)
-        return self.sampled_frame_list
+        return self.sampled_property_vector
 
 
 class UniformSampler(ProteinSampler):
@@ -80,11 +80,11 @@ class UniformSampler(ProteinSampler):
 
     display_name = "Uniform Sampling"
 
-    def __init__(self, protein_data, low, high, dtype=int):
+    def __init__(self, property_vector, low, high, dtype=int):
         self.low = low
         self.high = high
         self.dtype = dtype
-        super().__init__(protein_data)
+        super().__init__(property_vector)
 
     def sample(self, size):
         """
@@ -100,11 +100,11 @@ class UniformSampler(ProteinSampler):
         Return random integers from the “discrete uniform” distribution of the specified dtype
         in the “half-open” interval [low, high).
         """
-        self.sampled_frame_list = np.random.randint(
+        self.sampled_property_vector = np.random.randint(
             self.low, self.high, size, self.dtype
         )
         super().sample(size)
-        return self.sampled_frame_list
+        return self.sampled_property_vector
 
 
 class StratifiedSampler(ProteinSampler):
@@ -123,9 +123,9 @@ class StratifiedSampler(ProteinSampler):
 
     display_name = "Stratified Sampling"
 
-    def __init__(self, protein_data, layers):
+    def __init__(self, property_vector, layers):
         self.layers = layers
-        super().__init__(protein_data)
+        super().__init__(property_vector)
 
     def sample(self, size):
         """
@@ -171,9 +171,9 @@ class BootstrappingSampler(ProteinSampler):
 
     display_name = "Bootstrapping Sampling"
 
-    def __init__(self, protein_data, number_of_iterations):
+    def __init__(self, property_vector, number_of_iterations):
         self.number_of_iterations = number_of_iterations
-        super().__init__(protein_data)
+        super().__init__(property_vector)
 
     def sample(self, size):
         """
@@ -191,9 +191,7 @@ class BootstrappingSampler(ProteinSampler):
         """
         samples = []
         for i in range(self.number_of_iterations):
-            current_sample = np.random.choice(
-                self.protein_data.frames, size, replace=True
-            )
+            current_sample = np.random.choice(self.property_vector, size, replace=True)
             samples.append(current_sample)
         return samples
 

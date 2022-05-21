@@ -114,6 +114,15 @@ class ProteinProperty:
         plt.savefig("{}.png".format(prop_name))
 
 
+class SampledProperty(ProteinProperty):
+    def __init__(self, property_vector):
+        self.property_vector = property_vector
+        self._property_statistics()
+
+    def calculate_property(self):
+        pass
+
+
 class RMSDProperty(ProteinProperty):
     """
     A Subclass of ProteinProperty class used to calculate the RMSD value for each frame in the
@@ -168,6 +177,15 @@ class DistanceBetweenAtoms(ProteinProperty):
             raise RuntimeError("Expecting atom_selection to be a list of 2 selections")
 
         super().__init__(protein_data, atom_selection)
+
+    @classmethod
+    def from_xvg(cls, xvg_filepath):
+        instance = cls(protein_data=None, atom_selection=[None, None])
+        _frames, distance_values = np.loadtxt(xvg_filepath, unpack=True)
+        instance.property_vector = distance_values
+        instance._property_statistics()
+        instance.discretize_vector()
+        return instance
 
     def calculate_property(self):
         """

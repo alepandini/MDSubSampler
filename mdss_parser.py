@@ -182,27 +182,39 @@ if __name__ == "__main__":
 
     ##################
     property_class = PROPERTY_CLASS_MAPPING[args.property]
-    property = property_class(p_data, args.atom_selection)
-    property_sample = property_class(p_data, args.atom_selection)
+
+    # property = property_class(p_data, args.atom_selection)
+    # property.calculate_property()
+
+    property = mdss_property.DistanceBetweenAtoms.from_xvg("./distance.xvg")
+
+    # property_sample = property_class(p_data, args.atom_selection)
+    # property_sample = mdss_property.DistanceBetweenAtoms.from_xvg("./distance.xvg")
+
     sampler_class = SAMPLER_CLASS_MAPPING[args.sampler]
+    if args.sampler == "RandomSampler":
+        sampler = sampler_class(p_data, args.seed_number)
+    if args.sampler == "UniformSampler":
+        sampler = sampler_class(
+            property.property_vector, args.low, args.high, args.dtype
+        )
+    elif args.sampler == "StratifiedSampler":
+        sampler = sampler_class(property.property_vector, args.layers)
+    elif args.sampler == "BootstrappingSampler":
+        sampler = sampler_class(property.property_vector, args.number_of_iterations)
+
+    sampler = mdss_sampler.RandomSampler(property.property_vector)
+    sampled_property_vector = sampler.sample(50000)
+    property_sample = mdss_property.SampledProperty(sampled_property_vector)
+    # property_sample = mdss_property.SampledProperty(property.property_vector)
+
     distance_class = DISTANCE_CLASS_MAPPING[args.distance]
     distance = distance_class(property, property_sample)
+    print("Distance: {}".format(distance.calculate_distance()))
     distribution = mdss_distribution.DistributionDistanceSimple(
         property, property_sample, distance
     )
     distribution.simple_distance_between_distributions()
-
-    if args.sampler == "RandomSampler":
-        sampler = sampler_class(p_data, args.seed_number)
-    elif args.sampler == "UniformSampler":
-        sampler = sampler_class(p_data, args.low, args.high, args.dtype)
-    elif args.sampler == "StratifiedSampler":
-        sampler = sampler_class(p_data, args.layers)
-    elif args.sampler == "BootstrappingSampler":
-        sampler = sampler_class(p_data, args.number_of_iterations)
-
-    property.calculate_property()
-    property_sample.calculate_property()
 
     distrib = mdss_distribution.DistributionDistance(
         property, property_sample, distance
@@ -236,8 +248,9 @@ if __name__ == "__main__":
         property.calculate_property()  # add this to the distribution class and just call the class here
 
 
-# python mdss_parser.py --traj "data/MD01_1lym_example_fit_short.xtc" --top "data/MD01_1lym_example.gro" --prefix "001" --output-file "data/results" --property='RMSDProperty' --atom-selection='name CA' --sampler='RandomSampler' --seed-number=1999 --size=100 --distance='Distance'
+# python mdss_parser.py --traj "data/MD01_1lym_example_fit_short.xtc" --top "data/MD01_1lym_example.gro" --prefix "001" --output-folder "data/results" --property='RMSDProperty' --atom-selection='name CA' --sampler='RandomSampler' --seed-number=1999 --size=100 --distance='Distance'
 
+# python mdss_parser.py --traj "data/MD01_1lym_example_fit_short.xtc" --top "data/MD01_1lym_example.gro" --prefix "001" --output-folder "data/results" --property='RMSDProperty' --atom-selection='name CA' --sampler='RandomSampler' --seed-number=1999 --size=100 --distance='Distance'
 
 # prop = property_class(protein_data, frame_list, atom_selection)
 #         prop.calculate_property()
