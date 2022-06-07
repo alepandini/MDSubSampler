@@ -204,8 +204,9 @@ if __name__ == "__main__":
         sampler = sampler_class(property.property_vector, args.number_of_iterations)
 
     sampler = mdss_sampler.RandomSampler(property.property_vector)
-    sampled_property_vector = sampler.sample(50000)
+    sampled_property_vector = sampler.sample(10000)
     property_sample = mdss_property.SampledProperty(sampled_property_vector)
+
     # property_sample = mdss_property.SampledProperty(property.property_vector)
 
     distance_class = DISTANCE_CLASS_MAPPING[args.distance]
@@ -226,13 +227,24 @@ if __name__ == "__main__":
 
     property.write_property_vector(filepath)
 
-    filename = "{}_{}_sample_{}.dat".format(
+    filename_sample = "{}_{}_sample_{}.dat".format(
         file_prefix, property_class.display_name, distance_class.display_name
     )
-    filepath = os.path.join(args.output_folder, filename)
+    filepath_sample = os.path.join(args.output_folder, filename_sample)
 
-    property_sample.write_property_vector(filepath)
+    property_sample.write_property_vector(filepath_sample)
 
+    filename_plot = "{}_{}_{}_plot.png".format(
+        file_prefix, property_class.display_name, distance_class.display_name
+    )
+    filepath_plot = os.path.join(args.output_folder, filename_plot)
+    property.plot_property(filepath, filepath_plot)
+
+    filename_sample_plot = "{}_{}_sample_{}_plot.png".format(
+        file_prefix, property_class.display_name, distance_class.display_name
+    )
+    filepath_sample_plot = os.path.join(args.output_folder, filename_sample_plot)
+    property_sample.plot_property(filepath_sample, filepath_sample_plot)
     ##################
 
     # Method that uses the user input for property calculation, sampling method

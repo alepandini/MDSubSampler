@@ -6,7 +6,8 @@ import matplotlib.pyplot as plt
 import MDAnalysis.analysis.pca as pca
 from MDAnalysis.analysis import rms, align
 from MDAnalysis.analysis import distances
-from MDAnalysis.analysis import dihedrals
+
+from scipy.stats import norm
 
 
 class ProteinProperty:
@@ -104,17 +105,23 @@ class ProteinProperty:
             for (key, value) in discr_vector.items():
                 f.write("{} {}\n".format(key, value))
 
-    def plot_property(self, data_file_path, prop_name):
+    def plot_property(self, data_file_path, outfilepath):
         """
         Method that plots the distribution of values for a given property
         """
+        plt.clf()
         property_data = np.loadtxt(data_file_path, unpack=True)
+        prop_name = self.display_name
         plt.hist(property_data[1])
-        plt.title("Distribution of values for {} property".format(prop_name))
-        plt.savefig("{}.png".format(prop_name))
+        # plt.title("Distribution of values for {} property Ensemble".format(prop_name))
+        # plt.savefig("{}.png".format(prop_name))
+        plt.savefig(outfilepath)
 
 
 class SampledProperty(ProteinProperty):
+
+    display_name = "sample"
+
     def __init__(self, property_vector):
         self.property_vector = property_vector
         self._property_statistics()
@@ -170,7 +177,7 @@ class DistanceBetweenAtoms(ProteinProperty):
         A list with selection of atoms for distance calculation between them
     """
 
-    display_name = "Distance between atoms"
+    display_name = "Distance_between_atoms"
 
     def __init__(self, protein_data, atom_selection):
         if not isinstance(atom_selection, list) or len(atom_selection) != 2:
