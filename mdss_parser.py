@@ -192,7 +192,9 @@ if __name__ == "__main__":
     )
     distribution.simple_distance_between_distributions()
 
-    if args.sampler == "UniformSampler":
+    if args.sampler == "RandomSampler":
+        sampler = sampler_class(p_data, args.seed_number)
+    elif args.sampler == "UniformSampler":
         sampler = sampler_class(p_data, args.low, args.high, args.dtype)
     elif args.sampler == "StratifiedSampler":
         sampler = sampler_class(p_data, args.layers)
