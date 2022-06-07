@@ -120,7 +120,7 @@ class ProteinProperty:
 
 class SampledProperty(ProteinProperty):
 
-    display_name = "sample"
+    display_name = "Sampled_Property"
 
     def __init__(self, property_vector):
         self.property_vector = property_vector
