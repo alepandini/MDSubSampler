@@ -166,6 +166,7 @@ def parse_args():
 
     return args
 
+####################################
 
 if __name__ == "__main__":
     args = parse_args()
@@ -180,16 +181,9 @@ if __name__ == "__main__":
         args.trajectory_file, args.topology_file, config_parameters=None
     )
 
-    ##################
     property_class = PROPERTY_CLASS_MAPPING[args.property]
-
     property = property_class(p_data, args.atom_selection)
     property.calculate_property()
-
-    # property = mdss_property.DistanceBetweenAtoms.from_xvg("./data/distance.xvg")
-
-    # property_sample = property_class(p_data, args.atom_selection)
-    # property_sample = mdss_property.DistanceBetweenAtoms.from_xvg("./data/distance.xvg")
 
     sampler_class = SAMPLER_CLASS_MAPPING[args.sampler]
     if args.sampler == "RandomSampler":
@@ -203,11 +197,8 @@ if __name__ == "__main__":
     elif args.sampler == "BootstrappingSampler":
         sampler = sampler_class(property.property_vector, args.number_of_iterations)
 
-    # sampler = mdss_sampler.RandomSampler(property.property_vector)
     sampled_property_vector = sampler.sample(args.size)
     property_sample = mdss_property.SampledProperty(sampled_property_vector)
-
-    # property_sample = mdss_property.SampledProperty(property.property_vector)
 
     distance_class = DISTANCE_CLASS_MAPPING[args.distance]
     distance = distance_class(property, property_sample)
@@ -245,11 +236,13 @@ if __name__ == "__main__":
     )
     filepath_sample_plot = os.path.join(args.output_folder, filename_sample_plot)
     property_sample.plot_property(filepath_sample, filepath_sample_plot)
-    ##################
+####################################
 
-    # Method that uses the user input for property calculation, sampling method
-    # and size of sample and returns a subsample trajectory along with a log
-    # file with diagnostics for the particular property.
+    """"
+    Method that uses the user input for property calculation, sampling method
+    and size of sample and returns a subsample trajectory along with a log
+    file with diagnostics for the particular property.
+    """
     def run_subsampler(p_data, property_class, sampler_class):
         property.calculate_property()
         property_sample.calculate_property()
@@ -262,9 +255,4 @@ if __name__ == "__main__":
 
 # python mdss_parser.py --traj "data/MD01_1lym_example_fit_short.xtc" --top "data/MD01_1lym_example.gro" --prefix "001" --output-folder "data/results" --property='RMSDProperty' --atom-selection='name CA' --sampler='RandomSampler' --seed-number=1999 --size=100 --distance='Distance'
 
-# python mdss_parser.py --traj "data/MD01_1lym_example_fit_short.xtc" --top "data/MD01_1lym_example.gro" --prefix "001" --output-folder "data/results" --property='RMSDProperty' --atom-selection='name CA' --sampler='RandomSampler' --seed-number=1999 --size=100 --distance='Distance'
 
-# prop = property_class(protein_data, frame_list, atom_selection)
-#         prop.calculate_property()
-#         prop_sample = property_class(protein_data, sampled_frame_list, atom_selection)
-#         prop_sample.calculate_property()
