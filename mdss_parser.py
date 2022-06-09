@@ -166,6 +166,7 @@ def parse_args():
 
     return args
 
+
 ####################################
 
 if __name__ == "__main__":
@@ -236,13 +237,14 @@ if __name__ == "__main__":
     )
     filepath_sample_plot = os.path.join(args.output_folder, filename_sample_plot)
     property_sample.plot_property(filepath_sample, filepath_sample_plot)
-####################################
+    ####################################
 
     """"
     Method that uses the user input for property calculation, sampling method
     and size of sample and returns a subsample trajectory along with a log
     file with diagnostics for the particular property.
     """
+
     def run_subsampler(p_data, property_class, sampler_class):
         property.calculate_property()
         property_sample.calculate_property()
@@ -254,5 +256,3 @@ if __name__ == "__main__":
 
 
 # python mdss_parser.py --traj "data/MD01_1lym_example_fit_short.xtc" --top "data/MD01_1lym_example.gro" --prefix "001" --output-folder "data/results" --property='RMSDProperty' --atom-selection='name CA' --sampler='RandomSampler' --seed-number=1999 --size=100 --distance='Distance'
-
-
