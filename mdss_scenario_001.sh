@@ -23,7 +23,7 @@ DISTANCE="Distance"
 
 ######################################################################
 #   wrapper to MDSS python call
-python3.10 mdss_parser.py \
+python3.10 mdss.py \
   --traj $TRJ_FILENAME \
   --top $TOP_FILENAME \
   --prefix $OUT_PREFIX \

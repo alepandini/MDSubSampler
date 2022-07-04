@@ -111,10 +111,8 @@ class ProteinProperty:
         """
         plt.clf()
         property_data = np.loadtxt(data_file_path, unpack=True)
-        prop_name = self.display_name
         plt.hist(property_data[1])
         # plt.title("Distribution of values for {} property Ensemble".format(prop_name))
-        # plt.savefig("{}.png".format(prop_name))
         plt.savefig(outfilepath)
 
 
