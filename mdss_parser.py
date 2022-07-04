@@ -2,6 +2,7 @@ from numpy import require
 import mdss_property
 import mdss_sampler
 import mdss_dissimilarity
+import mdss_distribution
 import argparse
 import sys
 import operator as op
@@ -27,10 +28,10 @@ SAMPLER_CLASSES = [
 SAMPLER_CLASS_MAPPING = dict((sampler.__name__, sampler) for sampler in SAMPLER_CLASSES)
 
 DISSIMILARITY_CLASSES = [
-    mdss_dissimilarity.Distance,
-    mdss_dissimilarity.BhattaDistance,
-    mdss_dissimilarity.KLDiverDistance,
-    mdss_dissimilarity.PearsonDictDistance,
+    mdss_dissimilarity.Dissimilarity,
+    mdss_dissimilarity.BhattaCoefficient,
+    mdss_dissimilarity.KLDivergence,
+    mdss_dissimilarity.PearsonCoefficient,
 ]
 DISSIMILARITY_CLASS_MAPPING = dict(
     (dissimilarity.__name__, dissimilarity) for dissimilarity in DISSIMILARITY_CLASSES

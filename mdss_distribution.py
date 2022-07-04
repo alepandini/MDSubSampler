@@ -1,8 +1,8 @@
 import mdss_property
-import mdss_distance
+import mdss_dissimilarity
 
 
-class DistributionDistance:
+class DistributionDissimilarity:
     """
     A class used to compare the distributions between 2 property calculation over a trajectory
 
@@ -18,15 +18,15 @@ class DistributionDistance:
         self,
         property_full,
         property_sample,
-        distance,
+        dissimilarity,
     ):
         self.property_full = property_full
         self.property_sample = property_sample
-        self.distance = distance
+        self.dissimilarity = dissimilarity
 
 
-class DistributionDistanceSimple(DistributionDistance):
-    def simple_distance_between_distributions(self):
+class DistributionDissimilaritySimple(DistributionDissimilarity):
+    def simple_dissimilarity_between_distributions(self):
 
         prop_name = self.property_full.display_name
-        self.distance.distance
+        self.dissimilarity.dissimilarity

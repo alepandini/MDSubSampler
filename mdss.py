@@ -1,16 +1,32 @@
 from numpy import require
+from mdss_graph import plot_distribution
 import mdss_protein_data
 import mdss_property
 import mdss_parser as p
+from mdss_graph import plot_distribution
 import operator as op
+import mdss_distribution
 import os
+
+
+def run_subsampler(p_data, property_class, sampler_class):
+    """
+    Method that uses the user input for property calculation, sampling method
+    and size of sample and returns a subsample trajectory along with a log
+    file with diagnostics for the particular property."""
+    property.calculate_property()
+    property_sample.calculate_property()
+    print(
+        f"Calculating {property_class.display_name}"
+    )  # Will be replaced with log file
+    print(f"Applying {property_class.display_name}")
+    property.calculate_property()
+
 
 if __name__ == "__main__":
     args = p.parse_args()
     print(args)
 
-    file_prefix = args.file_prefix
-    output_folder = args.output_folder
     if not os.path.exists(args.output_folder):
         os.makedirs(args.output_folder)
 
@@ -40,56 +56,48 @@ if __name__ == "__main__":
     dissimilarity_class = p.DISSIMILARITY_CLASS_MAPPING[args.dissimilarity]
     dissimilarity = dissimilarity_class(property, property_sample)
     print("Dissimilarity: {}".format(dissimilarity.calculate_dissimilarity()))
-    distribution = p.mdss_distribution.DistributionDissimilaritySimple(
+    distribution = mdss_distribution.DistributionDissimilaritySimple(
         property, property_sample, dissimilarity
     )
     distribution.simple_dissimilarity_between_distributions()
 
-    distrib = p.mdss_distribution.DistributionDissimilarity(
+    distrib = mdss_distribution.DistributionDissimilarity(
         property, property_sample, dissimilarity
     )
     filename = "{}_{}_{}.dat".format(
-        file_prefix, property_class.display_name, dissimilarity_class.display_name
+        args.file_prefix, property_class.display_name, dissimilarity_class.display_name
     )
     filepath = os.path.join(args.output_folder, filename)
 
     property.write_property_vector(filepath)
 
     filename_sample = "{}_{}_sample_{}.dat".format(
-        file_prefix, property_class.display_name, dissimilarity_class.display_name
+        args.file_prefix, property_class.display_name, dissimilarity_class.display_name
     )
     filepath_sample = os.path.join(args.output_folder, filename_sample)
 
     property_sample.write_property_vector(filepath_sample)
 
-    filename_plot = "{}_{}_{}_plot.png".format(
-        file_prefix, property_class.display_name, dissimilarity_class.display_name
+    plot_distribution(
+        property,
+        filepath,
+        "{}_{}_{}".format(
+            args.file_prefix,
+            property_class.display_name,
+            dissimilarity_class.display_name,
+        ),
+        args.output_folder,
     )
-    filepath_plot = os.path.join(args.output_folder, filename_plot)
-    property.plot_property(filepath, filepath_plot)
 
-    filename_sample_plot = "{}_{}_sample_{}_plot.png".format(
-        file_prefix, property_class.display_name, dissimilarity_class.display_name
+    plot_distribution(
+        property_sample,
+        filepath_sample,
+        "{}_{}_sample_{}".format(
+            args.file_prefix,
+            property_class.display_name,
+            dissimilarity_class.display_name,
+        ),
+        args.output_folder,
     )
-    filepath_sample_plot = os.path.join(args.output_folder, filename_sample_plot)
-    property_sample.plot_property(filepath_sample, filepath_sample_plot)
 
-
-""""
-    Method that uses the user input for property calculation, sampling method
-    and size of sample and returns a subsample trajectory along with a log
-    file with diagnostics for the particular property.
-    """
-
-
-def run_subsampler(p_data, property_class, sampler_class):
-    property.calculate_property()
-    property_sample.calculate_property()
-    print(
-        f"Calculating {property_class.display_name}"
-    )  # Will be replaced with log file
-    print(f"Applying {property_class.display_name}")
-    property.calculate_property()
-
-
-# python mdss.py --traj "data/MD01_1lym_example_fit_short.xtc" --top "data/MD01_1lym_example.gro" --prefix "001" --output-folder "data/results" --property='RMSDProperty' --atom-selection='name CA' --sampler='RandomSampler' --seed-number=1999 --size=100 --distance='Distance'
+# python mdss.py --traj "data/user.xtc" --top "data/user.gro" --prefix "001" --output-folder "data/results" --property='RMSDProperty' --atom-selection='name CA' --sampler='RandomSampler' --seed-number=1999 --size=100 --dissimilarity='Dissimilarity'
