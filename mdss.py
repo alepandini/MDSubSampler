@@ -5,7 +5,6 @@ import mdss_property
 import mdss_parser as p
 from mdss_graph import plot_distribution
 import operator as op
-import mdss_distribution
 import os
 
 
@@ -16,9 +15,7 @@ def run_subsampler(p_data, property_class, sampler_class):
     file with diagnostics for the particular property."""
     property.calculate_property()
     property_sample.calculate_property()
-    print(
-        f"Calculating {property_class.display_name}"
-    )  # Will be replaced with log file
+    print(f"Calculating {property_class.display_name}")
     print(f"Applying {property_class.display_name}")
     property.calculate_property()
 
@@ -56,14 +53,7 @@ if __name__ == "__main__":
     dissimilarity_class = p.DISSIMILARITY_CLASS_MAPPING[args.dissimilarity]
     dissimilarity = dissimilarity_class(property, property_sample)
     print("Dissimilarity: {}".format(dissimilarity.calculate_dissimilarity()))
-    distribution = mdss_distribution.DistributionDissimilaritySimple(
-        property, property_sample, dissimilarity
-    )
-    distribution.simple_dissimilarity_between_distributions()
 
-    distrib = mdss_distribution.DistributionDissimilarity(
-        property, property_sample, dissimilarity
-    )
     filename = "{}_{}_{}.dat".format(
         args.file_prefix, property_class.display_name, dissimilarity_class.display_name
     )

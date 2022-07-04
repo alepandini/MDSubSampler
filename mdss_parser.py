@@ -2,7 +2,6 @@ from numpy import require
 import mdss_property
 import mdss_sampler
 import mdss_dissimilarity
-import mdss_distribution
 import argparse
 import sys
 import operator as op
