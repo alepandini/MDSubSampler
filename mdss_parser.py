@@ -1,13 +1,10 @@
 from numpy import require
-import mdss_protein_data
 import mdss_property
 import mdss_sampler
-import mdss_distance
+import mdss_dissimilarity
 import argparse
 import sys
 import operator as op
-import os
-import mdss_distribution
 
 PROPERTY_CLASSES = [
     mdss_property.RMSDProperty,
@@ -29,14 +26,14 @@ SAMPLER_CLASSES = [
 ]
 SAMPLER_CLASS_MAPPING = dict((sampler.__name__, sampler) for sampler in SAMPLER_CLASSES)
 
-DISTANCE_CLASSES = [
-    mdss_distance.Distance,
-    mdss_distance.BhattaDistance,
-    mdss_distance.KLDiverDistance,
-    mdss_distance.PearsonDictDistance,
+DISSIMILARITY_CLASSES = [
+    mdss_dissimilarity.Distance,
+    mdss_dissimilarity.BhattaDistance,
+    mdss_dissimilarity.KLDiverDistance,
+    mdss_dissimilarity.PearsonDictDistance,
 ]
-DISTANCE_CLASS_MAPPING = dict(
-    (distance.__name__, distance) for distance in DISTANCE_CLASSES
+DISSIMILARITY_CLASS_MAPPING = dict(
+    (dissimilarity.__name__, dissimilarity) for dissimilarity in DISSIMILARITY_CLASSES
 )
 
 # Function that creates the parser
@@ -123,10 +120,10 @@ def parse_args():
     )
 
     parser.add_argument(
-        "--distance",
-        dest="distance",
-        choices=DISTANCE_CLASS_MAPPING.keys(),
-        help="Distance between distributions",
+        "--dissimilarity",
+        dest="dissimilarity",
+        choices=DISSIMILARITY_CLASS_MAPPING.keys(),
+        help="Dissimilarity between distributions",
     )
 
     args = parser.parse_args()

@@ -37,39 +37,39 @@ if __name__ == "__main__":
     sampled_property_vector = sampler.sample(args.size)
     property_sample = mdss_property.SampledProperty(sampled_property_vector)
 
-    distance_class = p.DISTANCE_CLASS_MAPPING[args.distance]
-    distance = distance_class(property, property_sample)
-    print("Distance: {}".format(distance.calculate_distance()))
-    distribution = p.mdss_distribution.DistributionDistanceSimple(
-        property, property_sample, distance
+    dissimilarity_class = p.DISSIMILARITY_CLASS_MAPPING[args.dissimilarity]
+    dissimilarity = dissimilarity_class(property, property_sample)
+    print("Dissimilarity: {}".format(dissimilarity.calculate_dissimilarity()))
+    distribution = p.mdss_distribution.DistributionDissimilaritySimple(
+        property, property_sample, dissimilarity
     )
-    distribution.simple_distance_between_distributions()
+    distribution.simple_dissimilarity_between_distributions()
 
-    distrib = p.mdss_distribution.DistributionDistance(
-        property, property_sample, distance
+    distrib = p.mdss_distribution.DistributionDissimilarity(
+        property, property_sample, dissimilarity
     )
     filename = "{}_{}_{}.dat".format(
-        file_prefix, property_class.display_name, distance_class.display_name
+        file_prefix, property_class.display_name, dissimilarity_class.display_name
     )
     filepath = os.path.join(args.output_folder, filename)
 
     property.write_property_vector(filepath)
 
     filename_sample = "{}_{}_sample_{}.dat".format(
-        file_prefix, property_class.display_name, distance_class.display_name
+        file_prefix, property_class.display_name, dissimilarity_class.display_name
     )
     filepath_sample = os.path.join(args.output_folder, filename_sample)
 
     property_sample.write_property_vector(filepath_sample)
 
     filename_plot = "{}_{}_{}_plot.png".format(
-        file_prefix, property_class.display_name, distance_class.display_name
+        file_prefix, property_class.display_name, dissimilarity_class.display_name
     )
     filepath_plot = os.path.join(args.output_folder, filename_plot)
     property.plot_property(filepath, filepath_plot)
 
     filename_sample_plot = "{}_{}_sample_{}_plot.png".format(
-        file_prefix, property_class.display_name, distance_class.display_name
+        file_prefix, property_class.display_name, dissimilarity_class.display_name
     )
     filepath_sample_plot = os.path.join(args.output_folder, filename_sample_plot)
     property_sample.plot_property(filepath_sample, filepath_sample_plot)
