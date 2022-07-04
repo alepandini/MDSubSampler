@@ -6,6 +6,7 @@ import mdss_parser as p
 from mdss_graph import plot_distribution
 import operator as op
 import os
+import sys
 
 
 def run_subsampler(p_data, property_class, sampler_class):
@@ -20,8 +21,8 @@ def run_subsampler(p_data, property_class, sampler_class):
     property.calculate_property()
 
 
-if __name__ == "__main__":
-    args = p.parse_args()
+def main(arg_list):
+    args = p.parse_args(arg_list)
     print(args)
 
     if not os.path.exists(args.output_folder):
@@ -89,5 +90,10 @@ if __name__ == "__main__":
         ),
         args.output_folder,
     )
+
+
+if __name__ == "__main__":
+    arg_list = sys.argv[1:]
+    main(arg_list)
 
 # python mdss.py --traj "data/user.xtc" --top "data/user.gro" --prefix "001" --output-folder "data/results" --property='RMSDProperty' --atom-selection='name CA' --sampler='RandomSampler' --seed-number=1999 --size=100 --dissimilarity='Dissimilarity'

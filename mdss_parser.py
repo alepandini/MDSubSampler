@@ -37,7 +37,7 @@ DISSIMILARITY_CLASS_MAPPING = dict(
 )
 
 # Function that creates the parser
-def parse_args():
+def parse_args(arg_list):
     parser = argparse.ArgumentParser(description="Subsampler tool")
     parser.add_argument(
         "--traj",
@@ -126,7 +126,7 @@ def parse_args():
         help="Dissimilarity between distributions",
     )
 
-    args = parser.parse_args()
+    args = parser.parse_args(arg_list)
 
     if args.property in [
         mdss_property.DistanceBetweenAtoms.__name__,
