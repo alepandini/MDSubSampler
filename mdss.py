@@ -50,7 +50,8 @@ def main(arg_list):
 
     dissimilarity_class = p.DISSIMILARITY_CLASS_MAPPING[args.dissimilarity]
     dissimilarity = dissimilarity_class(property, property_sample)
-    print("Dissimilarity: {}".format(dissimilarity.calculate_dissimilarity()))
+    dissimilarity_score = dissimilarity.calculate_dissimilarity()
+    print("Dissimilarity: {}".format(dissimilarity_score))
 
     filename = "{}_{}_{}.dat".format(
         args.file_prefix, property_class.display_name, dissimilarity_class.display_name
@@ -87,6 +88,8 @@ def main(arg_list):
         ),
         args.output_folder,
     )
+
+    return dissimilarity_score
 
 
 if __name__ == "__main__":
