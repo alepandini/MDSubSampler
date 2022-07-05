@@ -194,31 +194,3 @@ class BootstrappingSampler(ProteinSampler):
             current_sample = np.random.choice(self.property_vector, size, replace=True)
             samples.append(current_sample)
         return samples
-
-
-# samples = []
-#         for i in range(number_of_iterations):
-#             current_sample = np.random.choice(self.frame_list, size, replace=True)
-#             current_sample_mean = self.find_nearest(current_sample, np.mean(current_sample))
-#             samples.append(current_sample_mean)
-
-#         return samples
-
-# def find_nearest(self, array, value):
-#     """
-#     Method that finds the closest number to the mean value
-
-#     Attributes
-#     ----------
-#     array: list
-#         This is a list with the data
-#     value: float
-#         This is the number of times the random sampling method is performed
-
-#     Returns
-#     ----------
-#     return an integer with the frame number that is closest to the mean number
-
-#     """
-#     idx = (np.abs(array - value)).argmin()
-#     return array[idx]

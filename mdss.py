@@ -1,10 +1,7 @@
-from numpy import require
 from mdss_graph import plot_distribution
 import mdss_protein_data
 import mdss_property
 import mdss_parser as p
-from mdss_graph import plot_distribution
-import operator as op
 import os
 import sys
 

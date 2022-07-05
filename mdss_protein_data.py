@@ -1,11 +1,6 @@
 import MDAnalysis as mda
 import numpy as np
 
-# from pprint import pprint
-
-# import code
-# code.interact(local=locals())
-
 
 class ProteinData:
     """
