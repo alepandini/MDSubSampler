@@ -51,6 +51,7 @@ def check_trajectory_size(trajectory_file_path, topology_file_path):
             "(trajectory file = {}, "
             "topology file = {})".format(trajectory_file_path, topology_file_path)
         )
+    return trajectory_size
 
 
 def check_multiple_trajectories_size(list_of_traj, list_of_top):
