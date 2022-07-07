@@ -18,7 +18,7 @@ def run_subsampler(p_data, property_class, sampler_class):
     property.calculate_property()
 
 
-def main(arg_list):
+def sampling_workflow(arg_list):
     args = p.parse_args(arg_list)
     print(args)
 
@@ -90,6 +90,10 @@ def main(arg_list):
     )
 
     return dissimilarity_score
+
+
+def main(arg_list):
+    sampling_workflow(arg_list)
 
 
 if __name__ == "__main__":
