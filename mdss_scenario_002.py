@@ -1,14 +1,15 @@
 #!/usr/bin/env python
+from ctypes.wintypes import SIZE
 from mdss import main, sampling_workflow
-from mdss_utilities import check_trajectory_size as tr
+import mdss_utilities as u
 import sys
 
-out_dir = "testing"
-property = "RMSDProperty"
-selection = "name CA"
-sampler = "RandomSampler"
-size = "100"
-dissimilarity = "Dissimilarity"
+OUT_DIR = "testing"
+PROPERTY = "RMSDProperty"
+SELECTION = "name CA"
+SAMPLER = "RandomSampler"
+SIZE = "100"
+DISSIMILARITY = "Dissimilarity"
 
 
 def percentage(part, whole):
@@ -18,7 +19,7 @@ def percentage(part, whole):
 
 def main(trj_filename, top_filename, out_prefix):
 
-    traj_size = tr.check_trajectory_size(trj_filename, top_filename)
+    traj_size = u.check_trajectory_size(trj_filename, top_filename)
     perc_90 = percentage(90, traj_size)
     perc_80 = percentage(80, traj_size)
     perc_70 = percentage(70, traj_size)
@@ -38,32 +39,32 @@ def main(trj_filename, top_filename, out_prefix):
                 "--prefix",
                 out_prefix,
                 "--output-folder",
-                out_dir,
+                OUT_DIR,
                 "--property",
-                property,
+                PROPERTY,
                 "--atom-selection",
-                selection,
+                SELECTION,
                 "--sampler",
-                sampler,
+                SAMPLER,
                 "--seed-number",
                 "1999",
                 "--size",
-                str(size),
+                str(SIZE),
                 "--dissimilarity",
-                dissimilarity,
+                DISSIMILARITY,
             ]
         )
-        print("for {} percent sample of full trajectory:".format(size))
+        print("for {} % sample of full trajectory:".format(size))
         print(dissimilarity_score)
-        if dissimilarity_score < 0.001:
+        if dissimilarity_score < 0.5:
             break
 
 
 if __name__ == "__main__":
-    arg_list = sys.argv[1:]
-    main(arg_list)
+    args = sys.argv[1:]
     trj_filename = args[0]
     top_filename = args[1]
     out_prefix = args[2]
+    main(trj_filename, top_filename, out_prefix)
 
 # python scenario.py data/user.xtc data/user.gro testing
