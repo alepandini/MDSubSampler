@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from ctypes.wintypes import SIZE
-from mdss import main, sampling_workflow
+from mdss import sampling_workflow
 import mdss_utilities as u
 import sys
 
