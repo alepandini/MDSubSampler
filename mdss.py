@@ -31,8 +31,9 @@ def sampling_workflow(arg_list):
     )
 
     property_class = p.PROPERTY_CLASS_MAPPING[args.property]
-    property = property_class(p_data, args.atom_selection)
-    property.calculate_property()
+    # property = property_class(p_data, args.atom_selection)
+    property = property_class.from_xvg("./data/ApoADK_protein_05_G55-P127.xvg")
+    # property.calculate_property()
 
     sampler_class = p.SAMPLER_CLASS_MAPPING[args.sampler]
     if args.sampler == "RandomSampler":
@@ -47,7 +48,10 @@ def sampling_workflow(arg_list):
         sampler = sampler_class(property.property_vector, args.number_of_iterations)
 
     sampled_property_vector = sampler.sample(args.size)
-    property_sample = mdss_property.SampledProperty(sampled_property_vector)
+    sampled_indices = sampler.sampled_indices
+    property_sample = mdss_property.SampledProperty(
+        sampled_property_vector, sampled_indices
+    )
 
     dissimilarity_class = p.DISSIMILARITY_CLASS_MAPPING[args.dissimilarity]
     dissimilarity = dissimilarity_class(property, property_sample)
@@ -67,7 +71,7 @@ def sampling_workflow(arg_list):
     )
     filepath_sample = os.path.join(args.output_folder, filename_sample)
 
-    property_sample.write_property_vector(filepath_sample)
+    property_sample.write_property_vector_sample(filepath_sample)
 
     plot_distribution(
         property,
@@ -102,4 +106,4 @@ if __name__ == "__main__":
     arg_list = sys.argv[1:]
     main(arg_list)
 
-# python mdss.py --traj "data/user.xtc" --top "data/user.gro" --prefix "001" --output-folder "data/results" --property='RMSDProperty' --atom-selection='name CA' --sampler='RandomSampler' --seed-number=1999 --size=100 --dissimilarity='Dissimilarity'
+# python mdss.py --traj "data/user.xtc" --top "data/user.gro" --prefix "0.0.5%" --output-folder "data/results" --property='DistanceBetweenAtoms' --atom-selection='G55,P127' --sampler='RandomSampler' --seed-number=1992 --size=100 --dissimilarity='Dissimilarity'

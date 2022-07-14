@@ -121,12 +121,22 @@ class SampledProperty(ProteinProperty):
 
     display_name = "Sampled_Property"
 
-    def __init__(self, property_vector):
+    def __init__(self, property_vector, indices):
         self.property_vector = property_vector
+        self.indices = indices
         self._property_statistics()
 
     def calculate_property(self):
         pass
+
+    def write_property_vector_sample(self, outfilepath):
+        """
+        Method that saves the vector with the calculations of a specific property for
+        a protein in a file
+        """
+        with open(outfilepath, "w") as f:
+            for i, value in zip(self.indices, self.property_vector):
+                f.write("{} {}\n".format(i, value))
 
 
 class RMSDProperty(ProteinProperty):

@@ -19,7 +19,8 @@ class ProteinSampler:
         self.sampled_property_vector = None
 
     def sample(self, size):
-        self.sampled_property_vector.sort()
+        pass
+        # self.sampled_property_vector.sort()
 
 
 class RandomSampler(ProteinSampler):
@@ -54,7 +55,10 @@ class RandomSampler(ProteinSampler):
         ----------
         return a single random sample of the frame list with the desired size
         """
-        self.sampled_property_vector = random.sample(self.property_vector, size)
+        temp_vector = [(i, v) for i, v in enumerate(self.property_vector)]
+        temp_sampled_property_vector = random.sample(temp_vector, size)
+        self.sampled_property_vector = [r[1] for r in temp_sampled_property_vector]
+        self.sampled_indices = [r[0] for r in temp_sampled_property_vector]
         super().sample(size)
         return self.sampled_property_vector
 
