@@ -2,21 +2,22 @@ from mdss_graph import plot_distribution
 import mdss_protein_data
 import mdss_property
 import mdss_parser as p
-import mdss_logging as log
+from mdss_logging import logging as log
 import os
 import sys
 
 
-def run_subsampler(p_data, property_class, sampler_class):
-    """
-    Method that uses the user input for property calculation, sampling method
-    and size of sample and returns a subsample trajectory along with a log
-    file with diagnostics for the particular property."""
-    property.calculate_property()
-    property_sample.calculate_property()
-    print(f"Calculating {property_class.display_name}")
-    print(f"Applying {property_class.display_name}")
-    property.calculate_property()
+# def run_subsampler(p_data, property_class, sampler_class):
+#     """
+#     Method that uses the user input for property calculation, sampling method
+#     and size of sample and returns a subsample trajectory along with a log
+#     file with diagnostics for the particular property."""
+#     log.logging.info("The MDSubsampler is running:")
+#     property.calculate_property()
+#     property_sample.calculate_property()
+#     print(f"Calculating {property_class.display_name}")
+#     print(f"Applying {property_class.display_name}")
+#     property.calculate_property()
 
 
 def sampling_workflow(arg_list):
@@ -57,7 +58,7 @@ def sampling_workflow(arg_list):
     dissimilarity = dissimilarity_class(property, property_sample)
     dissimilarity_score = dissimilarity.calculate_dissimilarity()
     print("Dissimilarity: {}".format(dissimilarity_score))
-    log.logging.info("Dissimilarity: {}".format(dissimilarity_score))
+    log.info("Dissimilarity: {}".format(dissimilarity_score))
 
     filename = "{}_{}_{}.dat".format(
         args.file_prefix, property_class.display_name, dissimilarity_class.display_name
@@ -106,7 +107,7 @@ if __name__ == "__main__":
     arg_list = sys.argv[1:]
     main(arg_list)
 
-# python mdss.py --traj "data/user.xtc" --top "data/user.gro" --prefix "0.05%" --output-folder "data/results" --property='DistanceBetweenAtoms' --atom-selection='G55,P127' --sampler='RandomSampler' --seed-number=1990 --size=50 --dissimilarity='BhattaCoefficient'
+# python mdss.py --traj "data/user.xtc" --top "data/user.gro" --prefix "11%" --output-folder "data/results" --property='DistanceBetweenAtoms' --atom-selection='G55,P127' --sampler='BootstrappingSampler' --n-iterations=50 --size=11000 --dissimilarity='BhattaCoefficient'
 # python mdss.py --traj "data/user.xtc" --top "data/user.gro" --prefix "0.1%" --output-folder "data/results" --property='DistanceBetweenAtoms' --atom-selection='G55,P127' --sampler='RandomSampler' --seed-number=1991 --size=100 --dissimilarity='BhattaCoefficient'
 # python mdss.py --traj "data/user.xtc" --top "data/user.gro" --prefix "0.5%" --output-folder "data/results" --property='DistanceBetweenAtoms' --atom-selection='G55,P127' --sampler='RandomSampler' --seed-number=1992 --size=500 --dissimilarity='BhattaCoefficient'
 # python mdss.py --traj "data/user.xtc" --top "data/user.gro" --prefix "1%" --output-folder "data/results" --property='DistanceBetweenAtoms' --atom-selection='G55,P127' --sampler='RandomSampler' --seed-number=1993 --size=1000 --dissimilarity='BhattaCoefficient'
