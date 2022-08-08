@@ -27,14 +27,16 @@ def sampling_workflow(arg_list):
     if not os.path.exists(args.output_folder):
         os.makedirs(args.output_folder)
 
-    p_data = mdss_protein_data.ProteinData(
-        args.trajectory_file, args.topology_file, config_parameters=None
-    )
-
     property_class = p.PROPERTY_CLASS_MAPPING[args.property]
-    # property = property_class(p_data, args.atom_selection)
-    property = property_class.from_xvg("./data/ApoADK_protein_05_G55-P127.xvg")
-    # property.calculate_property()
+
+    if args.xvg_file is not None:
+        property = property_class.from_xvg(args.xvg_file)
+    else:
+        p_data = mdss_protein_data.ProteinData(
+            args.trajectory_file, args.topology_file, config_parameters=None
+        )
+        property = property_class(p_data, args.atom_selection)
+        property.calculate_property()
 
     sampler_class = p.SAMPLER_CLASS_MAPPING[args.sampler]
     if args.sampler == "RandomSampler":
