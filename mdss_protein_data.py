@@ -16,23 +16,26 @@ class ProteinData:
         configuration parameters of the protein
     """
 
-    def __init__(self, trajectory_filename, topology_filename, config_parameters):
+    def __init__(
+        self,
+        trajectory_filename,
+        topology_filename,
+        config_parameters,
+        protein_property,
+    ):
 
-        self.config_par = config_parameters
         self.trajectory_filename = trajectory_filename
         self.topology_filename = topology_filename
+        self.config_par = config_parameters
+        self.protein_property = protein_property
         self.trajectory_data = self._read_trajectory(
             self.trajectory_filename, self.topology_filename
         )
         self.n_frames = self.trajectory_data.trajectory.n_frames
         self.ca_atom_group = self._select_CA_atoms()
         self.property_dict = {}
-        self.frames = self._frames_of_trajectory(
-            self.trajectory_filename, self.topology_filename
-        )
-        self.frame_indices = self._frame_indices_of_trajectory(
-            self.trajectory_filename, self.topology_filename
-        )
+        self.frames = self._frames_of_trajectory()
+        self.frame_indices = self._frame_indices_of_trajectory()
 
     def _read_trajectory(self, trajectory_filename, topology_filename):
         """
@@ -57,7 +60,7 @@ class ProteinData:
         )
         return trajectory_data
 
-    def _frames_of_trajectory(self, trajectory, topology):
+    def _frames_of_trajectory(self):
         """
         Method that reads a trajectory and reads the frames that belong to it
 
@@ -66,25 +69,21 @@ class ProteinData:
         Return a dictionary that contains frame number, timestep for the frame for
         the whole trajectory
         """
-        trajectory_data = self._read_trajectory(trajectory, topology)
-        # frames = {
-        #     frame.frame: {"time": frame.time} for frame in trajectory_data.trajectory
-        # }
         frames = []
-        for x in range(len(trajectory_data.trajectory)):
-            _ = trajectory_data.trajectory[x]
+        for x in range(len(self.trajectory_data.trajectory)):
+            _ = self.trajectory_data.trajectory[x]
             frames.append(
                 (
                     x,
-                    trajectory_data.trajectory.ts.from_timestep(
-                        trajectory_data.trajectory[x]
+                    self.trajectory_data.trajectory.ts.from_timestep(
+                        self.trajectory_data.trajectory[x]
                     ),
                 ),
             )
 
         return frames
 
-    def _frame_indices_of_trajectory(self, trajectory, topology):
+    def _frame_indices_of_trajectory(self):
         """
         Method that reads a trajectory and reads the frames that belong to it
 
@@ -92,10 +91,8 @@ class ProteinData:
         ----------------------------
         Return a list with the frame indices
         """
-        trajectory_data = self._read_trajectory(trajectory, topology)
-        # _ = trajectory_data.trajectory[x]
         frame_indices = []
-        for x in range(len(trajectory_data.trajectory)):
+        for x in range(len(self.trajectory_data.trajectory)):
             frame_indices.append(x)
         return frame_indices
 
@@ -150,7 +147,7 @@ class ProteinData:
         ca_atom_group = self.trajectory_data.select_atoms("name CA")
         return ca_atom_group
 
-    def _add_property_dummy(self, protein_property, property_name):
+    def add_property_link(self, protein_property, property_name):
         if property_name in self.property_dict:
             self.property_dict[property_name][sample_label] = protein_property
 

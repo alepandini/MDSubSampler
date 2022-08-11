@@ -32,12 +32,13 @@ class ProteinProperty:
         self.protein_data = protein_data
         self.atom_selection = atom_selection
         self.property_vector = []
+        self._add_reference_to_protein_data(self)
 
     def _add_reference_to_protein_data(self):
         """
         Method that links the ProteinProperty and ProteinData classes
         """
-        self.protein_data._add_property_dummy(self, self.property_name)
+        self.protein_data.add_property_link(self, self.property_name)
 
     def discretize_vector(self, min_value=None, max_value=None):
         """
