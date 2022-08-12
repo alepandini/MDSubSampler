@@ -42,14 +42,20 @@ def parse_args(arg_list):
     parser.add_argument(
         "--traj",
         dest="trajectory_file",
-        required=True,
+        required=False,
         help="the path to the trajectory file",
     )
     parser.add_argument(
         "--top",
         dest="topology_file",
-        required=True,
+        required=False,
         help="the path to the topology file",
+    )
+    parser.add_argument(
+        "--xvg",
+        dest="xvg_file",
+        required=False,
+        help="the path to the xvg file containing the calculated property",
     )
     parser.add_argument(
         "--prefix",
@@ -134,6 +140,20 @@ def parse_args(arg_list):
         mdss_property.Angles.__name__,
     ]:
         args.atom_selection = args.atom_selection.split(",")
+
+    if args.xvg_file is not None and (
+        args.trajectory_file is not None or args.topology_file is not None
+    ):
+        parser.print_help()
+        print()
+        print("Either provide an xvg file, or both trajectory and topology files")
+        sys.exit(1)
+    elif args.xvg_file is None:
+        if args.trajectory_file is None or args.topology_file is None:
+            parser.print_help()
+            print()
+            print("Both trajectory and topology files are required")
+            sys.exit(1)
 
     def require_sampler_argument(sampler, argument):
         value = op.attrgetter(argument)(args)

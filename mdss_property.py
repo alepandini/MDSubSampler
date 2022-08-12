@@ -8,6 +8,8 @@ from MDAnalysis.analysis import distances
 from MDAnalysis.analysis import dihedrals
 from scipy.stats import norm
 
+from mdss_protein_data import ProteinData
+
 
 class ProteinProperty:
     """
@@ -29,15 +31,28 @@ class ProteinProperty:
     display_name = None
 
     def __init__(self, protein_data, atom_selection="name CA"):
+        # if not isinstance(protein_data, ProteinData):
+        #     raise TypeError("A instance of ProteinData is required")
         self.protein_data = protein_data
         self.atom_selection = atom_selection
         self.property_vector = []
+        self._add_reference_to_protein_data()
+
+    @classmethod
+    def from_xvg(cls, xvg_filepath):
+        instance = cls(protein_data=None, atom_selection=[None, None])
+        _frames, distance_values = np.loadtxt(xvg_filepath, unpack=True)
+        instance.property_vector = distance_values
+        instance._property_statistics()
+        instance.discretize_vector()
+        return instance
 
     def _add_reference_to_protein_data(self):
         """
         Method that links the ProteinProperty and ProteinData classes
         """
-        self.protein_data._add_property_dummy(self, self.property_name)
+        if self.protein_data is not None:
+            self.protein_data.add_property_link(self, self.display_name)
 
     def discretize_vector(self, min_value=None, max_value=None):
         """
@@ -121,12 +136,22 @@ class SampledProperty(ProteinProperty):
 
     display_name = "Sampled_Property"
 
-    def __init__(self, property_vector):
+    def __init__(self, property_vector, indices):
         self.property_vector = property_vector
+        self.indices = indices
         self._property_statistics()
 
     def calculate_property(self):
         pass
+
+    def write_property_vector_sample(self, outfilepath):
+        """
+        Method that saves the vector with the calculations of a specific property for
+        a protein in a file
+        """
+        with open(outfilepath, "w") as f:
+            for i, value in zip(self.indices, self.property_vector):
+                f.write("{} {}\n".format(i, value))
 
 
 class RMSDProperty(ProteinProperty):
@@ -183,15 +208,6 @@ class DistanceBetweenAtoms(ProteinProperty):
             raise RuntimeError("Expecting atom_selection to be a list of 2 selections")
 
         super().__init__(protein_data, atom_selection)
-
-    @classmethod
-    def from_xvg(cls, xvg_filepath):
-        instance = cls(protein_data=None, atom_selection=[None, None])
-        _frames, distance_values = np.loadtxt(xvg_filepath, unpack=True)
-        instance.property_vector = distance_values
-        instance._property_statistics()
-        instance.discretize_vector()
-        return instance
 
     def calculate_property(self):
         """

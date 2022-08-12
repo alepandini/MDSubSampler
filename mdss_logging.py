@@ -1,13 +1,25 @@
 import logging
+import os
+import os.path
+from datetime import datetime
 
-logging.basicConfig(
-    filename="log.txt",
-    level=logging.INFO,
-    format="%(asctime)s %(message)s",
-    filemode="w",
-)
-logging.debug("Logging test...")
-logging.info("The program is working as expected")
-logging.warning("The program may not function properly")
-logging.error("The program encountered an error")
-logging.critical("The program crashed")
+here = os.path.abspath(os.path.dirname(__file__))
+log_dir = os.path.join(here, "logs")
+
+logging_configured = False
+
+if not logging_configured:
+    if not os.path.exists(log_dir):
+        os.makedirs(log_dir)
+
+    filename = datetime.now().strftime("log_%Y_%m_%d_%H_%M_%S.txt")
+    filepath = os.path.join(log_dir, filename)
+
+    logging.basicConfig(
+        filename=filepath,
+        level=logging.INFO,
+        format="%(asctime)s %(message)s",
+        filemode="w",
+    )
+
+    logging_configured = True
