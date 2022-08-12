@@ -1,6 +1,6 @@
 import dictances
 
-# vector_1 for full protein and vector_2 for sample
+
 class Dissimilarity:
     """
     A class used to calculate the dissimilarity distance in terms of property between

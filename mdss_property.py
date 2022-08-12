@@ -8,6 +8,8 @@ from MDAnalysis.analysis import distances
 from MDAnalysis.analysis import dihedrals
 from scipy.stats import norm
 
+from mdss_protein_data import ProteinData
+
 
 class ProteinProperty:
     """
@@ -29,16 +31,28 @@ class ProteinProperty:
     display_name = None
 
     def __init__(self, protein_data, atom_selection="name CA"):
+        # if not isinstance(protein_data, ProteinData):
+        #     raise TypeError("A instance of ProteinData is required")
         self.protein_data = protein_data
         self.atom_selection = atom_selection
         self.property_vector = []
-        self._add_reference_to_protein_data(self)
+        self._add_reference_to_protein_data()
+
+    @classmethod
+    def from_xvg(cls, xvg_filepath):
+        instance = cls(protein_data=None, atom_selection=[None, None])
+        _frames, distance_values = np.loadtxt(xvg_filepath, unpack=True)
+        instance.property_vector = distance_values
+        instance._property_statistics()
+        instance.discretize_vector()
+        return instance
 
     def _add_reference_to_protein_data(self):
         """
         Method that links the ProteinProperty and ProteinData classes
         """
-        self.protein_data.add_property_link(self, self.property_name)
+        if self.protein_data is not None:
+            self.protein_data.add_property_link(self, self.display_name)
 
     def discretize_vector(self, min_value=None, max_value=None):
         """
@@ -194,15 +208,6 @@ class DistanceBetweenAtoms(ProteinProperty):
             raise RuntimeError("Expecting atom_selection to be a list of 2 selections")
 
         super().__init__(protein_data, atom_selection)
-
-    @classmethod
-    def from_xvg(cls, xvg_filepath):
-        instance = cls(protein_data=None, atom_selection=[None, None])
-        _frames, distance_values = np.loadtxt(xvg_filepath, unpack=True)
-        instance.property_vector = distance_values
-        instance._property_statistics()
-        instance.discretize_vector()
-        return instance
 
     def calculate_property(self):
         """

@@ -21,13 +21,11 @@ class ProteinData:
         trajectory_filename,
         topology_filename,
         config_parameters,
-        protein_property,
     ):
 
         self.trajectory_filename = trajectory_filename
         self.topology_filename = topology_filename
         self.config_par = config_parameters
-        self.protein_property = protein_property
         self.trajectory_data = self._read_trajectory(
             self.trajectory_filename, self.topology_filename
         )
@@ -36,6 +34,7 @@ class ProteinData:
         self.property_dict = {}
         self.frames = self._frames_of_trajectory()
         self.frame_indices = self._frame_indices_of_trajectory()
+        self.protein_property = None
 
     def _read_trajectory(self, trajectory_filename, topology_filename):
         """
@@ -148,9 +147,9 @@ class ProteinData:
         return ca_atom_group
 
     def add_property_link(self, protein_property, property_name):
-        if property_name in self.property_dict:
-            self.property_dict[property_name][sample_label] = protein_property
-
-        else:
-            self.property_dict[property_name] = {}
-            self.property_dict[property_name][sample_label] = property_property
+        self.property_dict[property_name] = protein_property
+        # if property_name in self.property_dict:
+        #     self.property_dict[property_name][sample_label] = protein_property
+        # else:
+        #     self.property_dict[property_name] = {}
+        #     self.property_dict[property_name][sample_label] = protein_property

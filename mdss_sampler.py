@@ -44,7 +44,7 @@ class RandomSampler(ProteinSampler):
         Attributes
         ----------
         size: int
-            The sample size
+            The sample size ?
         Returns
         ----------
         return a single random sample of the frame list with the desired size
