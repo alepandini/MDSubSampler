@@ -1,6 +1,5 @@
 import numpy as np
 import MDAnalysis as mda
-import matplotlib.pyplot as plt
 
 from mdss_protein_data import ProteinData
 
@@ -112,18 +111,6 @@ class ProteinProperty:
         with open(outfilepath, "w") as f:
             for (key, value) in discr_vector.items():
                 f.write("{} {}\n".format(key, value))
-
-    def plot_property(self, data_file_path, outfilepath):
-        """
-        Method that plots the distribution of values for a given property
-        """
-        plt.clf()
-        property_data = np.loadtxt(data_file_path, unpack=True)
-        plt.hist(property_data[1])
-        # plt.title(
-        #     "Distribution of values for {} property Ensemble".format(self.prop_name)
-        # )
-        plt.savefig(outfilepath)
 
 
 class SampledProperty(ProteinProperty):
