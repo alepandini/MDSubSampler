@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-# https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository
-docker build -t subsampler .
-
