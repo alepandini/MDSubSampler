@@ -20,12 +20,10 @@ class ProteinData:
         self,
         trajectory_filename,
         topology_filename,
-        config_parameters,
     ):
 
         self.trajectory_filename = trajectory_filename
         self.topology_filename = topology_filename
-        self.config_par = config_parameters
         self.trajectory_data = self._read_trajectory(
             self.trajectory_filename, self.topology_filename
         )
