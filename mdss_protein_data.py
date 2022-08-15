@@ -27,12 +27,11 @@ class ProteinData:
         self.trajectory_data = self._read_trajectory(
             self.trajectory_filename, self.topology_filename
         )
-        self.n_frames = self.trajectory_data.trajectory.n_frames
         self.ca_atom_group = self._select_CA_atoms()
-        self.property_dict = {}
+        self.n_frames = self.trajectory_data.trajectory.n_frames
         self.frames = self._frames_of_trajectory()
         self.frame_indices = self._frame_indices_of_trajectory()
-        self.protein_property = None
+        self.property_dict = {}
 
     def _read_trajectory(self, trajectory_filename, topology_filename):
         """
@@ -56,6 +55,17 @@ class ProteinData:
             topology_format="GRO",
         )
         return trajectory_data
+
+    def _select_CA_atoms(self):
+        """
+        Read C-Alpha from the first frame of trajectory
+
+        Returns
+        ----------------------------
+        Return the number of CA atoms from the AtomGroup
+        """
+        ca_atom_group = self.trajectory_data.select_atoms("name CA")
+        return ca_atom_group
 
     def _frames_of_trajectory(self):
         """
@@ -133,18 +143,7 @@ class ProteinData:
         indices_of_selected_frames = [ts.frame for ts in selected_frames]
         return indices_of_selected_frames
 
-    def _select_CA_atoms(self):
-        """
-        Read C-Alpha from the first frame of trajectory
-
-        Returns
-        ----------------------------
-        Return the number of CA atoms from the AtomGroup
-        """
-        ca_atom_group = self.trajectory_data.select_atoms("name CA")
-        return ca_atom_group
-
-    def add_property_link(self, protein_property, property_name):
+    def add_property(self, protein_property, property_name):
         self.property_dict[property_name] = protein_property
         # if property_name in self.property_dict:
         #     self.property_dict[property_name][sample_label] = protein_property

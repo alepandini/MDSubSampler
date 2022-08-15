@@ -45,7 +45,7 @@ class ProteinProperty:
         Method that links the ProteinProperty and ProteinData classes
         """
         if self.protein_data is not None:
-            self.protein_data.add_property_link(self, self.display_name)
+            self.protein_data.add_property(self, self.display_name)
 
     def discretize_vector(self, min_value=None, max_value=None):
         """
