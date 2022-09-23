@@ -13,8 +13,8 @@ class ProteinSampler:
 
     display_name = None
 
-    def __init__(self, property_vector):
-        self.property_vector = list(property_vector)
+    def __init__(self, protein_property):
+        self.property_vector = protein_property.property_vector
         self.sampled_property_vector = None
 
     def sample(self, size):
@@ -34,9 +34,9 @@ class RandomSampler(ProteinSampler):
 
     display_name = "Random Sampling"
 
-    def __init__(self, property_vector, seed_number=1999):
+    def __init__(self, protein_property, seed_number=1999):
         random.seed(seed_number)
-        super().__init__(property_vector)
+        super().__init__(protein_property)
 
     def sample(self, size):
         """
@@ -73,11 +73,11 @@ class UniformSampler(ProteinSampler):
 
     display_name = "Uniform Sampling"
 
-    def __init__(self, property_vector, low, high, dtype=int):
+    def __init__(self, protein_property, low, high, dtype=int):
         self.low = low
         self.high = high
         self.dtype = dtype
-        super().__init__(property_vector)
+        super().__init__(protein_property)
 
     def sample(self, size):
         """
@@ -91,10 +91,9 @@ class UniformSampler(ProteinSampler):
         Return random integers from the “discrete uniform” distribution of the specified dtype
         in the “half-open” interval [low, high).
         """
-        self.sampled_property_vector = np.random.randint(
-            self.low, self.high, size, self.dtype
+        self.sampled_property_vector = np.random.uniform(
+            self.low, self.high, size
         )
-        super().sample(size)
         return self.sampled_property_vector
 
 
@@ -112,9 +111,9 @@ class StratifiedSampler(ProteinSampler):
 
     display_name = "Stratified Sampling"
 
-    def __init__(self, property_vector, layers):
+    def __init__(self, protein_property, layers):
         self.layers = layers
-        super().__init__(property_vector)
+        super().__init__(protein_property)
 
     def sample(self, size):
         """
@@ -155,9 +154,9 @@ class BootstrappingSampler(ProteinSampler):
 
     display_name = "Bootstrapping Sampling"
 
-    def __init__(self, property_vector, number_of_iterations):
+    def __init__(self, protein_property, number_of_iterations):
         self.number_of_iterations = number_of_iterations
-        super().__init__(property_vector)
+        super().__init__(protein_property)
 
     def sample(self, size):
         """
