@@ -35,6 +35,7 @@ class RMSDProperty(ProteinProperty):
                     self.ref_coordinates,
                 )
             )
+            self.frame_indices.append(frame)
 
         self._property_statistics()
         self.discretize_vector()
@@ -84,6 +85,7 @@ class DistanceBetweenAtoms(ProteinProperty):
                 atom_selection_1.positions[0], atom_selection_2.positions[1]
             )
             self.property_vector.append(dist)
+            self.frame_indices.append(frame)
 
         self._property_statistics()
         self.discretize_vector()
@@ -113,6 +115,7 @@ class RadiusOfGyrationProperty(ProteinProperty):
                     self.atom_selection
                 ).radius_of_gyration()
             )
+            self.frame_indices.append(frame)
 
         self._property_statistics()
         self.discretize_vector()
@@ -182,6 +185,7 @@ class DihedralAnglePhi(DihedralAngles):
             phi_ags = [phi for phi in phi_ags if phi is not None]
             dihs = dihedrals.Dihedral(phi_ags).run()
             self.property_vector.append(dihs.results.angles)
+            self.frame_indices.append(frame)
 
         # self._property_statistics()
         # self.discretize_vector()
@@ -204,6 +208,7 @@ class DihedralAnglePsi(DihedralAngles):
             psi_ags = [psi for psi in psi_ags if psi is not None]
             dihs = dihedrals.Dihedral(psi_ags).run()
             self.property_vector.append(dihs.results.angles)
+            self.frame_indices.append(frame)
 
         # self._property_statistics()
         # self.discretize_vector()
@@ -266,6 +271,7 @@ class Angles(ProteinProperty):
             angle = np.arccos(cosine_angle)
             angle_degrees = np.degrees(angle)
             self.property_vector.append(angle_degrees)
+            self.frame_indices.append(frame)
 
         self._property_statistics()
         self.discretize_vector()

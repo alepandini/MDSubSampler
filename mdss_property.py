@@ -29,6 +29,7 @@ class ProteinProperty:
         self.protein_data = protein_data
         self.atom_selection = atom_selection
         self.property_vector = []
+        self.frame_indices = []
         self._add_reference_to_protein_data()
 
     @classmethod
