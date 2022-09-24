@@ -16,11 +16,7 @@ class ProteinData:
         configuration parameters of the protein
     """
 
-    def __init__(
-        self,
-        trajectory_filename,
-        topology_filename,
-    ):
+    def __init__(self, trajectory_filename, topology_filename, config_parameters=None):
 
         self.trajectory_filename = trajectory_filename
         self.topology_filename = topology_filename
@@ -145,8 +141,14 @@ class ProteinData:
 
     def add_property(self, protein_property, property_name):
         self.property_dict[property_name] = protein_property
-        # if property_name in self.property_dict:
-        #     self.property_dict[property_name][sample_label] = protein_property
-        # else:
-        #     self.property_dict[property_name] = {}
-        #     self.property_dict[property_name][sample_label] = protein_property
+
+    def property_data_report(self):
+        report_dict = {}
+        for k, v in self.property_dict.items():
+            report_dict[k] = {
+                "min": v.min_value,
+                "max": v.max_value,
+                "atom_selection": v.atom_selection,
+                "name": v.display_name,
+            }
+        return report_dict
