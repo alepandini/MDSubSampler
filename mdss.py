@@ -60,17 +60,8 @@ def sampling_workflow(arg_list):
 
     property_sample.write_property_vector_sample(filepath_sample)
 
-    print(
-        {
-            k: {
-                "min": v.min_value,
-                "max": v.max_value,
-                "atom_selection": v.atom_selection,
-                "name": v.display_name,
-            }
-            for k, v in p_data.property_dict.items()
-        }
-    )
+    p_data.property_data_report()
+
     return dissimilarity_score
 
 
