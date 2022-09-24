@@ -26,15 +26,13 @@ def sampling_workflow(arg_list):
 
     sampler_class = p.SAMPLER_CLASS_MAPPING[args.sampler]
     if args.sampler == "RandomSampler":
-        sampler = sampler_class(property.property_vector, args.seed_number)
+        sampler = sampler_class(property, args.seed_number)
     if args.sampler == "UniformSampler":
-        sampler = sampler_class(
-            property.property_vector, args.low, args.high, args.dtype
-        )
+        sampler = sampler_class(property, args.low, args.high, args.dtype)
     elif args.sampler == "StratifiedSampler":
-        sampler = sampler_class(property.property_vector, args.layers)
+        sampler = sampler_class(property, args.layers)
     elif args.sampler == "BootstrappingSampler":
-        sampler = sampler_class(property.property_vector, args.number_of_iterations)
+        sampler = sampler_class(property, args.number_of_iterations)
 
     sampled_property_vector = sampler.sample(args.size)
     sampled_indices = sampler.sampled_indices
@@ -62,28 +60,17 @@ def sampling_workflow(arg_list):
 
     property_sample.write_property_vector_sample(filepath_sample)
 
-    plot_distribution(
-        property,
-        filepath,
-        "{}_{}_{}".format(
-            args.file_prefix,
-            property_class.display_name,
-            dissimilarity_class.display_name,
-        ),
-        args.output_folder,
+    print(
+        {
+            k: {
+                "min": v.min_value,
+                "max": v.max_value,
+                "atom_selection": v.atom_selection,
+                "name": v.display_name,
+            }
+            for k, v in p_data.property_dict.items()
+        }
     )
-
-    plot_distribution(
-        property_sample,
-        filepath_sample,
-        "{}_{}_sample_{}".format(
-            args.file_prefix,
-            property_class.display_name,
-            dissimilarity_class.display_name,
-        ),
-        args.output_folder,
-    )
-
     return dissimilarity_score
 
 
