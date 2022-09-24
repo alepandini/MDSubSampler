@@ -20,25 +20,27 @@ class RMSDProperty(ProteinProperty):
         Method that calculates the RMDS proporty of a given frame list for a given
         selection of atoms
         """
-        self.set_reference_coordinates()
-        for frame in self.protein_data.frame_indices:
-            """
-            Go through the trajectory and for each frame I compare with my reference frame
-            """
-            self.protein_data.trajectory_data.trajectory[frame]
+        if self.set_reference_coordinates():
+            for frame in self.protein_data.frame_indices:
+                """
+                Go through the trajectory and for each frame I compare with my reference frame
+                """
+                self.protein_data.trajectory_data.trajectory[frame]
 
-            self.property_vector.append(
-                rms.rmsd(
-                    self.protein_data.trajectory_data.select_atoms(
-                        self.atom_selection
-                    ).positions,
-                    self.ref_coordinates,
+                self.property_vector.append(
+                    rms.rmsd(
+                        self.protein_data.trajectory_data.select_atoms(
+                            self.atom_selection
+                        ).positions,
+                        self.ref_coordinates,
+                    )
                 )
-            )
-            self.frame_indices.append(frame)
+                self.frame_indices.append(frame)
 
-        self._property_statistics()
-        self.discretize_vector()
+            self._property_statistics()
+            self.discretize_vector()
+        else:
+            print("Property cannot be calculated without associated protein data")
 
 
 class DistanceBetweenAtoms(ProteinProperty):
@@ -67,28 +69,30 @@ class DistanceBetweenAtoms(ProteinProperty):
         """
         Method that calculates the distance between two given set of atoms
         """
-        self.set_reference_coordinates()
-        atom_selection_1 = self.protein_data.trajectory_data.select_atoms(
-            self.atom_selection[0]
-        )
-        atom_selection_2 = self.protein_data.trajectory_data.select_atoms(
-            self.atom_selection[1]
-        )
-
-        for frame in self.protein_data.frame_indices:
-            """
-            Go through the trajectory and for each frame the distance between the given
-            atoms is calculated
-            """
-            self.protein_data.trajectory_data.trajectory[frame]
-            dist = distances.distance_array(
-                atom_selection_1.positions[0], atom_selection_2.positions[1]
+        if self.set_reference_coordinates():
+            atom_selection_1 = self.protein_data.trajectory_data.select_atoms(
+                self.atom_selection[0]
             )
-            self.property_vector.append(dist)
-            self.frame_indices.append(frame)
+            atom_selection_2 = self.protein_data.trajectory_data.select_atoms(
+                self.atom_selection[1]
+            )
 
-        self._property_statistics()
-        self.discretize_vector()
+            for frame in self.protein_data.frame_indices:
+                """
+                Go through the trajectory and for each frame the distance between the given
+                atoms is calculated
+                """
+                self.protein_data.trajectory_data.trajectory[frame]
+                dist = distances.distance_array(
+                    atom_selection_1.positions[0], atom_selection_2.positions[1]
+                )
+                self.property_vector.append(dist)
+                self.frame_indices.append(frame)
+
+            self._property_statistics()
+            self.discretize_vector()
+        else:
+            print("Property cannot be calculated without associated protein data")
 
 
 class RadiusOfGyrationProperty(ProteinProperty):
@@ -177,18 +181,19 @@ class DihedralAnglePhi(DihedralAngles):
     display_name = "Dihedral Angle phi between 4 selected atoms"
 
     def calculate_property(self):
+        if self.set_reference_coordinates():
+            u = self.protein_data.trajectory_data
+            for frame in self.protein_data.frame_indices:
+                phi_ags = [res.phi_selection() for res in u.residues]
+                phi_ags = [phi for phi in phi_ags if phi is not None]
+                dihs = dihedrals.Dihedral(phi_ags).run()
+                self.property_vector.append(dihs.results.angles)
+                self.frame_indices.append(frame)
 
-        self.set_reference_coordinates()
-        u = self.protein_data.trajectory_data
-        for frame in self.protein_data.frame_indices:
-            phi_ags = [res.phi_selection() for res in u.residues]
-            phi_ags = [phi for phi in phi_ags if phi is not None]
-            dihs = dihedrals.Dihedral(phi_ags).run()
-            self.property_vector.append(dihs.results.angles)
-            self.frame_indices.append(frame)
-
-        # self._property_statistics()
-        # self.discretize_vector()
+            # self._property_statistics()
+            # self.discretize_vector()
+        else:
+            print("Property cannot be calculated without associated protein data")
 
 
 class DihedralAnglePsi(DihedralAngles):
@@ -200,18 +205,19 @@ class DihedralAnglePsi(DihedralAngles):
     display_name = "Dihedral Angle psi between 4 selected atoms"
 
     def calculate_property(self):
+        if self.set_reference_coordinates():
+            u = self.protein_data.trajectory_data
+            for frame in self.protein_data.frame_indices:
+                psi_ags = [res.psi_selection() for res in u.residues]
+                psi_ags = [psi for psi in psi_ags if psi is not None]
+                dihs = dihedrals.Dihedral(psi_ags).run()
+                self.property_vector.append(dihs.results.angles)
+                self.frame_indices.append(frame)
 
-        self.set_reference_coordinates()
-        u = self.protein_data.trajectory_data
-        for frame in self.protein_data.frame_indices:
-            psi_ags = [res.psi_selection() for res in u.residues]
-            psi_ags = [psi for psi in psi_ags if psi is not None]
-            dihs = dihedrals.Dihedral(psi_ags).run()
-            self.property_vector.append(dihs.results.angles)
-            self.frame_indices.append(frame)
-
-        # self._property_statistics()
-        # self.discretize_vector()
+            # self._property_statistics()
+            # self.discretize_vector()
+        else:
+            print("Property cannot be calculated without associated protein data")
 
 
 class Angles(ProteinProperty):
@@ -240,38 +246,40 @@ class Angles(ProteinProperty):
         """
         Method that calculates the angle between three given atoms
         """
-        self.set_reference_coordinates()
-        atom_selection_1 = self.protein_data.trajectory_data.select_atoms(
-            self.atom_selection[0]
-        )
-        atom_selection_2 = self.protein_data.trajectory_data.select_atoms(
-            self.atom_selection[1]
-        )
-        atom_selection_3 = self.protein_data.trajectory_data.select_atoms(
-            self.atom_selection[2]
-        )
-
-        for frame in self.protein_data.frame_indices:
-            """
-            Go through the trajectory and for each frame the angle between the given
-            atoms is calculated
-            """
-
-            self.protein_data.trajectory_data.trajectory[frame]
-            atom_1_coordinates = atom_selection_1.positions[0]
-            atom_2_coordinates = atom_selection_2.positions[1]
-            atom_3_coordinates = atom_selection_3.positions[2]
-
-            atoms_2_1 = atom_1_coordinates - atom_2_coordinates
-            atoms_2_3 = atom_3_coordinates - atom_2_coordinates
-
-            cosine_angle = np.dot(atoms_2_1, atoms_2_3) / (
-                np.linalg.norm(atoms_2_1) * np.linalg.norm(atoms_2_3)
+        if self.set_reference_coordinates():
+            atom_selection_1 = self.protein_data.trajectory_data.select_atoms(
+                self.atom_selection[0]
             )
-            angle = np.arccos(cosine_angle)
-            angle_degrees = np.degrees(angle)
-            self.property_vector.append(angle_degrees)
-            self.frame_indices.append(frame)
+            atom_selection_2 = self.protein_data.trajectory_data.select_atoms(
+                self.atom_selection[1]
+            )
+            atom_selection_3 = self.protein_data.trajectory_data.select_atoms(
+                self.atom_selection[2]
+            )
 
-        self._property_statistics()
-        self.discretize_vector()
+            for frame in self.protein_data.frame_indices:
+                """
+                Go through the trajectory and for each frame the angle between the given
+                atoms is calculated
+                """
+
+                self.protein_data.trajectory_data.trajectory[frame]
+                atom_1_coordinates = atom_selection_1.positions[0]
+                atom_2_coordinates = atom_selection_2.positions[1]
+                atom_3_coordinates = atom_selection_3.positions[2]
+
+                atoms_2_1 = atom_1_coordinates - atom_2_coordinates
+                atoms_2_3 = atom_3_coordinates - atom_2_coordinates
+
+                cosine_angle = np.dot(atoms_2_1, atoms_2_3) / (
+                    np.linalg.norm(atoms_2_1) * np.linalg.norm(atoms_2_3)
+                )
+                angle = np.arccos(cosine_angle)
+                angle_degrees = np.degrees(angle)
+                self.property_vector.append(angle_degrees)
+                self.frame_indices.append(frame)
+
+            self._property_statistics()
+            self.discretize_vector()
+        else:
+            print("Property cannot be calculated without associated protein data")

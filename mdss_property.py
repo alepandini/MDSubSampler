@@ -24,10 +24,12 @@ class ProteinProperty:
     display_name = None
 
     def __init__(self, protein_data, atom_selection="name CA"):
-        # if not isinstance(protein_data, ProteinData):
-        #     raise TypeError("A instance of ProteinData is required")
+        if not isinstance(protein_data, ProteinData):
+            print("Warning: A instance of ProteinData is required. protein_data attribute set to None")
+            protein_data = None
         self.protein_data = protein_data
         self.atom_selection = atom_selection
+        self.ref_coordinates = []
         self.property_vector = []
         self.property_vector_discretized = {}
         self.frame_indices = []
@@ -81,18 +83,23 @@ class ProteinProperty:
         Method that sets us on the first frame and extracts a copy of the coordinates
         of the first frame only for a selection of atoms
         """
-        self.protein_data.trajectory_data.trajectory[0]
-        if isinstance(self.atom_selection, list):
-            self.ref_coordinates = [
-                self.protein_data.trajectory_data.select_atoms(
-                    selection
+        if self.protein_data is not None:
+            self.protein_data.trajectory_data.trajectory[0]
+            if isinstance(self.atom_selection, list):
+                self.ref_coordinates = [
+                    self.protein_data.trajectory_data.select_atoms(
+                        selection
+                    ).positions.copy()
+                    for selection in self.atom_selection
+                ]
+            else:
+                self.ref_coordinates = self.protein_data.trajectory_data.select_atoms(
+                    self.atom_selection
                 ).positions.copy()
-                for selection in self.atom_selection
-            ]
+            return True
         else:
-            self.ref_coordinates = self.protein_data.trajectory_data.select_atoms(
-                self.atom_selection
-            ).positions.copy()
+            print('Warning: property is not associated to a protein data object.')
+            return False
 
     def write_property_vector(self, outfilepath):
         """
