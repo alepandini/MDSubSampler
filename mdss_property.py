@@ -29,6 +29,7 @@ class ProteinProperty:
         self.protein_data = protein_data
         self.atom_selection = atom_selection
         self.property_vector = []
+        self.property_vector_discretized = {}
         self.frame_indices = []
         self._add_reference_to_protein_data()
 
@@ -48,7 +49,7 @@ class ProteinProperty:
         if self.protein_data is not None:
             self.protein_data.add_property(self, self.display_name)
 
-    def discretize_vector(self, min_value=None, max_value=None):
+    def discretize_vector(self, min_value=None, max_value=None, n_bins=100):
         """
         Method that discretises a vector used for Bhatta and KL distances
 
@@ -60,13 +61,12 @@ class ProteinProperty:
             min_value = self.min_value
         if max_value is None:
             max_value = self.max_value
-        bin_size = (max_value - min_value) / 100.0
+        bin_size = (max_value - min_value) / n_bins
         bin_vector = np.arange(min_value, max_value, bin_size)
         counts, bins = np.histogram(self.property_vector, bins=bin_vector)
         self.property_vector_discretized = dict(
             zip(bins, (counts / len(self.property_vector)))
         )
-        return self.property_vector_discretized
 
     def _property_statistics(self):
         """
