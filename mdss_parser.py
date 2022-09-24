@@ -1,5 +1,6 @@
 from numpy import require
 import mdss_property
+import mdss_geometrical_property
 import mdss_sampler
 import mdss_dissimilarity
 import argparse
@@ -7,12 +8,12 @@ import sys
 import operator as op
 
 PROPERTY_CLASSES = [
-    mdss_property.RMSDProperty,
-    mdss_property.DistanceBetweenAtoms,
-    mdss_property.RadiusOfGyrationProperty,
-    mdss_property.PCA,
-    mdss_property.DihedralAngles,
-    mdss_property.Angles,
+    mdss_geometrical_property.RMSDProperty,
+    mdss_geometrical_property.DistanceBetweenAtoms,
+    mdss_geometrical_property.RadiusOfGyrationProperty,
+    mdss_geometrical_property.PCA,
+    mdss_geometrical_property.DihedralAngles,
+    mdss_geometrical_property.Angles,
 ]
 PROPERTY_CLASS_MAPPING = dict(
     (property.__name__, property) for property in PROPERTY_CLASSES
@@ -135,9 +136,9 @@ def parse_args(arg_list):
     args = parser.parse_args(arg_list)
 
     if args.property in [
-        mdss_property.DistanceBetweenAtoms.__name__,
-        mdss_property.DihedralAngles.__name__,
-        mdss_property.Angles.__name__,
+        mdss_geometrical_property.DistanceBetweenAtoms.__name__,
+        mdss_geometrical_property.DihedralAngles.__name__,
+        mdss_geometrical_property.Angles.__name__,
     ]:
         args.atom_selection = args.atom_selection.split(",")
 
@@ -177,8 +178,12 @@ def parse_args(arg_list):
     require_sampler_argument(mdss_sampler.StratifiedSampler, "layers")
     require_sampler_argument(mdss_sampler.BootstrappingSampler, "number_of_iterations")
 
-    require_property_argument(mdss_property.DistanceBetweenAtoms, "atom_selection")
-    require_property_argument(mdss_property.DihedralAngles, "atom_selection")
-    require_property_argument(mdss_property.Angles, "atom_selection")
+    require_property_argument(
+        mdss_geometrical_property.DistanceBetweenAtoms, "atom_selection"
+    )
+    require_property_argument(
+        mdss_geometrical_property.DihedralAngles, "atom_selection"
+    )
+    require_property_argument(mdss_geometrical_property.Angles, "atom_selection")
 
     return args
