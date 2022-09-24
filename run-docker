@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+# mount current directory as a docker volume in /app
+# and add /app to PYTHONPATH where python searches for libraries
+docker run -it -v $(pwd):/app -e PYTHONPATH='/app' subsampler /bin/bash
