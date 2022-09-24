@@ -1,6 +1,7 @@
 from numpy import require
 import mdss_property
 import mdss_geometrical_property
+import mdss_pca_property
 import mdss_sampler
 import mdss_dissimilarity
 import argparse
@@ -11,7 +12,7 @@ PROPERTY_CLASSES = [
     mdss_geometrical_property.RMSDProperty,
     mdss_geometrical_property.DistanceBetweenAtoms,
     mdss_geometrical_property.RadiusOfGyrationProperty,
-    mdss_geometrical_property.PCA,
+    mdss_pca_property.PCA,
     mdss_geometrical_property.DihedralAngles,
     mdss_geometrical_property.Angles,
 ]
