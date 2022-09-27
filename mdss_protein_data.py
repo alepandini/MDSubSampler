@@ -1,5 +1,7 @@
+from datetime import datetime
 import MDAnalysis as mda
 import numpy as np
+from mdss_logging import logging as log
 
 
 class ProteinData:
@@ -84,6 +86,10 @@ class ProteinData:
                 ),
             )
 
+        log.info(
+            "The number of frames from the input trajectory is {}".format(len(frames))
+        )
+
         return frames
 
     def _frame_indices_of_trajectory(self):
@@ -117,6 +123,7 @@ class ProteinData:
             else:
                 raise TypeError("Expected int or slice")
         selected_frames = trajectory_data[np.where(mask)[0]]
+        log.info("The number of selected frames is".format(len(selected_frames)))
         return selected_frames
 
     def frame_selection_indices(self, selection_of_frames):
@@ -140,7 +147,9 @@ class ProteinData:
         return indices_of_selected_frames
 
     def add_property(self, protein_property, property_name):
-        self.property_dict[property_name] = protein_property
+        timestamp = str(datetime.now().timestamp())
+        key = "{}_{}".format(property_name, timestamp)
+        self.property_dict[key] = protein_property
 
     def property_data_report(self):
         report_dict = {}
