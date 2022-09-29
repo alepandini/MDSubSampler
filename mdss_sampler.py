@@ -113,6 +113,7 @@ class StratifiedSampler(ProteinSampler):
 
     def __init__(self, protein_property, layers):
         self.layers = layers
+        self.n_layers = len(layers)
         super().__init__(protein_property)
 
     def sample(self, size):
@@ -126,18 +127,23 @@ class StratifiedSampler(ProteinSampler):
         ----------
         return a single stratified sample
         """
-        population = sum(len(layer) for layer in self.layers)
-        samples = []
+        population_size = sum(len(layer) for layer in self.layers)
+        if population_size == len(protein_property.property_vector):
+            samples = []
+            strata_sample_size = round(size/n_layers)
 
-        for layer in self.layers:
-            layer_size = len(layer)
-            # the sample size of the strata (ie homogeneous groups)
-            cur_size = round((size / population) * layer_size)
-            current_layer_sample_size = cur_size
-            current_sample = random.sample(layer, current_layer_sample_size)
-            samples.extend(current_sample)
+            for layer in self.layers:
+                if len(layer) < strata_sample_size:
+                    print("Warning: strata size smaller than required sample. Sampling with replacement.")
+                    current_sample = random.choices(layer, strata_sample_size)
+                else:
+                    current_sample = random.sample(layer, strata_sample_size)
+                samples.extend(current_sample)
 
-        return samples
+            return samples
+        else:
+            print("Warning: strata vector is incosistent in size with property vector.")
+            return None
 
 
 class BootstrappingSampler(ProteinSampler):
