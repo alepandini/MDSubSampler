@@ -52,6 +52,7 @@ class ProteinData:
             permissive=False,
             topology_format="GRO",
         )
+        log.info("{:18s} Input trajectory is read".format("INPUT"))
         return trajectory_data
 
     def _select_CA_atoms(self):
@@ -86,10 +87,7 @@ class ProteinData:
                 ),
             )
 
-        log.info(
-            "The number of frames from the input trajectory is {}".format(len(frames))
-        )
-
+        log.info("{:18s} Number of frames: {:2}".format("INPUT", len(frames)))
         return frames
 
     def _frame_indices_of_trajectory(self):
@@ -121,9 +119,18 @@ class ProteinData:
             if isinstance(i, int) or isinstance(i, slice):
                 mask[i] = True
             else:
+                log.error(
+                    "{:18s} Expected int or slice in frame_selection_iterator()".format(
+                        "ERROR"
+                    )
+                )
                 raise TypeError("Expected int or slice")
         selected_frames = trajectory_data[np.where(mask)[0]]
-        log.info("The number of selected frames is".format(len(selected_frames)))
+        log.info(
+            "{:18s} Number of selected frames: {:2}".format(
+                "OUTPUT", len(selected_frames)
+            )
+        )
         return selected_frames
 
     def frame_selection_indices(self, selection_of_frames):
@@ -141,9 +148,19 @@ class ProteinData:
             if isinstance(i, int) or isinstance(i, slice):
                 mask[i] = True
             else:
+                log.error(
+                    "{:18s} Expected int or slice in frame_selection_iterator()".format(
+                        "ERROR"
+                    )
+                )
                 raise TypeError("Expected int or slice")
         selected_frames = trajectory_data[np.where(mask)[0]]
         indices_of_selected_frames = [ts.frame for ts in selected_frames]
+        log.info(
+            "{:18s} Indices of selected frames: {:2}".format(
+                "OUTPUT", indices_of_selected_frames
+            )
+        )
         return indices_of_selected_frames
 
     def add_property(self, protein_property, property_name):
@@ -160,4 +177,5 @@ class ProteinData:
                 "atom_selection": v.atom_selection,
                 "name": v.display_name,
             }
+
         return report_dict

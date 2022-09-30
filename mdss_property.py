@@ -38,6 +38,8 @@ class ProteinProperty:
         self.property_vector_discretized = {}
         self.frame_indices = []
         self._add_reference_to_protein_data()
+        log.info("{:18s} Atom selection: {:2}".format("SELECTION", self.atom_selection))
+        log.info("{:18s} Property name: {:2}".format("SELECTION", self.display_name))
 
     @classmethod
     def from_xvg(cls, xvg_filepath):
@@ -82,7 +84,7 @@ class ProteinProperty:
         self.max_value = np.max(self.property_vector)
         self.avg_value = np.average(self.property_vector)
         log.info(
-            "{:18s} max = {:4.2f}, min = {:4.2f}, avg = {:4.2f}".format(
+            "{:18s} min = {:4.2f}, max = {:4.2f}, avg = {:4.2f}".format(
                 "STATISTICS", self.min_value, self.max_value, self.avg_value
             )
         )
@@ -109,7 +111,7 @@ class ProteinProperty:
         else:
             print("Warning: property is not associated to a protein data object.")
             log.warning(
-                "{:18s} property is not associated to a protein data object".format(
+                "{:18s} Property is not associated to a protein data object".format(
                     "WARNING"
                 )
             )
@@ -123,7 +125,7 @@ class ProteinProperty:
         with open(outfilepath, "w") as f:
             for i, value in enumerate(self.property_vector):
                 f.write("{} {}\n".format(i, value))
-        log.info("{:18s} property vector done".format("STEPS"))
+        log.info("{:18s} Property vector done".format("STEPS"))
 
     def write_property_discretised_vector(self, outfilepath):
         """
@@ -134,7 +136,7 @@ class ProteinProperty:
         with open(outfilepath, "w") as f:
             for (key, value) in discr_vector.items():
                 f.write("{} {}\n".format(key, value))
-        log.info("{:18s} discretised property vector done".format("STEPS"))
+        log.info("{:18s} Discretised property vector done".format("STEPS"))
 
 
 class SampledProperty(ProteinProperty):
@@ -157,4 +159,4 @@ class SampledProperty(ProteinProperty):
         with open(outfilepath, "w") as f:
             for i, value in zip(self.indices, self.property_vector):
                 f.write("{} {}\n".format(i, value))
-        log.info("{:18s} sample property vector done".format("STEPS"))
+        log.info("{:18s} Sample property vector done".format("STEPS"))
