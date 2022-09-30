@@ -26,3 +26,5 @@
 # 1: 0.008814553862456592
 # 5:0.003142312466437116
 # 10:0.001085055552200252
+
+# python scenarios/mdss_scenario_001.py data/user.xtc data/user.gro test2909
