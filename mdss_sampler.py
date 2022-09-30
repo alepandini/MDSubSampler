@@ -91,9 +91,7 @@ class UniformSampler(ProteinSampler):
         Return random integers from the “discrete uniform” distribution of the specified dtype
         in the “half-open” interval [low, high).
         """
-        self.sampled_property_vector = np.random.uniform(
-            self.low, self.high, size
-        )
+        self.sampled_property_vector = np.random.uniform(self.low, self.high, size)
         return self.sampled_property_vector
 
 
@@ -130,11 +128,13 @@ class StratifiedSampler(ProteinSampler):
         population_size = sum(len(layer) for layer in self.layers)
         if population_size == len(protein_property.property_vector):
             samples = []
-            strata_sample_size = round(size/n_layers)
+            strata_sample_size = round(size / n_layers)
 
             for layer in self.layers:
                 if len(layer) < strata_sample_size:
-                    print("Warning: strata size smaller than required sample. Sampling with replacement.")
+                    print(
+                        "Warning: strata size smaller than required sample. Sampling with replacement."
+                    )
                     current_sample = random.choices(layer, strata_sample_size)
                 else:
                     current_sample = random.sample(layer, strata_sample_size)
