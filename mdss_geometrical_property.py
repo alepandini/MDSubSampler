@@ -3,7 +3,8 @@ from mdss_property import SampledProperty
 from MDAnalysis.analysis import rms
 from MDAnalysis.analysis import distances
 from MDAnalysis.analysis import dihedrals
-from scipy.stats import norm
+from mdss_logging import logging as log
+import numpy as np
 
 
 class RMSDProperty(ProteinProperty):
@@ -40,6 +41,11 @@ class RMSDProperty(ProteinProperty):
             self.discretize_vector()
         else:
             print("Property cannot be calculated without associated protein data")
+            log.warning(
+                "{:18s} Property cannot be calculated without associated protein data".format(
+                    "WARNING"
+                )
+            )
 
 
 class DistanceBetweenAtoms(ProteinProperty):
@@ -60,6 +66,11 @@ class DistanceBetweenAtoms(ProteinProperty):
 
     def __init__(self, protein_data, atom_selection):
         if not isinstance(atom_selection, list) or len(atom_selection) != 2:
+            log.error(
+                "{:18s} Expecting atom_selection to be a list of 2 selections in DistanceBetweenAtoms class".format(
+                    "ERROR"
+                )
+            )
             raise RuntimeError("Expecting atom_selection to be a list of 2 selections")
 
         super().__init__(protein_data, atom_selection)
@@ -92,6 +103,11 @@ class DistanceBetweenAtoms(ProteinProperty):
             self.discretize_vector()
         else:
             print("Property cannot be calculated without associated protein data")
+            log.warning(
+                "{:18s} Property cannot be calculated without associated protein data".format(
+                    "WARNING"
+                )
+            )
 
 
 class RadiusOfGyrationProperty(ProteinProperty):
@@ -142,6 +158,11 @@ class Angles(ProteinProperty):
 
     def __init__(self, protein_data, atom_selection):
         if not isinstance(atom_selection, list) or len(atom_selection) != 3:
+            log.error(
+                "{:18s} Expecting atom_selection to be a list of 3 selections in Angles class".format(
+                    "ERROR"
+                )
+            )
             raise RuntimeError("Expecting atom_selection to be a list of 3 selections")
 
         super().__init__(protein_data, atom_selection)
@@ -187,6 +208,11 @@ class Angles(ProteinProperty):
             self.discretize_vector()
         else:
             print("Property cannot be calculated without associated protein data")
+            log.warning(
+                "{:18s} Property cannot be calculated without associated protein data".format(
+                    "WARNING"
+                )
+            )
 
 
 class DihedralAngles(ProteinProperty):
@@ -205,6 +231,11 @@ class DihedralAngles(ProteinProperty):
 
     def __init__(self, protein_data, atom_selection):
         if not isinstance(atom_selection, list) or len(atom_selection) != 4:
+            log.error(
+                "{:18s} Expecting atom_selection to be a list of 4 selections in DihedralAngles class".format(
+                    "ERROR"
+                )
+            )
             raise RuntimeError("Expecting atom_selection to be a list of 4 selections")
 
         super().__init__(protein_data, atom_selection)
@@ -232,6 +263,11 @@ class DihedralAnglePhi(DihedralAngles):
             # self.discretize_vector()
         else:
             print("Property cannot be calculated without associated protein data")
+            log.warning(
+                "{:18s} Property cannot be calculated without associated protein data".format(
+                    "WARNING"
+                )
+            )
 
 
 class DihedralAnglePsi(DihedralAngles):
@@ -256,3 +292,8 @@ class DihedralAnglePsi(DihedralAngles):
             # self.discretize_vector()
         else:
             print("Property cannot be calculated without associated protein data")
+            log.warning(
+                "{:18s} Property cannot be calculated without associated protein data".format(
+                    "WARNING"
+                )
+            )
