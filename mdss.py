@@ -2,7 +2,6 @@ from mdss_graph import plot_distribution
 import mdss_protein_data
 import mdss_property
 import mdss_parser as p
-from mdss_logging import logging as log
 import os
 import sys
 
@@ -43,8 +42,7 @@ def sampling_workflow(arg_list):
     dissimilarity_class = p.DISSIMILARITY_CLASS_MAPPING[args.dissimilarity]
     dissimilarity = dissimilarity_class(property, property_sample)
     dissimilarity_score = dissimilarity.calculate_dissimilarity()
-    print("Dissimilarity: {}".format(dissimilarity_score))
-    log.info("Dissimilarity: {}".format(dissimilarity_score))
+    # print("Dissimilarity: {}".format(dissimilarity_score))
 
     filename = "{}_{}_{}.dat".format(
         args.file_prefix, property_class.display_name, dissimilarity_class.display_name
