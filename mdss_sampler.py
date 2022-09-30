@@ -103,15 +103,14 @@ class StratifiedSampler(ProteinSampler):
         protein_data: ProteinData class object
             The frame_list can be accessed through this object
          layers: list
-            2D list that consists of multiple layers where eachlayer is a set of
-            labels for the frames according to the strata
+            2D list that consists of strata lables one for each point
     """
 
     display_name = "Stratified Sampling"
 
-    def __init__(self, protein_property, layers):
-        self.layers = layers
-        self.n_layers = len(layers)
+    def __init__(self, protein_property, strata_vector):
+        self.strata_vector = strata_vector
+        self.n_layers = len(strata_vector)
         super().__init__(protein_property)
 
     def sample(self, size):
@@ -126,9 +125,9 @@ class StratifiedSampler(ProteinSampler):
         return a single stratified sample
         """
         population_size = sum(len(layer) for layer in self.layers)
-        if population_size == len(protein_property.property_vector):
+        if population_size == len(self.protein_property.property_vector):
             samples = []
-            strata_sample_size = round(size / n_layers)
+            strata_sample_size = round(size / self.n_layers)
 
             for layer in self.layers:
                 if len(layer) < strata_sample_size:
