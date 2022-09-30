@@ -1,7 +1,7 @@
 import numpy as np
 import MDAnalysis as mda
-
 from mdss_protein_data import ProteinData
+from mdss_logging import logging as log
 
 
 class ProteinProperty:
@@ -25,7 +25,11 @@ class ProteinProperty:
 
     def __init__(self, protein_data, atom_selection="name CA"):
         if not isinstance(protein_data, ProteinData):
-            print("Warning: A instance of ProteinData is required. protein_data attribute set to None")
+            log.warning(
+                "{:18s} A instance of ProteinData is required. protein_data attribute set to None".format(
+                    "WARNING"
+                )
+            )
             protein_data = None
         self.protein_data = protein_data
         self.atom_selection = atom_selection
@@ -77,6 +81,11 @@ class ProteinProperty:
         self.min_value = np.min(self.property_vector)
         self.max_value = np.max(self.property_vector)
         self.avg_value = np.average(self.property_vector)
+        log.info(
+            "{:18s} max = {:4.2f}, min = {:4.2f}, avg = {:4.2f}".format(
+                "STATISTICS", self.min_value, self.max_value, self.avg_value
+            )
+        )
 
     def set_reference_coordinates(self):
         """
@@ -98,7 +107,12 @@ class ProteinProperty:
                 ).positions.copy()
             return True
         else:
-            print('Warning: property is not associated to a protein data object.')
+            print("Warning: property is not associated to a protein data object.")
+            log.warning(
+                "{:18s} property is not associated to a protein data object".format(
+                    "WARNING"
+                )
+            )
             return False
 
     def write_property_vector(self, outfilepath):
@@ -109,6 +123,7 @@ class ProteinProperty:
         with open(outfilepath, "w") as f:
             for i, value in enumerate(self.property_vector):
                 f.write("{} {}\n".format(i, value))
+        log.info("{:18s} property vector done".format("STEPS"))
 
     def write_property_discretised_vector(self, outfilepath):
         """
@@ -119,6 +134,7 @@ class ProteinProperty:
         with open(outfilepath, "w") as f:
             for (key, value) in discr_vector.items():
                 f.write("{} {}\n".format(key, value))
+        log.info("{:18s} discretised property vector done".format("STEPS"))
 
 
 class SampledProperty(ProteinProperty):
@@ -141,3 +157,4 @@ class SampledProperty(ProteinProperty):
         with open(outfilepath, "w") as f:
             for i, value in zip(self.indices, self.property_vector):
                 f.write("{} {}\n".format(i, value))
+        log.info("{:18s} sample property vector done".format("STEPS"))
