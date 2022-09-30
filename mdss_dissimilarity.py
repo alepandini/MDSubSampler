@@ -1,4 +1,5 @@
 import dictances
+from mdss_logging import logging as log
 
 
 class Dissimilarity:
@@ -26,6 +27,10 @@ class Dissimilarity:
         Method that calculates the difference between the average values of the
         two calculated property vectors.
         """
+        dissimilarity_score = self.property_1.avg_value - self.property_2.avg_value
+        log.info(
+            "{:18s} Dissimilarity score: {:4.5f}".format("OUTPUT", dissimilarity_score)
+        )
         return self.property_1.avg_value - self.property_2.avg_value
 
 
@@ -63,6 +68,12 @@ class BhattaCoefficient(Dissimilarity):
         property_2_discretized = self.property_2.discretize_vector(
             min_value=self.min_value, max_value=self.max_value
         )
+        dissimilarity_score = dictances.bhattacharyya(
+            property_1_discretized, property_2_discretized
+        )
+        log.info(
+            "{:18s} Dissimilarity score: {:4.5f}".format("OUTPUT", dissimilarity_score)
+        )
 
         return dictances.bhattacharyya(property_1_discretized, property_2_discretized)
 
@@ -89,6 +100,13 @@ class KLDivergence(Dissimilarity):
         """
         Method that returns the KL divergence distance between two vectors
         """
+        dissimilarity_score = dictances.kullback_leibler(
+            self.property_1.property_vector_discretized,
+            self.property_2.property_vector_discretized,
+        )
+        log.info(
+            "{:18s} Dissimilarity score: {:4.5f}".format("OUTPUT", dissimilarity_score)
+        )
         return dictances.kullback_leibler(
             self.property_1.property_vector_discretized,
             self.property_2.property_vector_discretized,
@@ -117,6 +135,13 @@ class PearsonCoefficient(Dissimilarity):
         """
         Method that returns the pearson coefficient between two vectors
         """
+        dissimilarity_score = dictances.pearson(
+            self.property_1.property_vector_discretized,
+            self.property_2.property_vector_discretized,
+        )
+        log.info(
+            "{:18s} Dissimilarity score: {:4.5f}".format("OUTPUT", dissimilarity_score)
+        )
         return dictances.pearson(
             self.property_1.property_vector_discretized,
             self.property_2.property_vector_discretized,
