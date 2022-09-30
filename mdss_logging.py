@@ -1,5 +1,6 @@
 import logging
 import os
+import sys
 import os.path
 from datetime import datetime
 
@@ -18,7 +19,7 @@ if not logging_configured:
     logging.basicConfig(
         filename=filepath,
         level=logging.INFO,
-        format="%(asctime)s %(message)s",
+        format="%(asctime)s %(levelname)s %(message)s",
         filemode="w",
     )
 
