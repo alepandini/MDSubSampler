@@ -14,7 +14,9 @@ class ProteinSampler:
     display_name = None
 
     def __init__(self, protein_property):
+        self.protein_property = protein_property
         self.property_vector = protein_property.property_vector
+        self.frame_indices = protein_property.frame_indices
         self.sampled_property_vector = None
 
     def sample(self, size):
