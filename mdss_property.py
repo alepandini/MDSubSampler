@@ -143,10 +143,15 @@ class SampledProperty(ProteinProperty):
 
     display_name = "Sampled_Property"
 
-    def __init__(self, property_vector, indices):
-        self.property_vector = property_vector
-        self.indices = indices
+    def __init__(self, protein_data, original_property, sampled_property_vector, sampled_frame_indices):
+        self.protein_data = protein_data
+        self.atom_selection = original_property.atom_selection
+        self.ref_coordinates = []
+        self.property_vector = sampled_property_vector
+        self.property_vector_discretized = {}
+        self.frame_indices = sampled_frame_indices
         self._property_statistics()
+        self._add_reference_to_protein_data()
 
     def calculate_property(self):
         pass
