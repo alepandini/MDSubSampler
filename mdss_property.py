@@ -123,7 +123,7 @@ class ProteinProperty:
         a protein in a file
         """
         with open(outfilepath, "w") as f:
-            for i, value in enumerate(self.property_vector):
+            for i, value in zip(self.frame_indices, self.property_vector):
                 f.write("{} {}\n".format(i, value))
         log.info("{:18s} Property vector done".format("STEPS"))
 
@@ -150,13 +150,3 @@ class SampledProperty(ProteinProperty):
 
     def calculate_property(self):
         pass
-
-    def write_property_vector_sample(self, outfilepath):
-        """
-        Method that saves the vector with the calculations of a specific property for
-        a protein in a file
-        """
-        with open(outfilepath, "w") as f:
-            for i, value in zip(self.indices, self.property_vector):
-                f.write("{} {}\n".format(i, value))
-        log.info("{:18s} Sample property vector done".format("STEPS"))
