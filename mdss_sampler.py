@@ -21,6 +21,17 @@ class ProteinSampler:
         self.sampled_property_vector = None
         self.sampled_frame_indices = None
 
+    def _create_data_list(self):
+        property_indices_tuples = list(zip(self.property_vector, self.frame_indices))
+        data_list = [(i, v) for i, v in enumerate(property_indices_tuples)]
+        return data_list
+
+    def _create_sampled_property(self, sampled_data_vector):
+        self.sampled_property_vector = [r[1][0] for r in sampled_data_vector]
+        self.sampled_frame_indices = [r[1][1] for r in sampled_data_vector]
+        sampled_protein_property = SampledProperty(self.protein_property, self.sampled_property_vector, self.sampled_frame_indices)
+        return sampled_protein_property
+
     def sample(self, size):
         pass
 
@@ -53,13 +64,10 @@ class RandomSampler(ProteinSampler):
         ----------
         return a single random sample of the frame list with the desired size
         """
-        property_indices_tuples = list(zip(self.property_vector, self.frame_indices))
-        data_vector = [(i, v) for i, v in enumerate(property_indices_tuples)]
-        sampled_data_vector = random.sample(data_vector, size)
-        self.sampled_property_vector = [r[1][0] for r in sampled_data_vector]
-        self.sampled_frame_indices = [r[1][1] for r in sampled_data_vector]
-        sampled_property_data = SampledProperty(self.protein_property, self.sampled_property_vector, self.sampled_frame_indices)
-        return sampled_property_data
+        data_list = self._create_data_list() 
+        sampled_data_vector = random.sample(data_list, size)
+        sampled_protein_property = self._create_sampled_property(sampled_data_vector)
+        return sampled_protein_property
 
 
 class UniformSampler(ProteinSampler):
