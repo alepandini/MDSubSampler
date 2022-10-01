@@ -1,5 +1,6 @@
 import numpy as np
 import random
+from mdss_property import SampledProperty
 
 
 class ProteinSampler:
@@ -55,9 +56,10 @@ class RandomSampler(ProteinSampler):
         property_indices_tuples = list(zip(self.property_vector, self.frame_indices))
         data_vector = [(i, v) for i, v in enumerate(property_indices_tuples)]
         sampled_data_vector = random.sample(data_vector, size)
-        self.sampled_property_vector = [r[1] for r in sampled_data_vector]
-        self.sampled_frame_indices = [r[2] for r in sampled_data_vector]
-        return self.sampled_property_vector
+        self.sampled_property_vector = [r[1][0] for r in sampled_data_vector]
+        self.sampled_frame_indices = [r[1][1] for r in sampled_data_vector]
+        sampled_property_data = SampledProperty(self.protein_property, self.sampled_property_vector, self.sampled_frame_indices)
+        return sampled_property_data
 
 
 class UniformSampler(ProteinSampler):
