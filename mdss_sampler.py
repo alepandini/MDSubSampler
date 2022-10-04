@@ -124,7 +124,12 @@ class StratifiedSampler(ProteinSampler):
 
     def __init__(self, protein_property, strata_vector):
         self.strata_vector = strata_vector
-        self.n_layers = len(strata_vector)
+        strata_labels = sorted(set(strata_vector))
+        self.layers = {}
+        for label in strata_labels:
+            strata_indices = [idx for idx, value in enumerate(strata_vector) if value == label]
+            self.layers[label] = strata_indices
+        self.n_layers = len(self.layers.keys())
         super().__init__(protein_property)
 
     def sample(self, size):
@@ -138,17 +143,17 @@ class StratifiedSampler(ProteinSampler):
         ----------
         return a single stratified sample
         """
-        population_size = sum(len(layer) for layer in self.layers)
+        population_size = sum(len(layer) for layer in self.layers.values())
         if population_size == len(self.protein_property.property_vector):
             samples = []
             strata_sample_size = round(size / self.n_layers)
 
-            for layer in self.layers:
+            for layer in self.layers.values():
                 if len(layer) < strata_sample_size:
                     print(
                         "Warning: strata size smaller than required sample. Sampling with replacement."
                     )
-                    current_sample = random.choices(layer, strata_sample_size)
+                    current_sample = random.choices(layer, k = strata_sample_size)
                 else:
                     current_sample = random.sample(layer, strata_sample_size)
                 samples.extend(current_sample)
