@@ -1,5 +1,4 @@
 from numpy import require
-import mdss_property
 import mdss_geometrical_property
 import mdss_pca_property
 import mdss_sampler
