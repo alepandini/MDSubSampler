@@ -106,7 +106,7 @@ class StratifiedSampler(ProteinSampler):
         """
         population_size = sum(len(layer) for layer in self.layers.values())
         if population_size == len(self.protein_property.property_vector):
-            samples = []
+            sampled_data_vector = []
             strata_sample_size = round(size / self.n_layers)
 
             for layer in self.layers.values():
@@ -114,12 +114,14 @@ class StratifiedSampler(ProteinSampler):
                     print(
                         "Warning: strata size smaller than required sample. Sampling with replacement."
                     )
-                    current_sample = random.choices(layer, k = strata_sample_size)
+                    layer_sampled_indices = random.choices(layer, k = strata_sample_size)
                 else:
-                    current_sample = random.sample(layer, strata_sample_size)
-                samples.extend(current_sample)
+                    layer_sampled_indices = random.sample(layer, strata_sample_size)
+                sampled_property_vector = [self.property_vector[x] for x in layer_sampled_indices]
+                sampled_frame_indices = [self.frame_indices[x] for x in layer_sampled_indices]               
+                sampled_data_vector.extend(list(zip(sampled_property_vector,sampled_frame_indices)))
 
-            return samples
+            return sampled_data_vector
         else:
             print("Warning: strata vector is incosistent in size with property vector.")
             return None
