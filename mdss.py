@@ -32,11 +32,11 @@ def sampling_workflow(arg_list):
     elif args.sampler == "BootstrappingSampler":
         sampler = sampler_class(property, args.number_of_iterations)
 
-    sampled_property_vector = sampler.sample(args.size)
-    sampled_indices = sampler.sampled_indices
-    property_sample = mdss_property.SampledProperty(
-        sampled_property_vector, sampled_indices
-    )
+    property_sample = sampler.sample(args.size)
+    # sampled_indices = sampler.sampled_frame_indices
+    # property_sample = mdss_property.SampledProperty(
+    #     property, sampled_property_vector, sampled_indices
+    # )
 
     dissimilarity_class = p.DISSIMILARITY_CLASS_MAPPING[args.dissimilarity]
     dissimilarity = dissimilarity_class(property, property_sample)
@@ -55,7 +55,7 @@ def sampling_workflow(arg_list):
     )
     filepath_sample = os.path.join(args.output_folder, filename_sample)
 
-    property_sample.write_property_vector_sample(filepath_sample)
+    property_sample.write_property_vector(filepath_sample)
 
     p_data.property_data_report()
 
