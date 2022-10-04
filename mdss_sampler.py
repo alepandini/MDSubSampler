@@ -108,6 +108,9 @@ class StratifiedSampler(ProteinSampler):
         if population_size == len(self.protein_property.property_vector):
             sampled_data_vector = []
             strata_sample_size = round(size / self.n_layers)
+            if strata_sample_size < 1:
+                print("Warning: size should be at least half the number of layers.")
+                return None
 
             for layer in self.layers.values():
                 if len(layer) < strata_sample_size:
