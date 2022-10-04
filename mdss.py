@@ -1,4 +1,3 @@
-from mdss_graph import plot_distribution
 import mdss_protein_data
 import mdss_property
 import mdss_parser as p
