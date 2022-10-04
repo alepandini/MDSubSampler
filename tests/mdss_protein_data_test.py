@@ -46,11 +46,23 @@ def test_add_property_is_linked_to_property_data():
     assert p_data.property_dict[key] is p_prop
 
 
-"""       
-Test 8: property_data_report(self) :
-        Check that the values are inserted correctly in the dictionary
-        (Make fake dictionary (key=rmsd, values=fake class that have min, max - with the testing framework)
-        Enter fake input and check if expected output is there. 
+def test_property_data_report():
+    p_data = mdss_protein_data.ProteinData(traj_file, top_file, config_parameters=None)
+    p_prop = mdss_geometrical_property.RMSDProperty(p_data, atom_selection="name CA")
+    p_prop.calculate_property()
+    data_report = p_data.property_data_report()
+    assert len(data_report.keys()) == 1
+    key = list(data_report.keys())[0]
+    assert key.startswith(p_prop.display_name)
+    assert data_report[key] == {
+        "min": p_prop.min_value,
+        "max": p_prop.max_value,
+        "atom_selection": p_prop.atom_selection,
+        "name": p_prop.display_name,
+    }
+
+
+"""
 Test 1: _frames_of_trajectory(self) : 
         Check that the expected output is returned (len(frames) = len(self.trajectory_data.trajectory))
         (Create a fake object and fake attributes then call function and see if we have the expected output)
