@@ -70,45 +70,6 @@ class RandomSampler(ProteinSampler):
         return sampled_protein_property
 
 
-class UniformSampler(ProteinSampler):
-    """
-    A Subclass of ProteinSampler class that uses Uniform Sampling. A sample is generated
-    from a frame list with uniform distribution.Samples are uniformly distributed over the
-    half-open interval [low, high) (includes low, but excludes high)
-    Attributes
-    ----------
-    protein_data: ProteinData class object
-        The frame_list can be accessed through this object
-    low: float
-        Lower boundary of the output interval. The default value is 0.
-    high: float
-        Upper boundary of the output interval. The default value is 1.0.
-    """
-
-    display_name = "Uniform Sampling"
-
-    def __init__(self, protein_property, low, high, dtype=int):
-        self.low = low
-        self.high = high
-        self.dtype = dtype
-        super().__init__(protein_property)
-
-    def sample(self, size):
-        """
-        Method that generates a uniform sample of a list
-        Attributes
-        ----------
-        size: int
-            The sample size
-        Returns
-        ----------
-        Return random integers from the “discrete uniform” distribution of the specified dtype
-        in the “half-open” interval [low, high).
-        """
-        self.sampled_property_vector = np.random.uniform(self.low, self.high, size)
-        return self.sampled_property_vector
-
-
 class StratifiedSampler(ProteinSampler):
     """
      A Subclass of ProteinSampler class that uses Stratified Sampling
@@ -162,6 +123,45 @@ class StratifiedSampler(ProteinSampler):
         else:
             print("Warning: strata vector is incosistent in size with property vector.")
             return None
+
+
+class UniformSampler(ProteinSampler):
+    """
+    A Subclass of ProteinSampler class that uses Uniform Sampling. A sample is generated
+    from a frame list with uniform distribution.Samples are uniformly distributed over the
+    half-open interval [low, high) (includes low, but excludes high)
+    Attributes
+    ----------
+    protein_data: ProteinData class object
+        The frame_list can be accessed through this object
+    low: float
+        Lower boundary of the output interval. The default value is 0.
+    high: float
+        Upper boundary of the output interval. The default value is 1.0.
+    """
+
+    display_name = "Uniform Sampling"
+
+    def __init__(self, protein_property, low, high, dtype=int):
+        self.low = low
+        self.high = high
+        self.dtype = dtype
+        super().__init__(protein_property)
+
+    def sample(self, size):
+        """
+        Method that generates a uniform sample of a list
+        Attributes
+        ----------
+        size: int
+            The sample size
+        Returns
+        ----------
+        Return random integers from the “discrete uniform” distribution of the specified dtype
+        in the “half-open” interval [low, high).
+        """
+        self.sampled_property_vector = np.random.uniform(self.low, self.high, size)
+        return self.sampled_property_vector
 
 
 class BootstrappingSampler(ProteinSampler):
