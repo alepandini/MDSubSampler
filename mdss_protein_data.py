@@ -157,7 +157,7 @@ class ProteinData:
         selected_frames = trajectory_data[np.where(mask)[0]]
         indices_of_selected_frames = [ts.frame for ts in selected_frames]
         log.info(
-            "{:18s} Indices of selected frames: {:2}".format(
+            "{:18s} Indices of selected frames: {}".format(
                 "OUTPUT", indices_of_selected_frames
             )
         )

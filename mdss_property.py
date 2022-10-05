@@ -38,8 +38,8 @@ class ProteinProperty:
         self.property_vector_discretized = {}
         self.frame_indices = []
         self._add_reference_to_protein_data()
-        log.info("{:18s} Atom selection: {:2}".format("SELECTION", self.atom_selection))
-        log.info("{:18s} Property name: {:2}".format("SELECTION", self.display_name))
+        log.info("{:18s} Atom selection: {}".format("SELECTION", self.atom_selection))
+        log.info("{:18s} Property name: {}".format("SELECTION", self.display_name))
 
     @classmethod
     def from_xvg(cls, xvg_filepath):
@@ -140,8 +140,9 @@ class ProteinProperty:
 
 
 class SampledProperty(ProteinProperty):
-
-    def __init__(self, original_property, sampled_property_vector, sampled_frame_indices):
+    def __init__(
+        self, original_property, sampled_property_vector, sampled_frame_indices
+    ):
         self.protein_data = original_property.protein_data
         self.atom_selection = original_property.atom_selection
         self.ref_property = original_property
