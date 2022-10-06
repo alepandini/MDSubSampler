@@ -149,11 +149,11 @@ class UniformSampler(ProteinSampler):
 
     display_name = "Uniform Sampling"
 
-    def __init__(self, protein_property, low, high, dtype=int):
-        self.low = low
-        self.high = high
-        self.dtype = dtype
+    def __init__(self, protein_property, strata_number):
         super().__init__(protein_property)
+        self.bin_size = (self.protein_property.max_value - self.protein_property.min_value) / strata_number
+        self.bins_vector = np.arange(self.protein_property.min_value, self.protein_property.max_value, self.bin_size)
+        self.strata_vector = np.digitize(self.property_vector, self.bins_vector)
 
     def sample(self, size):
         """
@@ -167,8 +167,9 @@ class UniformSampler(ProteinSampler):
         Return random integers from the “discrete uniform” distribution of the specified dtype
         in the “half-open” interval [low, high).
         """
-        self.sampled_property_vector = np.random.uniform(self.low, self.high, size)
-        return self.sampled_property_vector
+        strat_sampler = StratifiedSampler(self.protein_property, self.strata_vector)
+        sampled_protein_property = strat_sampler.sample(size)
+        return sampled_protein_property
 
 
 class BootstrappingSampler(ProteinSampler):
