@@ -34,6 +34,7 @@ class ProteinProperty:
         self.protein_data = protein_data
         self.atom_selection = atom_selection
         self.ref_coordinates = []
+        self.ref_frame_index = None
         self.property_vector = []
         self.property_vector_discretized = {}
         self.frame_indices = []
@@ -89,13 +90,13 @@ class ProteinProperty:
             )
         )
 
-    def set_reference_coordinates(self):
+    def set_reference_coordinates(self, frame_index=0):
         """
         Method that sets us on the first frame and extracts a copy of the coordinates
         of the first frame only for a selection of atoms
         """
         if self.protein_data is not None:
-            self.protein_data.trajectory_data.trajectory[0]
+            self.protein_data.trajectory_data.trajectory[frame_index]
             if isinstance(self.atom_selection, list):
                 self.ref_coordinates = [
                     self.protein_data.trajectory_data.select_atoms(
@@ -107,6 +108,7 @@ class ProteinProperty:
                 self.ref_coordinates = self.protein_data.trajectory_data.select_atoms(
                     self.atom_selection
                 ).positions.copy()
+                self.ref_frame_index = frame_index
             return True
         else:
             print("Warning: property is not associated to a protein data object.")

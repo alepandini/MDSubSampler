@@ -15,12 +15,12 @@ class RMSDProperty(ProteinProperty):
 
     display_name = "RMSD"
 
-    def calculate_property(self):
+    def calculate_property(self, frame_index=0):
         """
         Method that calculates the RMDS proporty of a given frame list for a given
         selection of atoms
         """
-        if self.set_reference_coordinates():
+        if self.set_reference_coordinates(frame_index):
             for frame in self.protein_data.frame_indices:
                 """
                 Go through the trajectory and for each frame I compare with my reference frame
@@ -75,11 +75,11 @@ class DistanceBetweenAtoms(ProteinProperty):
 
         super().__init__(protein_data, atom_selection)
 
-    def calculate_property(self):
+    def calculate_property(self, frame_index=0):
         """
         Method that calculates the distance between two given set of atoms
         """
-        if self.set_reference_coordinates():
+        if self.set_reference_coordinates(frame_index):
             atom_selection_1 = self.protein_data.trajectory_data.select_atoms(
                 self.atom_selection[0]
             )
@@ -167,11 +167,11 @@ class Angles(ProteinProperty):
 
         super().__init__(protein_data, atom_selection)
 
-    def calculate_property(self):
+    def calculate_property(self, frame_index=0):
         """
         Method that calculates the angle between three given atoms
         """
-        if self.set_reference_coordinates():
+        if self.set_reference_coordinates(frame_index):
             atom_selection_1 = self.protein_data.trajectory_data.select_atoms(
                 self.atom_selection[0]
             )
@@ -249,8 +249,8 @@ class DihedralAnglePhi(DihedralAngles):
 
     display_name = "Dihedral Angle phi between 4 selected atoms"
 
-    def calculate_property(self):
-        if self.set_reference_coordinates():
+    def calculate_property(self, frame_index=0):
+        if self.set_reference_coordinates(frame_index):
             u = self.protein_data.trajectory_data
             for frame in self.protein_data.frame_indices:
                 phi_ags = [res.phi_selection() for res in u.residues]
@@ -278,8 +278,8 @@ class DihedralAnglePsi(DihedralAngles):
 
     display_name = "Dihedral Angle psi between 4 selected atoms"
 
-    def calculate_property(self):
-        if self.set_reference_coordinates():
+    def calculate_property(self, frame_index=0):
+        if self.set_reference_coordinates(frame_index):
             u = self.protein_data.trajectory_data
             for frame in self.protein_data.frame_indices:
                 psi_ags = [res.psi_selection() for res in u.residues]
