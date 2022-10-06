@@ -145,6 +145,7 @@ class SampledProperty(ProteinProperty):
     ):
         self.protein_data = original_property.protein_data
         self.atom_selection = original_property.atom_selection
+        self.ref_property = original_property
         self.ref_coordinates = []
         self.property_vector = sampled_property_vector
         self.property_vector_discretized = {}
