@@ -224,8 +224,10 @@ class BootstrappingSampler(ProteinSampler):
         ----------
         return a list of bootstrapped samples
         """
-        samples = []
+        data_list = self._create_data_list()
+        sampled_data_vector = []
         for i in range(self.number_of_iterations):
-            current_sample = np.random.choice(self.property_vector, size, replace=True)
-            samples.append(current_sample)
-        return samples
+            current_sample = random.sample(data_list, size)
+            sampled_data_vector.extend(current_sample)
+        sampled_protein_property = self._create_sampled_property(sampled_data_vector)
+        return sampled_protein_property
