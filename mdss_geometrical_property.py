@@ -1,5 +1,4 @@
 from mdss_property import ProteinProperty
-from mdss_property import SampledProperty
 from MDAnalysis.analysis import rms
 from MDAnalysis.analysis import distances
 from MDAnalysis.analysis import dihedrals

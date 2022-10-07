@@ -1,5 +1,6 @@
 import numpy as np
 import random
+import mdss_property
 from mdss_property import SampledProperty
 
 
@@ -29,7 +30,11 @@ class ProteinSampler:
     def _create_sampled_property(self, sampled_data_vector):
         self.sampled_property_vector = [r[1][0] for r in sampled_data_vector]
         self.sampled_frame_indices = [r[1][1] for r in sampled_data_vector]
-        sampled_protein_property = SampledProperty(self.protein_property, self.sampled_property_vector, self.sampled_frame_indices)
+        sampled_protein_property = SampledProperty(
+            self.protein_property,
+            self.sampled_property_vector,
+            self.sampled_frame_indices,
+        )
         return sampled_protein_property
 
     def sample(self, size):
@@ -64,7 +69,7 @@ class RandomSampler(ProteinSampler):
         ----------
         return a single random sample of the frame list with the desired size
         """
-        data_list = self._create_data_list() 
+        data_list = self._create_data_list()
         sampled_data_vector = random.sample(data_list, size)
         sampled_protein_property = self._create_sampled_property(sampled_data_vector)
         return sampled_protein_property
@@ -88,7 +93,9 @@ class StratifiedSampler(ProteinSampler):
         strata_labels = sorted(set(strata_vector))
         self.layers = {}
         for label in strata_labels:
-            strata_indices = [idx for idx, value in enumerate(strata_vector) if value == label]
+            strata_indices = [
+                idx for idx, value in enumerate(strata_vector) if value == label
+            ]
             self.layers[label] = strata_indices
         self.n_layers = len(self.layers.keys())
         super().__init__(protein_property)
@@ -117,15 +124,25 @@ class StratifiedSampler(ProteinSampler):
                     print(
                         "Warning: strata size smaller than required sample. Sampling with replacement."
                     )
-                    layer_sampled_indices = random.choices(layer, k = strata_sample_size)
+                    layer_sampled_indices = random.choices(layer, k=strata_sample_size)
                 else:
                     layer_sampled_indices = random.sample(layer, strata_sample_size)
-                sampled_property_vector = [self.property_vector[x] for x in layer_sampled_indices]
-                sampled_frame_indices = [self.frame_indices[x] for x in layer_sampled_indices]               
-                property_indices_tuples = list(zip(sampled_property_vector,sampled_frame_indices))
-                sampled_data_vector.extend(list(zip(layer_sampled_indices, property_indices_tuples)))
+                sampled_property_vector = [
+                    self.property_vector[x] for x in layer_sampled_indices
+                ]
+                sampled_frame_indices = [
+                    self.frame_indices[x] for x in layer_sampled_indices
+                ]
+                property_indices_tuples = list(
+                    zip(sampled_property_vector, sampled_frame_indices)
+                )
+                sampled_data_vector.extend(
+                    list(zip(layer_sampled_indices, property_indices_tuples))
+                )
 
-            sampled_protein_property = self._create_sampled_property(sampled_data_vector)
+            sampled_protein_property = self._create_sampled_property(
+                sampled_data_vector
+            )
             return sampled_protein_property
         else:
             print("Warning: strata vector is incosistent in size with property vector.")
@@ -151,8 +168,14 @@ class UniformSampler(ProteinSampler):
 
     def __init__(self, protein_property, strata_number):
         super().__init__(protein_property)
-        self.bin_size = (self.protein_property.max_value - self.protein_property.min_value) / strata_number
-        self.bins_vector = np.arange(self.protein_property.min_value, self.protein_property.max_value, self.bin_size)
+        self.bin_size = (
+            self.protein_property.max_value - self.protein_property.min_value
+        ) / strata_number
+        self.bins_vector = np.arange(
+            self.protein_property.min_value,
+            self.protein_property.max_value,
+            self.bin_size,
+        )
         self.strata_vector = np.digitize(self.property_vector, self.bins_vector)
 
     def sample(self, size):
