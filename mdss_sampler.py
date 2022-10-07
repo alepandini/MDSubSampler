@@ -209,7 +209,8 @@ class BootstrappingSampler(ProteinSampler):
 
     display_name = "Bootstrapping Sampling"
 
-    def __init__(self, protein_property, number_of_iterations):
+    def __init__(self, protein_property, number_of_iterations, seed_number=1999):
+        random.seed(seed_number)
         self.number_of_iterations = number_of_iterations
         super().__init__(protein_property)
 
