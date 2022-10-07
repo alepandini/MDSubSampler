@@ -2,6 +2,7 @@ import mdss_dissimilarity
 import random
 import pytest
 
+
 def test_calculate_distance():
     class FakeProperty:
         def __init__(self):
