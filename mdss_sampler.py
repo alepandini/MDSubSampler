@@ -21,6 +21,7 @@ class ProteinSampler:
         self.frame_indices = protein_property.frame_indices
         self.sampled_property_vector = None
         self.sampled_frame_indices = None
+        self.samples_indices = []
 
     def _create_data_list(self):
         property_indices_tuples = list(zip(self.property_vector, self.frame_indices))
@@ -34,6 +35,7 @@ class ProteinSampler:
             self.protein_property,
             self.sampled_property_vector,
             self.sampled_frame_indices,
+            self.samples_indices
         )
         return sampled_protein_property
 
@@ -69,6 +71,7 @@ class RandomSampler(ProteinSampler):
         ----------
         return a single random sample of the frame list with the desired size
         """
+        self.samples_indices = list(np.repeat(0,size))
         data_list = self._create_data_list()
         sampled_data_vector = random.sample(data_list, size)
         sampled_protein_property = self._create_sampled_property(sampled_data_vector)
@@ -119,6 +122,8 @@ class StratifiedSampler(ProteinSampler):
                 print("Warning: size should be at least half the number of layers.")
                 return None
 
+            self.samples_indices = []
+            sample_index = 0
             for layer in self.layers.values():
                 if len(layer) < strata_sample_size:
                     print(
@@ -139,6 +144,8 @@ class StratifiedSampler(ProteinSampler):
                 sampled_data_vector.extend(
                     list(zip(layer_sampled_indices, property_indices_tuples))
                 )
+                self.samples_indices.extend(list(np.repeat(sample_index,strata_sample_size)))
+                sample_index += 1
 
             sampled_protein_property = self._create_sampled_property(
                 sampled_data_vector
@@ -227,8 +234,10 @@ class BootstrappingSampler(ProteinSampler):
         """
         data_list = self._create_data_list()
         sampled_data_vector = []
+        self.samples_indices = []
         for i in range(self.number_of_iterations):
             current_sample = random.sample(data_list, size)
             sampled_data_vector.extend(current_sample)
+            self.samples_indices.extend(list(np.repeat(i,size)))
         sampled_protein_property = self._create_sampled_property(sampled_data_vector)
         return sampled_protein_property
