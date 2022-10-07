@@ -1,5 +1,4 @@
 import mdss_protein_data
-import mdss_property
 import mdss_geometrical_property
 import mdss_parser as p
 import mdss as m
@@ -60,10 +59,3 @@ def test_property_data_report():
         "atom_selection": p_prop.atom_selection,
         "name": p_prop.display_name,
     }
-
-
-"""
-Test 1: _frames_of_trajectory(self) : 
-        Check that the expected output is returned (len(frames) = len(self.trajectory_data.trajectory))
-        (Create a fake object and fake attributes then call function and see if we have the expected output)
-"""
