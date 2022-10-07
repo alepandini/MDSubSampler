@@ -95,15 +95,8 @@ def parse_args(arg_list):
         "--seed-number", dest="seed_number", type=int, help="Seed number"
     )
     parser.add_argument(
-        "--low", dest="low", type=float, help="Lower boundary of the output interval"
-    )
-    parser.add_argument(
-        "--high", dest="high", type=float, help="Higher boundary of the output interval"
-    )
-    parser.add_argument("--dtype", dest="dtype", type=int, help="dtype")
-    parser.add_argument(
-        "--layers",
-        dest="layers",
+        "--strata-vector",
+        dest="strata_vector",
         type=float,
         help=(
             "2D list of multiple layers and each layer is a set of labels "
@@ -111,6 +104,12 @@ def parse_args(arg_list):
             "format of: [range(1, 20), range(20, 45),...] according to the "
             "frames in the protein trajectory"
         ),
+    )
+    parser.add_argument(
+        "--strata-number",
+        dest="strata_number",
+        type=int,
+        help=("The desired number of strata "),
     )
 
     parser.add_argument(
@@ -173,9 +172,8 @@ def parse_args(arg_list):
             sys.exit(1)
 
     require_sampler_argument(mdss_sampler.RandomSampler, "seed_number")
-    require_sampler_argument(mdss_sampler.UniformSampler, "low")
-    require_sampler_argument(mdss_sampler.UniformSampler, "high")
-    require_sampler_argument(mdss_sampler.StratifiedSampler, "layers")
+    require_sampler_argument(mdss_sampler.StratifiedSampler, "strata_vector")
+    require_sampler_argument(mdss_sampler.UniformSampler, "strata_number")
     require_sampler_argument(mdss_sampler.BootstrappingSampler, "number_of_iterations")
 
     require_property_argument(
