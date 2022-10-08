@@ -36,6 +36,7 @@ class ProteinProperty:
         self.ref_coordinates = []
         self.ref_frame_index = None
         self.property_vector = []
+        self.discretized_property_vector = []
         self.property_distribution_dict = {}
         self.frame_indices = []
         self._add_reference_to_protein_data()
@@ -72,6 +73,7 @@ class ProteinProperty:
             max_value = self.max_value
         bin_size = (max_value - min_value) / n_bins
         bin_vector = np.arange(min_value, max_value, bin_size)
+        self.discretized_property_vector = [bin_vector[i-1] for i in np.digitize(self.property_vector, bin_vector)]
         counts, bins = np.histogram(self.property_vector, bins=bin_vector)
         self.property_distribution_dict = dict(
             zip(bins, (counts / len(self.property_vector)))
