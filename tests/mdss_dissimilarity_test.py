@@ -26,7 +26,7 @@ def test_calculate_distance():
 def test_bhattacharyya_distance(mocker, mocked_function_name, distance_subclass):
     class FakeProperty:
         def __init__(self):
-            self.property_vector_discretized = random.random()
+            self.property_distribution_dict = random.random()
 
     mocked_function = mocker.patch(mocked_function_name)
 
@@ -35,5 +35,5 @@ def test_bhattacharyya_distance(mocker, mocked_function_name, distance_subclass)
     distance_subclass(property_1, property_2)
 
     mocked_function.assert_called_once_with(
-        property_1.property_vector_discretized, property_2.property_vector_discretized
+        property_1.property_distribution_dict, property_2.property_distribution_dict
     )

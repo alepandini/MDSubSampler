@@ -36,7 +36,7 @@ class ProteinProperty:
         self.ref_coordinates = []
         self.ref_frame_index = None
         self.property_vector = []
-        self.property_vector_discretized = {}
+        self.property_distribution_dict = {}
         self.frame_indices = []
         self._add_reference_to_protein_data()
         log.info("{:18s} Atom selection: {}".format("SELECTION", self.atom_selection))
@@ -73,7 +73,7 @@ class ProteinProperty:
         bin_size = (max_value - min_value) / n_bins
         bin_vector = np.arange(min_value, max_value, bin_size)
         counts, bins = np.histogram(self.property_vector, bins=bin_vector)
-        self.property_vector_discretized = dict(
+        self.property_distribution_dict = dict(
             zip(bins, (counts / len(self.property_vector)))
         )
 
@@ -150,7 +150,7 @@ class SampledProperty(ProteinProperty):
         self.ref_property = original_property
         self.ref_coordinates = []
         self.property_vector = sampled_property_vector
-        self.property_vector_discretized = {}
+        self.property_distribution_dict = {}
         self.frame_indices = sampled_frame_indices
         self.samples_indices = samples_indices
         self.display_name = "Sampled_{}".format(original_property.display_name)

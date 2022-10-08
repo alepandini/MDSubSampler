@@ -101,15 +101,15 @@ class KLDivergence(Dissimilarity):
         Method that returns the KL divergence distance between two vectors
         """
         dissimilarity_score = dictances.kullback_leibler(
-            self.property_1.property_vector_discretized,
-            self.property_2.property_vector_discretized,
+            self.property_1.property_distribution_dict,
+            self.property_2.property_distribution_dict,
         )
         log.info(
             "{:18s} Dissimilarity score: {:4.5f}".format("OUTPUT", dissimilarity_score)
         )
         return dictances.kullback_leibler(
-            self.property_1.property_vector_discretized,
-            self.property_2.property_vector_discretized,
+            self.property_1.property_distribution_dict,
+            self.property_2.property_distribution_dict,
         )
 
 
@@ -136,13 +136,13 @@ class PearsonCoefficient(Dissimilarity):
         Method that returns the pearson coefficient between two vectors
         """
         dissimilarity_score = dictances.pearson(
-            self.property_1.property_vector_discretized,
-            self.property_2.property_vector_discretized,
+            self.property_1.property_distribution_dict,
+            self.property_2.property_distribution_dict,
         )
         log.info(
             "{:18s} Dissimilarity score: {:4.5f}".format("OUTPUT", dissimilarity_score)
         )
         return dictances.pearson(
-            self.property_1.property_vector_discretized,
-            self.property_2.property_vector_discretized,
+            self.property_1.property_distribution_dict,
+            self.property_2.property_distribution_dict,
         )
