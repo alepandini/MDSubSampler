@@ -131,16 +131,25 @@ class ProteinProperty:
                 f.write("{} {}\n".format(i, value))
         log.info("{:18s} Property vector done".format("STEPS"))
 
-    def write_property_discretised_vector(self, outfilepath):
+    def write_discretized_property_vector(self, outfilepath):
         """
         Method that saves the discretised vector with the calculations of a specific
         property for a protein in a file
         """
-        discr_vector = self.discretize_vector()
+        if len(self.property_distribution_dict) < 1:
+            self.discretize_vector()
         with open(outfilepath, "w") as f:
-            for (key, value) in discr_vector.items():
-                f.write("{} {}\n".format(key, value))
+            for i, value in zip(self.frame_indices, self.discretized_property_vector):
+                f.write("{} {}\n".format(i, value))
         log.info("{:18s} Discretised property vector done".format("STEPS"))
+
+    def write_property_distribution_dict(self, outfilepath):
+        if len(self.property_distribution_dict) < 1:
+            self.discretize_vector()
+        with open(outfilepath, "w") as f:
+            for (key, value) in self.property_distribution_dict.items():
+                f.write("{} {}\n".format(key, value))
+        log.info("{:18s} Property distribution dict done".format("STEPS"))
 
 
 class SampledProperty(ProteinProperty):
