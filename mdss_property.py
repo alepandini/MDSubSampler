@@ -159,3 +159,17 @@ class SampledProperty(ProteinProperty):
 
     def calculate_property(self):
         pass
+
+    def get_samples_averages(self):
+        samples_labels = set(self.samples_indices)
+        average_dict = {}
+        for label in samples_labels:
+            average_value = np.mean([value for value, i in zip(self.property_vector, self.samples_indices) if i == label])
+            average_dict[label] = average_value
+        return average_dict
+
+    def get_average(self):
+        average_dict = self.get_samples_averages()
+        average_value = np.mean(list(average_dict.values()))
+        return average_value
+
