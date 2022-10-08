@@ -1,8 +1,9 @@
 from mdss_property import ProteinProperty
 import MDAnalysis.analysis.pca as pca
+import numpy as np
 
 
-class PCA(ProteinProperty):
+class TrjPCA(ProteinProperty):
     """
     A Subclass of ProteinProperty class used to perform PCA on the protein
     trajectory and calculates a pca_space vector with number of columns equal
@@ -14,16 +15,20 @@ class PCA(ProteinProperty):
     pca_vector: A vector that will be used to sample the trajectory of the protein
     """
 
-    display_name = "PCA"
+    display_name = "TrjPCA"
 
-    def calculate_property(self):
+    def _run_pca(self):
+        self.pca_model = pca.PCA(self.protein_data.trajectory_data, self.atom_selection)
+        self.pca_model.run()
 
-        prot_data = self.protein_data.trajectory_data
-        protein_selection_pca = pca.PCA(prot_data, self.atom_selection)
-        protein_selection_pca.run()
-        n_pcs = np.where(protein_selection_pca.results.cumulated_variance > 0.95)[0][0]
+    def calculate_property(self, var_threshold = 0.8, pc_filter = False):
+        self._run_pca()
+        self.n_pcs = self.pca_model.n_components
+        self.ed_npcs = np.where(self.pca_model.results.cumulated_variance > var_threshold)[0][0]
         atomgroup = self.protein_data.trajectory_data.select_atoms(self.atom_selection)
-        pca_vector = protein_selection_pca.transform(atomgroup, n_components=n_pcs)
-        self.property_vector = pca_vector
-        return pca_vector
+        if pc_filter:
+            selected_pcs = self.ed_npcs
+        else:
+            selected_pcs = self.n_pcs
+        self.property_vector = self.pca_model.transform(atomgroup, n_components=selected_pcs)
 
