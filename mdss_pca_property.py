@@ -24,10 +24,10 @@ class TrjPCA(ProteinProperty):
     def calculate_property(self, var_threshold = 0.8, pc_filter = False):
         self._run_pca()
         self.n_pcs = self.pca_model.n_components
-        self.ed_npcs = np.where(self.pca_model.results.cumulated_variance > var_threshold)[0][0]
+        self.ed_n_pcs = np.where(self.pca_model.results.cumulated_variance > var_threshold)[0][0]
         atomgroup = self.protein_data.trajectory_data.select_atoms(self.atom_selection)
         if pc_filter:
-            selected_pcs = self.ed_npcs
+            selected_pcs = self.ed_n_pcs
         else:
             selected_pcs = self.n_pcs
         self.property_vector = self.pca_model.transform(atomgroup, n_components=selected_pcs)
