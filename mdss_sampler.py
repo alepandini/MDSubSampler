@@ -42,6 +42,16 @@ class ProteinSampler:
     def sample(self, size):
         pass
 
+    def scan_sample_size(self, perc_vector=None):
+        if perc_vector is None:
+            perc_vector = [25, 10, 5, 1, 0.5, 0.1]
+        if sum([x > 100 for x in perc_vector]) == 0:
+            n_frames = len(self.property_vector)
+            for p in perc_vector:
+                self.sample(round(p * n_frames / 100))
+        else:
+            print("Percentage values should be smaller than 100.")
+
 
 class RandomSampler(ProteinSampler):
     """
