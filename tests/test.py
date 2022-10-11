@@ -28,3 +28,22 @@
 # 10:0.001085055552200252
 
 # python scenarios/mdss_scenario_001.py data/user.xtc data/user.gro test2909
+
+from mdss_protein_data import *
+from mdss_geometrical_property import *
+from mdss_sampler import *
+
+p_data = ProteinData("data/user.xtc", "data/user.gro")
+rmsd = RMSDProperty(p_data)
+rmsd.calculate_property()
+rmsd.discretize_vector()
+
+p_sampler = RandomSampler(rmsd)
+sampled_rmsd = p_sampler.sample(50)
+
+s_vector = [round((v + random.random()) * 13) for v in rmsd.property_vector]
+s_sampler = StratifiedSampler(rmsd, s_vector)
+strat_sampled_rmsd = s_sampler.sample(50)
+import code
+
+code.interact(local=locals())
