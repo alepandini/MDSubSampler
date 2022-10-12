@@ -9,17 +9,17 @@ class Dissimilarity:
 
     Attributes
     ----------
-    property_1 : ProteinProperty object
-        Refers to the calculated property of the full protein trajectory
-    property_1 : ProteinProperty object
-        Refers to the calculated property of the sample protein trajectory
+    target_property : ProteinProperty object
+        Refers to the calculated property of the sampled or target protein trajectory
+    ref_property : ProteinProperty object
+        Refers to the reference calculated property (e.g. for the full protein trajectory)
     """
 
     display_name = None
 
-    def __init__(self, property_1, property_2, clean=False):
-        self.property_1 = property_1
-        self.property_2 = property_2
+    def __init__(self, target_property, ref_property, clean=False):
+        self.target_property = target_property
+        self.ref_property = ref_property
         self.dissimilarity = self.calculate_dissimilarity()
 
     def calculate_dissimilarity(self):
@@ -27,11 +27,11 @@ class Dissimilarity:
         Method that calculates the difference between the average values of the
         two calculated property vectors.
         """
-        dissimilarity_score = self.property_1.avg_value - self.property_2.avg_value
+        dissimilarity_score = self.target_property.avg_value - self.ref_property.avg_value
         log.info(
             "{:18s} Dissimilarity score: {:4.5f}".format("OUTPUT", dissimilarity_score)
         )
-        return self.property_1.avg_value - self.property_2.avg_value
+        return self.target_property.avg_value - self.ref_property.avg_value
 
 
 class BhattaCoefficient(Dissimilarity):
@@ -41,41 +41,41 @@ class BhattaCoefficient(Dissimilarity):
 
     Attributes
     ----------
-    property_1 : ProteinProperty object
-        Refers to the calculated property of the full protein trajectory
-    property_1 : ProteinProperty object
-        Refers to the calculated property of the sample protein trajectory
+    target_property : ProteinProperty object
+        Refers to the calculated property of the sampled or target protein trajectory
+    ref_property : ProteinProperty object
+        Refers to the reference calculated property (e.g. for the full protein trajectory)
     """
 
     display_name = "bhatta"
 
-    def __init__(self, property_1, property_2):
+    def __init__(self, target_property, ref_property):
         self.min_value = min(
-            min(property_1.property_vector), min(property_2.property_vector)
+            min(target_property.property_vector), min(ref_property.property_vector)
         )
         self.max_value = max(
-            max(property_1.property_vector), max(property_2.property_vector)
+            max(target_property.property_vector), max(ref_property.property_vector)
         )
-        super().__init__(property_1, property_2, clean=True)
+        super().__init__(target_property, ref_property, clean=True)
 
     def calculate_dissimilarity(self):
         """
         Method that returns the Bhatta coefficient from distance between two vectors
         """
-        property_1_discretized = self.property_1.discretize_vector(
+        target_property_discretized = self.target_property.discretize_vector(
             min_value=self.min_value, max_value=self.max_value
         )
-        property_2_discretized = self.property_2.discretize_vector(
+        ref_property_discretized = self.ref_property.discretize_vector(
             min_value=self.min_value, max_value=self.max_value
         )
         dissimilarity_score = dictances.bhattacharyya(
-            property_1_discretized, property_2_discretized
+            target_property_discretized, ref_property_discretized
         )
         log.info(
             "{:18s} Dissimilarity score: {:4.5f}".format("OUTPUT", dissimilarity_score)
         )
 
-        return dictances.bhattacharyya(property_1_discretized, property_2_discretized)
+        return dictances.bhattacharyya(target_property_discretized, ref_property_discretized)
 
 
 class KLDivergence(Dissimilarity):
@@ -85,31 +85,31 @@ class KLDivergence(Dissimilarity):
 
     Attributes
     ----------
-    property_1 : ProteinProperty object
-        Refers to the calculated property of the full protein trajectory
-    property_1 : ProteinProperty object
-        Refers to the calculated property of the sample protein trajectory
+    target_property : ProteinProperty object
+        Refers to the calculated property of the sampled or target protein trajectory
+    ref_property : ProteinProperty object
+        Refers to the reference calculated property (e.g. for the full protein trajectory)
     """
 
     display_name = "kl"
 
-    def __init__(self, property_1, property_2):
-        super().__init__(property_1, property_2, clean=True)
+    def __init__(self, target_property, ref_property):
+        super().__init__(target_property, ref_property, clean=True)
 
     def calculate_dissimilarity(self):
         """
         Method that returns the KL divergence distance between two vectors
         """
         dissimilarity_score = dictances.kullback_leibler(
-            self.property_1.property_distribution_dict,
-            self.property_2.property_distribution_dict,
+            self.target_property.property_distribution_dict,
+            self.ref_property.property_distribution_dict,
         )
         log.info(
             "{:18s} Dissimilarity score: {:4.5f}".format("OUTPUT", dissimilarity_score)
         )
         return dictances.kullback_leibler(
-            self.property_1.property_distribution_dict,
-            self.property_2.property_distribution_dict,
+            self.target_property.property_distribution_dict,
+            self.ref_property.property_distribution_dict,
         )
 
 
@@ -120,29 +120,29 @@ class PearsonCoefficient(Dissimilarity):
 
     Attributes
     ----------
-    property_1 : ProteinProperty object
-        Refers to the calculated property of the full protein trajectory
-    property_1 : ProteinProperty object
-        Refers to the calculated property of the sample protein trajectory
+    target_property : ProteinProperty object
+        Refers to the calculated property of the sampled or target protein trajectory
+    ref_property : ProteinProperty object
+        Refers to the reference calculated property (e.g. for the full protein trajectory)
     """
 
     display_name = "pearson"
 
-    def __init__(self, property_1, property_2):
-        super().__init__(property_1, property_2, clean=True)
+    def __init__(self, target_property, ref_property):
+        super().__init__(target_property, ref_property, clean=True)
 
     def calculate_dissimilarity(self):
         """
         Method that returns the pearson coefficient between two vectors
         """
         dissimilarity_score = dictances.pearson(
-            self.property_1.property_distribution_dict,
-            self.property_2.property_distribution_dict,
+            self.target_property.property_distribution_dict,
+            self.ref_property.property_distribution_dict,
         )
         log.info(
             "{:18s} Dissimilarity score: {:4.5f}".format("OUTPUT", dissimilarity_score)
         )
         return dictances.pearson(
-            self.property_1.property_distribution_dict,
-            self.property_2.property_distribution_dict,
+            self.target_property.property_distribution_dict,
+            self.ref_property.property_distribution_dict,
         )
