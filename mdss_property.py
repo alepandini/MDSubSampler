@@ -161,6 +161,7 @@ class SampledProperty(ProteinProperty):
         self.ref_property = original_property
         self.ref_coordinates = []
         self.property_vector = sampled_property_vector
+        self.discretized_property_vector = []
         self.property_distribution_dict = {}
         self.frame_indices = sampled_frame_indices
         self.samples_indices = samples_indices
