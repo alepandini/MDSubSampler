@@ -1,3 +1,7 @@
+import mdss_protein_data
+import mdss_geometrical_property
+from unittest.mock import MagicMock
+
 """       
 Test 1: calculate_property() for RMSD
 Lenth(self.property_vector) = length(self.protein_data.frame_indices)
@@ -21,3 +25,47 @@ Test 6: calculate_property() for Dihedral angle psi
 test that a function is called
 assert that an error has been raised - give wrong arguments so we can have errors
 """
+
+
+def test_RMSDProperty_vector_and_indices_have_same_lenght():
+
+    p_data = mdss_protein_data.ProteinData(
+        "data/user.xtc", "data/user.gro", config_parameters=None
+    )
+    p_prop = mdss_geometrical_property.RMSDProperty(p_data, atom_selection="name CA")
+    p_prop.calculate_property()
+    assert len(p_prop.property_vector) == len(p_data.frame_indices)
+
+
+def test_RMSDProperty_frame_indices_have_same_lenght():
+
+    p_data = mdss_protein_data.ProteinData(
+        "data/user.xtc", "data/user.gro", config_parameters=None
+    )
+    p_prop = mdss_geometrical_property.RMSDProperty(p_data, atom_selection="name CA")
+    p_prop.calculate_property()
+    assert len(p_prop.frame_indices) == len(p_data.frame_indices)
+
+
+# def test_RMSDProperty_property_statistics_method_have_been_called_once():
+
+#     p_data = mdss_protein_data.ProteinData(
+#         "data/user.xtc", "data/user.gro", config_parameters=None
+#     )
+#     p_prop = mdss_geometrical_property.RMSDProperty(p_data, atom_selection="name CA")
+#     p_prop.calculate_property()
+#     mock = mock.Mock()
+#     mock.method()
+#     mock.method.assert_called_once()
+
+
+def test_DistanceBetweenAtoms_vector_and_indices_have_same_lenght():
+
+    p_data = mdss_protein_data.ProteinData(
+        "data/user.xtc", "data/user.gro", config_parameters=None
+    )
+    p_prop = mdss_geometrical_property.DistanceBetweenAtoms(
+        p_data, atom_selection="name CA"
+    )
+    p_prop.calculate_property()
+    assert len(p_prop.property_vector) == len(p_data.frame_indices)
