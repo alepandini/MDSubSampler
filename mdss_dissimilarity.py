@@ -17,7 +17,7 @@ class Dissimilarity:
 
     display_name = None
 
-    def __init__(self, target_property, ref_property, clean=False):
+    def __init__(self, target_property, ref_property):
         self.target_property = target_property
         self.ref_property = ref_property
         self.min_value = min(
@@ -57,7 +57,7 @@ class BhattaCoefficient(Dissimilarity):
     display_name = "bhatta"
 
     def __init__(self, target_property, ref_property):
-        super().__init__(target_property, ref_property, clean=True)
+        super().__init__(target_property, ref_property)
 
     def calculate_dissimilarity(self):
         """
@@ -88,7 +88,7 @@ class KLDivergence(Dissimilarity):
     display_name = "kl"
 
     def __init__(self, target_property, ref_property):
-        super().__init__(target_property, ref_property, clean=True)
+        super().__init__(target_property, ref_property)
 
     def calculate_dissimilarity(self):
         """
@@ -119,7 +119,7 @@ class PearsonCoefficient(Dissimilarity):
     display_name = "pearson"
 
     def __init__(self, target_property, ref_property):
-        super().__init__(target_property, ref_property, clean=True)
+        super().__init__(target_property, ref_property)
 
     def calculate_dissimilarity(self):
         """
