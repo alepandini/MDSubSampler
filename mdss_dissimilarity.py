@@ -20,18 +20,25 @@ class Dissimilarity:
     def __init__(self, target_property, ref_property, clean=False):
         self.target_property = target_property
         self.ref_property = ref_property
-        self.dissimilarity = self.calculate_dissimilarity()
+        self.min_value = min(
+            min(target_property.property_vector), min(ref_property.property_vector)
+        )
+        self.max_value = max(
+            max(target_property.property_vector), max(ref_property.property_vector)
+        )
+        self.target_property.discretize_vector(min_value=self.min_value, max_value=self.max_value)
+        self.ref_property.discretize_vector(min_value=self.min_value, max_value=self.max_value)
+        self.dissimilarity = None
 
     def calculate_dissimilarity(self):
         """
         Method that calculates the difference between the average values of the
         two calculated property vectors.
         """
-        dissimilarity_score = self.target_property.avg_value - self.ref_property.avg_value
+        self.dissimilarity = self.target_property.avg_value - self.ref_property.avg_value
         log.info(
-            "{:18s} Dissimilarity score: {:4.5f}".format("OUTPUT", dissimilarity_score)
+            "{:18s} Dissimilarity score: {:4.5f}".format("OUTPUT", self.dissimilarity)
         )
-        return self.target_property.avg_value - self.ref_property.avg_value
 
 
 class BhattaCoefficient(Dissimilarity):
@@ -50,32 +57,19 @@ class BhattaCoefficient(Dissimilarity):
     display_name = "bhatta"
 
     def __init__(self, target_property, ref_property):
-        self.min_value = min(
-            min(target_property.property_vector), min(ref_property.property_vector)
-        )
-        self.max_value = max(
-            max(target_property.property_vector), max(ref_property.property_vector)
-        )
         super().__init__(target_property, ref_property, clean=True)
 
     def calculate_dissimilarity(self):
         """
         Method that returns the Bhatta coefficient from distance between two vectors
         """
-        target_property_discretized = self.target_property.discretize_vector(
-            min_value=self.min_value, max_value=self.max_value
-        )
-        ref_property_discretized = self.ref_property.discretize_vector(
-            min_value=self.min_value, max_value=self.max_value
-        )
-        dissimilarity_score = dictances.bhattacharyya(
-            target_property_discretized, ref_property_discretized
+        self.dissimilarity = dictances.bhattacharyya(
+            self.target_property.property_distribution_dict,
+            self.ref_property.property_distribution_dict
         )
         log.info(
-            "{:18s} Dissimilarity score: {:4.5f}".format("OUTPUT", dissimilarity_score)
+            "{:18s} Dissimilarity score: {:4.5f}".format("OUTPUT", self.dissimilarity)
         )
-
-        return dictances.bhattacharyya(target_property_discretized, ref_property_discretized)
 
 
 class KLDivergence(Dissimilarity):
@@ -100,16 +94,12 @@ class KLDivergence(Dissimilarity):
         """
         Method that returns the KL divergence distance between two vectors
         """
-        dissimilarity_score = dictances.kullback_leibler(
+        self.dissimilarity = dictances.kullback_leibler(
             self.target_property.property_distribution_dict,
             self.ref_property.property_distribution_dict,
         )
         log.info(
-            "{:18s} Dissimilarity score: {:4.5f}".format("OUTPUT", dissimilarity_score)
-        )
-        return dictances.kullback_leibler(
-            self.target_property.property_distribution_dict,
-            self.ref_property.property_distribution_dict,
+            "{:18s} Dissimilarity score: {:4.5f}".format("OUTPUT", self.dissimilarity)
         )
 
 
@@ -135,14 +125,10 @@ class PearsonCoefficient(Dissimilarity):
         """
         Method that returns the pearson coefficient between two vectors
         """
-        dissimilarity_score = dictances.pearson(
+        self.dissimilarity = dictances.pearson(
             self.target_property.property_distribution_dict,
             self.ref_property.property_distribution_dict,
         )
         log.info(
-            "{:18s} Dissimilarity score: {:4.5f}".format("OUTPUT", dissimilarity_score)
-        )
-        return dictances.pearson(
-            self.target_property.property_distribution_dict,
-            self.ref_property.property_distribution_dict,
+            "{:18s} Dissimilarity score: {:4.5f}".format("OUTPUT", self.dissimilarity)
         )
