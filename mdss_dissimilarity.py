@@ -20,7 +20,7 @@ class Dissimilarity:
     display_name = None
 
     def __init__(self, target_property, ref_property, n_bins=100):
-        self.dissimilarity_measure = 'average'
+        self.dissimilarity_name = 'average'
         self.target_property = target_property
         self.ref_property = ref_property
         self.min_value = min(
@@ -61,7 +61,7 @@ class Bhattacharya(Dissimilarity):
 
     def __init__(self, target_property, ref_property):
         super().__init__(target_property, ref_property)
-        self.dissimilarity_measure = 'Bhattacharya'
+        self.dissimilarity_name = 'Bhattacharya'
 
     def calculate_dissimilarity(self):
         """
@@ -93,7 +93,7 @@ class KullbackLeibler(Dissimilarity):
 
     def __init__(self, target_property, ref_property):
         super().__init__(target_property, ref_property)
-        self.dissimilarity_measure = 'Kullback-Leibler'
+        self.dissimilarity_name = 'Kullback-Leibler'
 
     def calculate_dissimilarity(self):
         """
@@ -125,7 +125,7 @@ class Pearson(Dissimilarity):
 
     def __init__(self, target_property, ref_property):
         super().__init__(target_property, ref_property)
-        self.dissimilarity_measure = 'Pearson'
+        self.dissimilarity_name = 'Pearson'
 
     def calculate_dissimilarity(self):
         """
