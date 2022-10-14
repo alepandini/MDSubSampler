@@ -29,9 +29,9 @@ SAMPLER_CLASS_MAPPING = dict((sampler.__name__, sampler) for sampler in SAMPLER_
 
 DISSIMILARITY_CLASSES = [
     mdss_dissimilarity.Dissimilarity,
-    mdss_dissimilarity.BhattaCoefficient,
-    mdss_dissimilarity.KLDivergence,
-    mdss_dissimilarity.PearsonCoefficient,
+    mdss_dissimilarity.Bhattacharya,
+    mdss_dissimilarity.KullbackLeibler,
+    mdss_dissimilarity.Pearson,
 ]
 DISSIMILARITY_CLASS_MAPPING = dict(
     (dissimilarity.__name__, dissimilarity) for dissimilarity in DISSIMILARITY_CLASSES

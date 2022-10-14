@@ -18,9 +18,9 @@ def test_calculate_distance():
 @pytest.mark.parametrize(
     "mocked_function_name, distance_subclass",
     [
-        ("dictances.bhattacharyya", mdss_dissimilarity.BhattaCoefficient),
-        ("dictances.kullback_leibler", mdss_dissimilarity.KLDivergence),
-        ("dictances.pearson", mdss_dissimilarity.PearsonCoefficient),
+        ("dictances.bhattacharyya", mdss_dissimilarity.Bhattacharya),
+        ("dictances.kullback_leibler", mdss_dissimilarity.KullbackLeibler),
+        ("dictances.pearson", mdss_dissimilarity.Pearson),
     ],
 )
 def test_bhattacharyya_distance(mocker, mocked_function_name, distance_subclass):

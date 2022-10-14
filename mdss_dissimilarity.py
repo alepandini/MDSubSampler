@@ -20,6 +20,7 @@ class Dissimilarity:
     display_name = None
 
     def __init__(self, target_property, ref_property):
+        self.dissimilarity_measure = 'average'
         self.target_property = target_property
         self.ref_property = ref_property
         self.min_value = min(
@@ -43,9 +44,9 @@ class Dissimilarity:
         )
 
 
-class BhattaCoefficient(Dissimilarity):
+class Bhattacharya(Dissimilarity):
     """
-    A Subclass of the Dissimilarity class that calculates the Bhattacharya coefficient between
+    A Subclass of the Dissimilarity class that calculates the Bhattacharya distance between
     two property vectors
 
     Attributes
@@ -56,14 +57,15 @@ class BhattaCoefficient(Dissimilarity):
         Refers to the reference calculated property (e.g. for the full protein trajectory)
     """
 
-    display_name = "bhatta"
+    display_name = "Bhattacharyya"
 
     def __init__(self, target_property, ref_property):
         super().__init__(target_property, ref_property)
+        self.dissimilarity_measure = 'Bhattacharya'
 
     def calculate_dissimilarity(self):
         """
-        Method that returns the Bhatta coefficient from distance between two vectors
+        Method that returns the Bhattacharya distance from distance between two vectors
         """
         self.dissimilarity = dictances.bhattacharyya(
             self.target_property.property_distribution_dict,
@@ -74,7 +76,7 @@ class BhattaCoefficient(Dissimilarity):
         )
 
 
-class KLDivergence(Dissimilarity):
+class KullbackLeibler(Dissimilarity):
     """
     A Subclass of the Dissimilarity class that calculates the Kullback-Leibler divergence between
     two property vectors
@@ -87,10 +89,11 @@ class KLDivergence(Dissimilarity):
         Refers to the reference calculated property (e.g. for the full protein trajectory)
     """
 
-    display_name = "kl"
+    display_name = "KullbackLeibler"
 
     def __init__(self, target_property, ref_property):
         super().__init__(target_property, ref_property)
+        self.dissimilarity_measure = 'Kullback-Leibler'
 
     def calculate_dissimilarity(self):
         """
@@ -105,9 +108,9 @@ class KLDivergence(Dissimilarity):
         )
 
 
-class PearsonCoefficient(Dissimilarity):
+class Pearson(Dissimilarity):
     """
-    A Subclass of the Dissimilarity class that calculates the Pearson coefficient between
+    A Subclass of the Dissimilarity class that calculates the Pearson distance between
     two property vectors
 
     Attributes
@@ -118,14 +121,15 @@ class PearsonCoefficient(Dissimilarity):
         Refers to the reference calculated property (e.g. for the full protein trajectory)
     """
 
-    display_name = "pearson"
+    display_name = "Pearson"
 
     def __init__(self, target_property, ref_property):
         super().__init__(target_property, ref_property)
+        self.dissimilarity_measure = 'Pearson'
 
     def calculate_dissimilarity(self):
         """
-        Method that returns the pearson coefficient between two vectors
+        Method that returns the pearson distance between two vectors
         """
         self.dissimilarity = dictances.pearson(
             self.target_property.property_distribution_dict,

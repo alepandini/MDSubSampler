@@ -11,12 +11,12 @@
 #     property.calculate_property()
 
 
-# python mdss.py --traj "data/user.xtc" --top "data/user.gro" --prefix "11%" --output-folder "data/results" --property='DistanceBetweenAtoms' --atom-selection='G55,P127' --sampler='BootstrappingSampler' --n-iterations=50 --size=11000 --dissimilarity='BhattaCoefficient'
-# python mdss.py --traj "data/user.xtc" --top "data/user.gro" --prefix "0.1%" --output-folder "data/results" --property='DistanceBetweenAtoms' --atom-selection='G55,P127' --sampler='RandomSampler' --seed-number=1991 --size=100 --dissimilarity='BhattaCoefficient'
-# python mdss.py --traj "data/user.xtc" --top "data/user.gro" --prefix "0.5%" --output-folder "data/results" --property='DistanceBetweenAtoms' --atom-selection='G55,P127' --sampler='RandomSampler' --seed-number=1992 --size=500 --dissimilarity='BhattaCoefficient'
-# python mdss.py --traj "data/user.xtc" --top "data/user.gro" --prefix "1%" --output-folder "data/results" --property='DistanceBetweenAtoms' --atom-selection='G55,P127' --sampler='RandomSampler' --seed-number=1993 --size=1000 --dissimilarity='BhattaCoefficient'
-# python mdss.py --traj "data/user.xtc" --top "data/user.gro" --prefix "5%" --output-folder "data/results" --property='DistanceBetweenAtoms' --atom-selection='G55,P127' --sampler='RandomSampler' --seed-number=1994 --size=5000 --dissimilarity='BhattaCoefficient'
-# python mdss.py --traj "data/user.xtc" --top "data/user.gro" --prefix "10%" --output-folder "data/results" --property='DistanceBetweenAtoms' --atom-selection='G55,P127' --sampler='RandomSampler' --seed-number=1995 --size=10000 --dissimilarity='BhattaCoefficient'
+# python mdss.py --traj "data/user.xtc" --top "data/user.gro" --prefix "11%" --output-folder "data/results" --property='DistanceBetweenAtoms' --atom-selection='G55,P127' --sampler='BootstrappingSampler' --n-iterations=50 --size=11000 --dissimilarity='Bhattacharya'
+# python mdss.py --traj "data/user.xtc" --top "data/user.gro" --prefix "0.1%" --output-folder "data/results" --property='DistanceBetweenAtoms' --atom-selection='G55,P127' --sampler='RandomSampler' --seed-number=1991 --size=100 --dissimilarity='Bhattacharya'
+# python mdss.py --traj "data/user.xtc" --top "data/user.gro" --prefix "0.5%" --output-folder "data/results" --property='DistanceBetweenAtoms' --atom-selection='G55,P127' --sampler='RandomSampler' --seed-number=1992 --size=500 --dissimilarity='Bhattacharya'
+# python mdss.py --traj "data/user.xtc" --top "data/user.gro" --prefix "1%" --output-folder "data/results" --property='DistanceBetweenAtoms' --atom-selection='G55,P127' --sampler='RandomSampler' --seed-number=1993 --size=1000 --dissimilarity='Bhattacharya'
+# python mdss.py --traj "data/user.xtc" --top "data/user.gro" --prefix "5%" --output-folder "data/results" --property='DistanceBetweenAtoms' --atom-selection='G55,P127' --sampler='RandomSampler' --seed-number=1994 --size=5000 --dissimilarity='Bhattacharya'
+# python mdss.py --traj "data/user.xtc" --top "data/user.gro" --prefix "10%" --output-folder "data/results" --property='DistanceBetweenAtoms' --atom-selection='G55,P127' --sampler='RandomSampler' --seed-number=1995 --size=10000 --dissimilarity='Bhattacharya'
 
 # Results
 
