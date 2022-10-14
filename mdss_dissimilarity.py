@@ -1,5 +1,7 @@
 import dictances
+from scipy.special import rel_entr
 from mdss_logging import logging as log
+from math import isinf
 
 
 class Dissimilarity:
@@ -94,10 +96,10 @@ class KLDivergence(Dissimilarity):
         """
         Method that returns the KL divergence distance between two vectors
         """
-        self.dissimilarity = dictances.kullback_leibler(
-            self.target_property.property_distribution_dict,
-            self.ref_property.property_distribution_dict,
-        )
+        P = list(self.target_property.property_distribution_dict.values())
+        Q = list(self.ref_property.property_distribution_dict.values())
+        rel_entropy_vector = rel_entr(P, Q) 
+        self.dissimilarity = sum([v for v in rel_entropy_vector if not isinf(v)])
         log.info(
             "{:18s} Dissimilarity score: {:4.5f}".format("OUTPUT", self.dissimilarity)
         )
