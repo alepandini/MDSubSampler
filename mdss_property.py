@@ -2,6 +2,7 @@ import numpy as np
 import MDAnalysis as mda
 from mdss_protein_data import ProteinData
 from mdss_logging import logging as log
+from mdss_dissimilarity import *
 
 
 class ProteinProperty:
@@ -154,7 +155,7 @@ class ProteinProperty:
 
 class SampledProperty(ProteinProperty):
     def __init__(
-        self, original_property, sampled_property_vector, sampled_frame_indices, samples_indices
+        self, original_property, sampled_property_vector, sampled_frame_indices, samples_indices, dissimilarity_measure=Bhattacharya
     ):
         self.protein_data = original_property.protein_data
         self.atom_selection = original_property.atom_selection
@@ -165,9 +166,15 @@ class SampledProperty(ProteinProperty):
         self.property_distribution_dict = {}
         self.frame_indices = sampled_frame_indices
         self.samples_indices = samples_indices
+        self.ref_dissimilarity = self._get_dissimilarity_to_ref(dissimilarity_measure)
         self.display_name = "Sampled_{}".format(original_property.display_name)
         self._property_statistics()
         self._add_reference_to_protein_data()
+
+    def _get_dissimilarity_to_ref(self, dissimilarity_measure):
+        diss_obj = dissimilarity_measure(self, self.ref_property)
+        diss_obj.calculate_dissimilarity()
+        return diss_obj.dissimilarity
 
     def calculate_property(self):
         pass
