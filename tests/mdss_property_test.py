@@ -16,11 +16,11 @@ import tempfile
 import os.path
 
 
-def test_write_property_vector_method_has_written_the_file():
+def test_write_property_vector_method_has_written_the_file(traj_file, top_file):
     with tempfile.TemporaryDirectory() as tmpdirname:
         outfilepath = os.path.join(tmpdirname, "test.txt")
         p_data = mdss_protein_data.ProteinData(
-            "data/user.xtc", "data/user.gro", config_parameters=None
+            traj_file, top_file, config_parameters=None
         )
         p_prop = mdss_property.ProteinProperty(p_data, atom_selection="name CA")
         p_prop.write_property_vector(outfilepath)
