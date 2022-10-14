@@ -2,6 +2,7 @@ import numpy as np
 import random
 import mdss_property
 from mdss_property import SampledProperty
+from mdss_dissimilarity import *
 
 
 class ProteinSampler:
@@ -15,13 +16,14 @@ class ProteinSampler:
 
     display_name = None
 
-    def __init__(self, protein_property):
+    def __init__(self, protein_property, dissimilarity_measure=Bhattacharya):
         self.protein_property = protein_property
         self.property_vector = protein_property.property_vector
         self.frame_indices = protein_property.frame_indices
         self.sampled_property_vector = None
         self.sampled_frame_indices = None
         self.samples_indices = []
+        self.dissimilarity_measure = dissimilarity_measure
 
     def _create_data_list(self):
         property_indices_tuples = list(zip(self.property_vector, self.frame_indices))
@@ -35,7 +37,8 @@ class ProteinSampler:
             self.protein_property,
             self.sampled_property_vector,
             self.sampled_frame_indices,
-            self.samples_indices
+            self.samples_indices,
+            self.dissimilarity_measure
         )
         return sampled_protein_property
 
@@ -66,9 +69,9 @@ class RandomSampler(ProteinSampler):
 
     display_name = "Random Sampling"
 
-    def __init__(self, protein_property, seed_number=1999):
+    def __init__(self, protein_property, seed_number=1999, dissimilarity_measure=Bhattacharya):
         random.seed(seed_number)
-        super().__init__(protein_property)
+        super().__init__(protein_property, dissimilarity_measure=dissimilarity_measure)
 
     def sample(self, size):
         """
@@ -101,7 +104,7 @@ class StratifiedSampler(ProteinSampler):
 
     display_name = "Stratified Sampling"
 
-    def __init__(self, protein_property, strata_vector):
+    def __init__(self, protein_property, strata_vector, dissimilarity_measure=Bhattacharya):
         self.strata_vector = strata_vector
         strata_labels = sorted(set(strata_vector))
         self.layers = {}
@@ -111,7 +114,7 @@ class StratifiedSampler(ProteinSampler):
             ]
             self.layers[label] = strata_indices
         self.n_layers = len(self.layers.keys())
-        super().__init__(protein_property)
+        super().__init__(protein_property, dissimilarity_measure=dissimilarity_measure)
 
     def sample(self, size):
         """
@@ -183,8 +186,8 @@ class UniformSampler(ProteinSampler):
 
     display_name = "Uniform Sampling"
 
-    def __init__(self, protein_property, strata_number):
-        super().__init__(protein_property)
+    def __init__(self, protein_property, strata_number, dissimilarity_measure=Bhattacharya):
+        super().__init__(protein_property, dissimilarity_measure=dissimilarity_measure)
         self.bin_size = (
             self.protein_property.max_value - self.protein_property.min_value
         ) / strata_number
@@ -226,10 +229,10 @@ class BootstrappingSampler(ProteinSampler):
 
     display_name = "Bootstrapping Sampling"
 
-    def __init__(self, protein_property, number_of_iterations, seed_number=1999):
+    def __init__(self, protein_property, number_of_iterations, seed_number=1999, dissimilarity_measure=Bhattacharya):
         random.seed(seed_number)
         self.number_of_iterations = number_of_iterations
-        super().__init__(protein_property)
+        super().__init__(protein_property, dissimilarity_measure=dissimilarity_measure)
 
     def sample(self, size):
         """
