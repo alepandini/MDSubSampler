@@ -19,7 +19,7 @@ class Dissimilarity:
 
     display_name = None
 
-    def __init__(self, target_property, ref_property):
+    def __init__(self, target_property, ref_property, n_bins=100):
         self.dissimilarity_measure = 'average'
         self.target_property = target_property
         self.ref_property = ref_property
@@ -29,8 +29,8 @@ class Dissimilarity:
         self.max_value = max(
             max(target_property.property_vector), max(ref_property.property_vector)
         )
-        self.target_property.discretize_vector(min_value=self.min_value, max_value=self.max_value)
-        self.ref_property.discretize_vector(min_value=self.min_value, max_value=self.max_value)
+        self.target_property.discretize_vector(min_value=self.min_value, max_value=self.max_value, n_bins=n_bins)
+        self.ref_property.discretize_vector(min_value=self.min_value, max_value=self.max_value, n_bins=n_bins)
         self.dissimilarity = None
 
     def calculate_dissimilarity(self):
