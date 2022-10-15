@@ -3,7 +3,7 @@ import MDAnalysis.analysis.pca as pca
 import numpy as np
 
 
-class TrjPCA(ProteinProperty):
+class TrjPCAProj(ProteinProperty):
     """
     A Subclass of ProteinProperty class used to perform PCA on the protein
     trajectory and calculates a pca_space vector with number of columns equal
@@ -15,11 +15,11 @@ class TrjPCA(ProteinProperty):
     pca_vector: A vector that will be used to sample the trajectory of the protein
     """
 
-    display_name = "TrjPCA"
+    display_name = "TrjPCAProj"
 
     def __init__(self, protein_data, atom_selection='name CA'):
         super().__init__(protein_data, atom_selection)
-        self.pca_moedl = None
+        self.pca_model = None
         self.n_pcs = None
         self.ed_n_pcs = None
         self.property_matrix = None

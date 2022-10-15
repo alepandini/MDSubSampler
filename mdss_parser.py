@@ -11,7 +11,7 @@ PROPERTY_CLASSES = [
     mdss_geometrical_property.RMSDProperty,
     mdss_geometrical_property.DistanceBetweenAtoms,
     mdss_geometrical_property.RadiusOfGyrationProperty,
-    mdss_pca_property.TrjPCA,
+    mdss_pca_property.TrjPCAProj,
     mdss_geometrical_property.DihedralAngles,
     mdss_geometrical_property.Angles,
 ]
