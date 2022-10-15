@@ -140,3 +140,6 @@ logs/
 
 # data
 data/*.npz
+
+# graphs
+png/
