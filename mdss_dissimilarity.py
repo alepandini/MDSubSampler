@@ -76,6 +76,7 @@ class Bhattacharya(Dissimilarity):
             self.target_property.property_distribution_dict,
             self.ref_property.property_distribution_dict,
         )
+
         log.info(
             "{:18s} Dissimilarity score: {:4.5f}".format("OUTPUT", self.dissimilarity)
         )

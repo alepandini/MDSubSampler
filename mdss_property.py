@@ -75,7 +75,9 @@ class ProteinProperty:
             max_value = self.max_value
         bin_size = (max_value - min_value) / n_bins
         bin_vector = np.arange(min_value, max_value, bin_size)
-        self.discretized_property_vector = [bin_vector[i-1] for i in np.digitize(self.property_vector, bin_vector)]
+        self.discretized_property_vector = [
+            bin_vector[i - 1] for i in np.digitize(self.property_vector, bin_vector)
+        ]
         counts, bins = np.histogram(self.property_vector, bins=bin_vector)
         self.property_distribution_dict = dict(
             zip(bins, (counts / len(self.property_vector)))
@@ -156,7 +158,12 @@ class ProteinProperty:
 
 class SampledProperty(ProteinProperty):
     def __init__(
-        self, original_property, sampled_property_vector, sampled_frame_indices, samples_indices, dissimilarity_measure=Bhattacharya
+        self,
+        original_property,
+        sampled_property_vector,
+        sampled_frame_indices,
+        samples_indices,
+        dissimilarity_measure=Bhattacharya,
     ):
         self.protein_data = original_property.protein_data
         self.atom_selection = original_property.atom_selection
@@ -184,7 +191,13 @@ class SampledProperty(ProteinProperty):
         samples_labels = set(self.samples_indices)
         average_dict = {}
         for label in samples_labels:
-            average_value = np.mean([value for value, i in zip(self.property_vector, self.samples_indices) if i == label])
+            average_value = np.mean(
+                [
+                    value
+                    for value, i in zip(self.property_vector, self.samples_indices)
+                    if i == label
+                ]
+            )
             average_dict[label] = average_value
         return average_dict
 
@@ -192,4 +205,3 @@ class SampledProperty(ProteinProperty):
         average_dict = self.get_samples_averages()
         average_value = np.mean(list(average_dict.values()))
         return average_value
-

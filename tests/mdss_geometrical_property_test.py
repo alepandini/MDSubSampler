@@ -1,4 +1,3 @@
-import mdss_protein_data
 import mdss_geometrical_property
 import pytest
 
