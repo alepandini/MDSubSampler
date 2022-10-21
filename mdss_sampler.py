@@ -17,7 +17,7 @@ def convert_size(size, n_frames):
             sys.exit(1)
 
         size = prc * n_frames / 100
-        return size
+        return round(size)
 
     return int(size)
 
