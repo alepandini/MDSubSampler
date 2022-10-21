@@ -167,6 +167,7 @@ class ProteinData:
         timestamp = str(datetime.now().timestamp())
         key = "{}_{}".format(property_name, timestamp)
         self.property_dict[key] = protein_property
+        return key
 
     def property_data_report(self):
         report_dict = {}
