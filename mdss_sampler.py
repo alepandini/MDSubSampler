@@ -11,7 +11,7 @@ def convert_size(size, n_frames):
         return size
 
     if size.endswith("%"):
-        prc = int(size.rstrip("%"))
+        prc = float(size.rstrip("%"))
         if prc > 100:
             print("size percentage {} is not less than 100%".format(prc))
             sys.exit(1)

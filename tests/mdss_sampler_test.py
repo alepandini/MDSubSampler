@@ -54,3 +54,27 @@ def test_stratified_sampler_sample_returns_subset(protein_data, rmsd_property):
     p_sampler = mdss_sampler.StratifiedSampler(rmsd_property, s_vector)
     sampled_prop = p_sampler.sample(100)
     assert all(x in frame_indices for x in sampled_prop.frame_indices)
+
+
+@pytest.mark.parametrize("size", [100, "100", "30%", "30.8%"])
+def test_sample_calls_implementation(rmsd_property, spy_method, size):
+    p_sampler = mdss_sampler.ProteinSampler(rmsd_property)
+    spy = spy_method(p_sampler, "_sample")
+    p_sampler.sample(size)
+    spy.assert_called_once_with(
+        mdss_sampler.convert_size(size, rmsd_property.protein_data.n_frames)
+    )
+
+
+@pytest.mark.parametrize(
+    "given, expected, n_frames",
+    [
+        (100, 100, 1),
+        ("100", 100, 1),
+        ("30%", 30, 100),
+        ("30%", 30, 101),
+        ("30.8%", 31, 100),
+    ],
+)
+def test_convert_size(given, expected, n_frames):
+    assert mdss_sampler.convert_size(given, n_frames) == expected
