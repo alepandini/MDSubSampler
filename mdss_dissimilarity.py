@@ -43,7 +43,10 @@ class Dissimilarity:
         Method that calculates the difference between the average values of the
         two calculated property vectors.
         """
-        self.dissimilarity = abs(self.target_property.avg_value - self.ref_property.avg_value)
+        self.dissimilarity = abs(
+            self.target_property.avg_value - self.ref_property.avg_value
+        )
+        return self.dissimilarity
         # log.info(
         #     "{:18s} Dissimilarity score: {:4.5f}".format("OUTPUT", self.dissimilarity)
         # )
@@ -81,6 +84,7 @@ class Bhattacharya(Dissimilarity):
         log.info(
             "{:18s} Dissimilarity score: {:4.5f}".format("OUTPUT", self.dissimilarity)
         )
+        return self.dissimilarity
 
 
 class KullbackLeibler(Dissimilarity):
@@ -114,6 +118,7 @@ class KullbackLeibler(Dissimilarity):
         log.info(
             "{:18s} Dissimilarity score: {:4.5f}".format("OUTPUT", self.dissimilarity)
         )
+        return self.dissimilarity
 
 
 class Pearson(Dissimilarity):
@@ -147,3 +152,4 @@ class Pearson(Dissimilarity):
         log.info(
             "{:18s} Dissimilarity score: {:4.5f}".format("OUTPUT", self.dissimilarity)
         )
+        return self.dissimilarity

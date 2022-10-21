@@ -117,7 +117,7 @@ def parse_args(arg_list):
         "--strata-number",
         dest="strata_number",
         type=int,
-        help=("The desired number of strata "),
+        help="The desired number of strata ",
     )
 
     parser.add_argument(
