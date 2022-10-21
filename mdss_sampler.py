@@ -48,8 +48,6 @@ class ProteinSampler:
     def scan_sample_size(self, perc_vector=None, dissimilarity_threshold=None):
         selected_size = None
         selected_sample_key = None
-        if dissimilarity_threshold is None:
-            dissimilarity_threshold = 0.2
         if perc_vector is None:
             perc_vector = [25, 10, 5, 1, 0.5, 0.1]
         if sum([x > 100 for x in perc_vector]) == 0:
@@ -58,10 +56,16 @@ class ProteinSampler:
             for p in perc_vector:
                 sampled_property = self.sample(round(p * n_frames / 100))
                 if sampled_property is not None:
+                    if dissimilarity_threshold is None:
+                        dissimilarity_threshold = sampled_property.dissimilarity_threshold
                     if sampled_property.ref_dissimilarity <= dissimilarity_threshold:
                         selected_size = p
                         selected_sample_key = sampled_property.property_key
-            return self.protein_property.protein_data.property_dict[selected_sample_key]
+            if selected_sample_key is None:
+                print("Warning: no sample meeting dissimilarity threshold.")
+                return None
+            else:
+                return self.protein_property.protein_data.property_dict[selected_sample_key]
         else:
             print("Percentage values should be smaller than 100.")
 

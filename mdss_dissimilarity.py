@@ -36,17 +36,17 @@ class Dissimilarity:
             min_value=self.min_value, max_value=self.max_value, n_bins=n_bins
         )
         self.dissimilarity = None
+        self.dissimilarity_threshold = (self.max_value - self.min_value) / 0.1
 
     def calculate_dissimilarity(self):
         """
         Method that calculates the difference between the average values of the
         two calculated property vectors.
         """
-        dissimilarity = self.target_property.avg_value - self.ref_property.avg_value
+        self.dissimilarity = abs(self.target_property.avg_value - self.ref_property.avg_value)
         # log.info(
         #     "{:18s} Dissimilarity score: {:4.5f}".format("OUTPUT", self.dissimilarity)
         # )
-        return dissimilarity
 
 
 class Bhattacharya(Dissimilarity):
@@ -67,6 +67,7 @@ class Bhattacharya(Dissimilarity):
     def __init__(self, target_property, ref_property):
         super().__init__(target_property, ref_property)
         self.dissimilarity_name = "Bhattacharya"
+        self.dissimilarity_threshold = 0.2
 
     def calculate_dissimilarity(self):
         """
@@ -100,6 +101,7 @@ class KullbackLeibler(Dissimilarity):
     def __init__(self, target_property, ref_property):
         super().__init__(target_property, ref_property)
         self.dissimilarity_name = "Kullback-Leibler"
+        self.dissimilarity_threshold = 0.2
 
     def calculate_dissimilarity(self):
         """
@@ -132,6 +134,7 @@ class Pearson(Dissimilarity):
     def __init__(self, target_property, ref_property):
         super().__init__(target_property, ref_property)
         self.dissimilarity_name = "Pearson"
+        self.dissimilarity_threshold = 0.2
 
     def calculate_dissimilarity(self):
         """

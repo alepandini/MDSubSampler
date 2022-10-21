@@ -175,6 +175,8 @@ class SampledProperty(ProteinProperty):
         self.property_distribution_dict = {}
         self.frame_indices = sampled_frame_indices
         self.samples_indices = samples_indices
+        self.dissimilarity_name = None
+        self.dissimilarity_threshold = None
         self.ref_dissimilarity = self._get_dissimilarity_to_ref(dissimilarity_measure)
         self.display_name = "Sampled_{}".format(original_property.display_name)
         self._property_statistics()
@@ -183,6 +185,8 @@ class SampledProperty(ProteinProperty):
     def _get_dissimilarity_to_ref(self, dissimilarity_measure):
         diss_obj = dissimilarity_measure(self, self.ref_property)
         diss_obj.calculate_dissimilarity()
+        self.dissimilarity_name = diss_obj.dissimilarity_name
+        self.dissimilarity_threshold = diss_obj.dissimilarity_threshold
         return diss_obj.dissimilarity
 
     def calculate_property(self):
