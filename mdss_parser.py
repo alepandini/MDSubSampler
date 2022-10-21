@@ -1,3 +1,4 @@
+from xmlrpc.client import boolean
 from numpy import require
 import mdss_geometrical_property
 import mdss_pca_property
@@ -77,6 +78,14 @@ def parse_args(arg_list):
         choices=PROPERTY_CLASS_MAPPING.keys(),
         help="Property",
     )
+
+    parser.add_argument(
+        "--fit",
+        dest="fit",
+        type=boolean,
+        help="Indicates the superposition of trajectory before calculating RMSD",
+    )
+
     parser.add_argument(
         "--atom-selection",
         dest="atom_selection",
@@ -176,6 +185,7 @@ def parse_args(arg_list):
     require_sampler_argument(mdss_sampler.UniformSampler, "strata_number")
     require_sampler_argument(mdss_sampler.BootstrappingSampler, "number_of_iterations")
 
+    require_property_argument(mdss_geometrical_property.RMSDProperty, "fit")
     require_property_argument(
         mdss_geometrical_property.DistanceBetweenAtoms, "atom_selection"
     )
