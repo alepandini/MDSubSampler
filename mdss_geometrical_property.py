@@ -14,11 +14,16 @@ class RMSDProperty(ProteinProperty):
 
     display_name = "RMSD"
 
+    def __init__(self, protein_data, atom_selection="name CA", fit=False):
+        self.fit = fit
+        super().__init__(protein_data, atom_selection)
+
     def calculate_property(self, frame_index=0):
         """
         Method that calculates the RMDS proporty of a given frame list for a given
         selection of atoms
         """
+
         if self.set_reference_coordinates(frame_index):
             for frame in self.protein_data.frame_indices:
                 """
@@ -32,6 +37,8 @@ class RMSDProperty(ProteinProperty):
                             self.atom_selection
                         ).positions,
                         self.ref_coordinates,
+                        center=self.fit,
+                        superposition=self.fit,
                     )
                 )
                 self.frame_indices.append(frame)

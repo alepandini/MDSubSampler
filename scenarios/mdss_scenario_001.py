@@ -8,6 +8,7 @@ SELECTION = "name CA"
 SAMPLER = "RandomSampler"
 SIZE = "100"
 DISSIMILARITY = "Dissimilarity"
+FIT = "False"
 
 
 def main(trj_filename, top_filename, out_prefix):
@@ -24,6 +25,8 @@ def main(trj_filename, top_filename, out_prefix):
             OUT_DIR,
             "--property",
             PROPERTY,
+            "--fit",
+            FIT,
             "--atom-selection",
             SELECTION,
             "--sampler",

@@ -20,7 +20,7 @@ class Dissimilarity:
     display_name = None
 
     def __init__(self, target_property, ref_property, n_bins=100):
-        self.dissimilarity_name = 'average'
+        self.dissimilarity_name = "average"
         self.target_property = target_property
         self.ref_property = ref_property
         self.min_value = min(
@@ -29,8 +29,12 @@ class Dissimilarity:
         self.max_value = max(
             max(target_property.property_vector), max(ref_property.property_vector)
         )
-        self.target_property.discretize_vector(min_value=self.min_value, max_value=self.max_value, n_bins=n_bins)
-        self.ref_property.discretize_vector(min_value=self.min_value, max_value=self.max_value, n_bins=n_bins)
+        self.target_property.discretize_vector(
+            min_value=self.min_value, max_value=self.max_value, n_bins=n_bins
+        )
+        self.ref_property.discretize_vector(
+            min_value=self.min_value, max_value=self.max_value, n_bins=n_bins
+        )
         self.dissimilarity = None
 
     def calculate_dissimilarity(self):
@@ -38,10 +42,11 @@ class Dissimilarity:
         Method that calculates the difference between the average values of the
         two calculated property vectors.
         """
-        self.dissimilarity = self.target_property.avg_value - self.ref_property.avg_value
-        log.info(
-            "{:18s} Dissimilarity score: {:4.5f}".format("OUTPUT", self.dissimilarity)
-        )
+        dissimilarity = self.target_property.avg_value - self.ref_property.avg_value
+        # log.info(
+        #     "{:18s} Dissimilarity score: {:4.5f}".format("OUTPUT", self.dissimilarity)
+        # )
+        return dissimilarity
 
 
 class Bhattacharya(Dissimilarity):
@@ -61,7 +66,7 @@ class Bhattacharya(Dissimilarity):
 
     def __init__(self, target_property, ref_property):
         super().__init__(target_property, ref_property)
-        self.dissimilarity_name = 'Bhattacharya'
+        self.dissimilarity_name = "Bhattacharya"
 
     def calculate_dissimilarity(self):
         """
@@ -69,8 +74,9 @@ class Bhattacharya(Dissimilarity):
         """
         self.dissimilarity = dictances.bhattacharyya(
             self.target_property.property_distribution_dict,
-            self.ref_property.property_distribution_dict
+            self.ref_property.property_distribution_dict,
         )
+
         log.info(
             "{:18s} Dissimilarity score: {:4.5f}".format("OUTPUT", self.dissimilarity)
         )
@@ -93,7 +99,7 @@ class KullbackLeibler(Dissimilarity):
 
     def __init__(self, target_property, ref_property):
         super().__init__(target_property, ref_property)
-        self.dissimilarity_name = 'Kullback-Leibler'
+        self.dissimilarity_name = "Kullback-Leibler"
 
     def calculate_dissimilarity(self):
         """
@@ -101,7 +107,7 @@ class KullbackLeibler(Dissimilarity):
         """
         P = list(self.target_property.property_distribution_dict.values())
         Q = list(self.ref_property.property_distribution_dict.values())
-        rel_entropy_vector = rel_entr(P, Q) 
+        rel_entropy_vector = rel_entr(P, Q)
         self.dissimilarity = sum([v for v in rel_entropy_vector if not isinf(v)])
         log.info(
             "{:18s} Dissimilarity score: {:4.5f}".format("OUTPUT", self.dissimilarity)
@@ -125,7 +131,7 @@ class Pearson(Dissimilarity):
 
     def __init__(self, target_property, ref_property):
         super().__init__(target_property, ref_property)
-        self.dissimilarity_name = 'Pearson'
+        self.dissimilarity_name = "Pearson"
 
     def calculate_dissimilarity(self):
         """

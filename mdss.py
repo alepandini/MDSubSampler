@@ -26,22 +26,18 @@ def sampling_workflow(arg_list):
     if args.sampler == "RandomSampler":
         sampler = sampler_class(property, args.seed_number)
     if args.sampler == "UniformSampler":
-        sampler = sampler_class(property, args.low, args.high, args.dtype)
+        sampler = sampler_class(property, args.strata_number)
     elif args.sampler == "StratifiedSampler":
         sampler = sampler_class(property, args.layers)
     elif args.sampler == "BootstrappingSampler":
         sampler = sampler_class(property, args.number_of_iterations)
 
     property_sample = sampler.sample(args.size)
-    # sampled_indices = sampler.sampled_frame_indices
-    # property_sample = mdss_property.SampledProperty(
-    #     property, sampled_property_vector, sampled_indices
-    # )
-
     dissimilarity_class = p.DISSIMILARITY_CLASS_MAPPING[args.dissimilarity]
-    dissimilarity = dissimilarity_class(property, property_sample)
-    dissimilarity_score = dissimilarity.calculate_dissimilarity()
-    # print("Dissimilarity: {}".format(dissimilarity_score))
+    dissimilarity_object = dissimilarity_class(property, property_sample)
+    dissimilarity_score = dissimilarity_object.calculate_dissimilarity()
+
+    print("Dissimilarity: {}".format(dissimilarity_score))
 
     filename = "{}_{}_{}.dat".format(
         args.file_prefix, property_class.display_name, dissimilarity_class.display_name
