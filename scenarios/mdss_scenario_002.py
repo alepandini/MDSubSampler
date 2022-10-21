@@ -4,7 +4,7 @@ import sys
 
 OUT_DIR = "testing"
 PROPERTY = "RMSDProperty"
-SELECTION = "resid 55:127"
+SELECTION = "resid 120:160"
 SAMPLER = "UniformSampler"
 STRATA_NUMBER = "200"
 SIZE = "100"
