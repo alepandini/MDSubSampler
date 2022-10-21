@@ -41,7 +41,7 @@ class ProteinProperty:
         self.property_distribution_dict = {}
         self.frame_indices = []
         self.recalculate = False
-        self._add_reference_to_protein_data()
+        self.property_key = self._add_reference_to_protein_data()
         log.info("{:18s} Atom selection: {}".format("SELECTION", self.atom_selection))
         log.info("{:18s} Property name: {}".format("SELECTION", self.display_name))
 
@@ -59,7 +59,8 @@ class ProteinProperty:
         Method that links the ProteinProperty and ProteinData classes
         """
         if self.protein_data is not None:
-            self.protein_data.add_property(self, self.display_name)
+            property_key = self.protein_data.add_property(self, self.display_name)
+            return property_key
 
     def discretize_vector(self, min_value=None, max_value=None, n_bins=100):
         """
@@ -170,7 +171,7 @@ class SampledProperty(ProteinProperty):
         self.ref_dissimilarity = self._get_dissimilarity_to_ref(dissimilarity_measure)
         self.display_name = "Sampled_{}".format(original_property.display_name)
         self._property_statistics()
-        self._add_reference_to_protein_data()
+        self.property_key = self._add_reference_to_protein_data()
 
     def _get_dissimilarity_to_ref(self, dissimilarity_measure):
         diss_obj = dissimilarity_measure(self, self.ref_property)
