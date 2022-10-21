@@ -1,7 +1,6 @@
-from xmlrpc.client import boolean
-from numpy import require
 import mdss_geometrical_property
 import mdss_pca_property
+import mdss_protein_data
 import mdss_sampler
 import mdss_dissimilarity
 import argparse
@@ -82,7 +81,7 @@ def parse_args(arg_list):
     parser.add_argument(
         "--fit",
         dest="fit",
-        type=boolean,
+        action="store_true",
         help="Indicates the superposition of trajectory before calculating RMSD",
     )
 
@@ -130,8 +129,8 @@ def parse_args(arg_list):
     parser.add_argument(
         "--size",
         dest="size",
-        type=int,
-        help="Sample size",
+        type=str,
+        help="Sample size or percentage (<=100%) of trajectory frames (e.g. 1000 or 30%)",
     )
 
     parser.add_argument(

@@ -3,6 +3,23 @@ import random
 import mdss_property
 from mdss_property import SampledProperty
 from mdss_dissimilarity import *
+import sys
+
+
+def convert_size(size, n_frames):
+    if isinstance(size, int):
+        return size
+
+    if size.endswith("%"):
+        prc = int(size.rstrip("%"))
+        if prc > 100:
+            print("size percentage {} is not less than 100%".format(prc))
+            sys.exit(1)
+
+        size = prc * n_frames / 100
+        return size
+
+    return int(size)
 
 
 class ProteinSampler:
@@ -43,6 +60,11 @@ class ProteinSampler:
         return sampled_protein_property
 
     def sample(self, size):
+        return self._sample(
+            convert_size(size, self.protein_property.protein_data.n_frames)
+        )
+
+    def _sample(self, size):
         pass
 
     def scan_sample_size(self, perc_vector=None, dissimilarity_threshold=None):
@@ -57,7 +79,9 @@ class ProteinSampler:
                 sampled_property = self.sample(round(p * n_frames / 100))
                 if sampled_property is not None:
                     if dissimilarity_threshold is None:
-                        dissimilarity_threshold = sampled_property.dissimilarity_threshold
+                        dissimilarity_threshold = (
+                            sampled_property.dissimilarity_threshold
+                        )
                     if sampled_property.ref_dissimilarity <= dissimilarity_threshold:
                         selected_size = p
                         selected_sample_key = sampled_property.property_key
@@ -65,7 +89,9 @@ class ProteinSampler:
                 print("Warning: no sample meeting dissimilarity threshold.")
                 return None
             else:
-                return self.protein_property.protein_data.property_dict[selected_sample_key]
+                return self.protein_property.protein_data.property_dict[
+                    selected_sample_key
+                ]
         else:
             print("Percentage values should be smaller than 100.")
 
@@ -89,7 +115,7 @@ class RandomSampler(ProteinSampler):
         random.seed(seed_number)
         super().__init__(protein_property, dissimilarity_measure=dissimilarity_measure)
 
-    def sample(self, size):
+    def _sample(self, size):
         """
         Method that generates a random sample of a list
         Attributes
@@ -134,7 +160,7 @@ class StratifiedSampler(ProteinSampler):
         self.n_layers = len(self.layers.keys())
         super().__init__(protein_property, dissimilarity_measure=dissimilarity_measure)
 
-    def sample(self, size):
+    def _sample(self, size):
         """
         Method that performs the stratified sampling
         Attributes
@@ -220,7 +246,7 @@ class UniformSampler(ProteinSampler):
         )
         self.strata_vector = np.digitize(self.property_vector, self.bins_vector)
 
-    def sample(self, size):
+    def _sample(self, size):
         """
         Method that generates a uniform sample of a list
         Attributes
@@ -262,7 +288,7 @@ class BootstrappingSampler(ProteinSampler):
         self.number_of_iterations = number_of_iterations
         super().__init__(protein_property, dissimilarity_measure=dissimilarity_measure)
 
-    def sample(self, size):
+    def _sample(self, size):
         """
         Method that does the bootstrapping sampling
         Attributes
