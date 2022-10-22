@@ -18,12 +18,12 @@ def data_dir(tests_root):
 
 @pytest.fixture
 def traj_file(data_dir):
-    return os.path.join(data_dir, "user.xtc")
+    return os.path.join(data_dir, "input.xtc")
 
 
 @pytest.fixture
 def top_file(data_dir):
-    return os.path.join(data_dir, "user.gro")
+    return os.path.join(data_dir, "input.gro")
 
 
 @pytest.fixture

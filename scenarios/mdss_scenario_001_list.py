@@ -67,4 +67,4 @@ if __name__ == "__main__":
     out_prefix = args[2]
     main(trj_filename, top_filename, out_prefix)
 
-# python scenario.py data/user.xtc data/user.gro testing
+# python scenario.py data/input.xtc data/input.gro testing
