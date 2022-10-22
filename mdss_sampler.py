@@ -263,6 +263,57 @@ class UniformSampler(ProteinSampler):
         return sampled_protein_property
 
 
+class WeightedSampler(ProteinSampler):
+    """
+     A Subclass of ProteinSampler class that uses Weighted random Sampling
+     Attributes
+     ----------
+    protein_data: ProteinData class object
+         The frame_list can be accessed through this object
+     seed: int
+         Number that initialise a random-number generator
+     weights_vector:
+         Vector of weights for each element in the sample
+    """
+
+    display_name = "Weighted Sampling"
+
+    def __init__(
+        self, protein_property, seed_number=1999, weights_vector=None, dissimilarity_measure=Bhattacharya
+    ):
+        random.seed(seed_number)
+        super().__init__(protein_property, dissimilarity_measure=dissimilarity_measure)
+        if weights_vector is None:
+            print("Weights not provided. They will be estimated from discretized property vector.")
+            if self.protein_property.discretized_property_vector is None:
+                self.protein_property.discretize_vector()
+            self.weights = []
+            for value in self.protein_property.discretized_property_vector:
+                self.weights.append(self.protein_property.discretized_property_vector.count(value))
+        else:
+            self.weights = weights_vector
+
+    def _sample(self, size):
+        """
+        Method that generates a random sample of a list
+        Attributes
+        ----------
+        size: int
+            The sample size ?
+        Returns
+        ----------
+        return a single random sample of the frame list with the desired size
+        """
+        if len(self.weights) != len(self.property_vector):
+            print("Warning: weights vector of different size from property vector.")
+        else:
+            self.samples_indices = list(np.repeat(0, size))
+            data_list = self._create_data_list()
+            sampled_data_vector = random.choices(data_list, weights=self.weights, k=size)
+            sampled_protein_property = self._create_sampled_property(sampled_data_vector)
+            return sampled_protein_property
+
+
 class BootstrappingSampler(ProteinSampler):
     """
     A Subclass of ProteinSampler class that uses Bootstrapping Sampling
