@@ -7,19 +7,16 @@ from mdss_dissimilarity import *
 
 class ProteinProperty:
     """
-    A class used to calculate a property for the protein based on the frame selection
-    from the protein trajectory
+    Represents protein property on individual frames from trajectory
 
     Attributes
     ----------
     protein_data: ProteinData class object
         The object has access to all methods and attributes of ProteinData class
-
     vector:
-        Simple vector used to calculate statistics
-
+        Simple vector with calculated statistics
     atom_selection: str
-        Choice of atoms for calculation of a property on this selection of atoms
+        Atom selection for property calculation
     """
 
     display_name = None
@@ -64,11 +61,11 @@ class ProteinProperty:
 
     def discretize_vector(self, min_value=None, max_value=None, n_bins=100):
         """
-        Method that discretises a vector used for Bhatta and KL distances
+        Discretises vector for Bhatta and KL distances
 
         Returns
-        ----------------------------
-        return the discretised vector
+        -----------
+        Discretised vector
         """
         if min_value is None:
             min_value = self.min_value
@@ -86,7 +83,7 @@ class ProteinProperty:
 
     def _property_statistics(self):
         """
-        Method that calculates the minimum, maximum and average values of a vector
+        Calculates minimum, maximum and average values of specific vector
         """
         self.min_value = np.min(self.property_vector)
         self.max_value = np.max(self.property_vector)
@@ -99,8 +96,7 @@ class ProteinProperty:
 
     def set_reference_coordinates(self, frame_index=0):
         """
-        Method that sets us on the first frame and extracts a copy of the coordinates
-        of the first frame only for a selection of atoms
+        Sets up on first frame and extracts copy of coordinates
         """
         if self.protein_data is not None:
             self.protein_data.trajectory_data.trajectory[frame_index]
@@ -128,8 +124,7 @@ class ProteinProperty:
 
     def write_property_vector(self, outfilepath):
         """
-        Method that saves the vector with the calculations of a specific property for
-        a protein in a file
+        Saves vector with calculations of specific property
         """
         with open(outfilepath, "w") as f:
             for i, value in zip(self.frame_indices, self.property_vector):
@@ -138,8 +133,7 @@ class ProteinProperty:
 
     def write_discretized_property_vector(self, outfilepath):
         """
-        Method that saves the discretised vector with the calculations of a specific
-        property for a protein in a file
+        Saves discretised vector with calculations of specific property
         """
         if len(self.property_distribution_dict) < 1:
             self.discretize_vector()
@@ -149,6 +143,9 @@ class ProteinProperty:
         log.info("{:18s} Discretised property vector done".format("STEPS"))
 
     def write_property_distribution_dict(self, outfilepath):
+        """
+        Creates dictionary with information for property distribution
+        """
         if len(self.property_distribution_dict) < 1:
             self.discretize_vector()
         with open(outfilepath, "w") as f:
@@ -158,6 +155,10 @@ class ProteinProperty:
 
 
 class SampledProperty(ProteinProperty):
+    """
+    Represents sampled protein property on individual frames from trajectory
+    """
+
     def __init__(
         self,
         original_property,
@@ -183,6 +184,9 @@ class SampledProperty(ProteinProperty):
         self.property_key = self._add_reference_to_protein_data()
 
     def _get_dissimilarity_to_ref(self, dissimilarity_measure):
+        """
+        Measures dissimilarity between full and sampled property
+        """
         diss_obj = dissimilarity_measure(self, self.ref_property)
         diss_obj.calculate_dissimilarity()
         self.dissimilarity_name = diss_obj.dissimilarity_name
@@ -193,6 +197,9 @@ class SampledProperty(ProteinProperty):
         pass
 
     def get_samples_averages(self):
+        """
+        Retrieves average value for each sample trajectory
+        """
         samples_labels = set(self.samples_indices)
         average_dict = {}
         for label in samples_labels:
@@ -207,6 +214,9 @@ class SampledProperty(ProteinProperty):
         return average_dict
 
     def get_average(self):
+        """
+        Retrieves average value from samples averages
+        """
         average_dict = self.get_samples_averages()
         average_value = np.mean(list(average_dict.values()))
         return average_value
