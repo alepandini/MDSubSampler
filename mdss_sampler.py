@@ -7,6 +7,10 @@ import sys
 
 
 def convert_size(size, n_frames):
+    """
+    Converts sample size of traj into int: User input could be
+    given as percentage or int
+    """
     if isinstance(size, int):
         return size
 
@@ -24,11 +28,13 @@ def convert_size(size, n_frames):
 
 class ProteinSampler:
     """
-    A class used to create a sample of a protein trajectory
+    Creates sample of protein trajectory
+
     Attributes
     ----------
     protein_data: ProteinData class object
-        The frame_list can be accessed through this object
+    dissimilarity_measure: Dissimilarity class object
+        dissimilarity measure between full and sample trajectory
     """
 
     display_name = None
@@ -279,17 +285,25 @@ class WeightedSampler(ProteinSampler):
     display_name = "Weighted Sampling"
 
     def __init__(
-        self, protein_property, seed_number=1999, weights_vector=None, dissimilarity_measure=Bhattacharya
+        self,
+        protein_property,
+        seed_number=1999,
+        weights_vector=None,
+        dissimilarity_measure=Bhattacharya,
     ):
         random.seed(seed_number)
         super().__init__(protein_property, dissimilarity_measure=dissimilarity_measure)
         if weights_vector is None:
-            print("Weights not provided. They will be estimated from discretized property vector.")
+            print(
+                "Weights not provided. They will be estimated from discretized property vector."
+            )
             if self.protein_property.discretized_property_vector is None:
                 self.protein_property.discretize_vector()
             self.weights = []
             for value in self.protein_property.discretized_property_vector:
-                self.weights.append(self.protein_property.discretized_property_vector.count(value))
+                self.weights.append(
+                    self.protein_property.discretized_property_vector.count(value)
+                )
         else:
             self.weights = weights_vector
 
@@ -309,8 +323,12 @@ class WeightedSampler(ProteinSampler):
         else:
             self.samples_indices = list(np.repeat(0, size))
             data_list = self._create_data_list()
-            sampled_data_vector = random.choices(data_list, weights=self.weights, k=size)
-            sampled_protein_property = self._create_sampled_property(sampled_data_vector)
+            sampled_data_vector = random.choices(
+                data_list, weights=self.weights, k=size
+            )
+            sampled_protein_property = self._create_sampled_property(
+                sampled_data_vector
+            )
             return sampled_protein_property
 
 
