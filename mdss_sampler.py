@@ -22,7 +22,7 @@ def convert_size(size, n_frames):
 
         size = prc * n_frames / 100
         return round(size)
-
+    log.info("{:15s} Sample size was converted to int".format("STEPS"))
     return int(size)
 
 
@@ -63,6 +63,7 @@ class ProteinSampler:
             self.samples_indices,
             self.dissimilarity_measure,
         )
+        log.info("{:15s} Sampled property was created".format("STEPS"))
         return sampled_protein_property
 
     def sample(self, size):
@@ -92,14 +93,20 @@ class ProteinSampler:
                         selected_size = p
                         selected_sample_key = sampled_property.property_key
             if selected_sample_key is None:
-                print("Warning: no sample meeting dissimilarity threshold.")
+                print("Warning: no sample meeting dissimilarity threshold")
+                log.warning(
+                    "{:15s} no sample meeting dissimilarity threshold".format("WARNING")
+                )
                 return None
             else:
                 return self.protein_property.protein_data.property_dict[
                     selected_sample_key
                 ]
         else:
-            print("Percentage values should be smaller than 100.")
+            print("Percentage values should be smaller than 100")
+            log.warning(
+                "{:15s} Percentage values should be smaller than 100".format("WARNING")
+            )
 
 
 class RandomSampler(ProteinSampler):
@@ -182,7 +189,12 @@ class StratifiedSampler(ProteinSampler):
             sampled_data_vector = []
             strata_sample_size = round(size / self.n_layers)
             if strata_sample_size < 1:
-                print("Warning: size should be at least half the number of layers.")
+                print("Warning: size should be at least half the number of layers")
+                log.warning(
+                    "{:15s} size should be at least half the number of layers".format(
+                        "WARNING"
+                    )
+                )
                 return None
 
             self.samples_indices = []
@@ -191,6 +203,11 @@ class StratifiedSampler(ProteinSampler):
                 if len(layer) < strata_sample_size:
                     print(
                         "Warning: strata size smaller than required sample. Sampling with replacement."
+                    )
+                    log.warning(
+                        "{:15s} Strata size smaller than required sample. Sampling with replacement.".format(
+                            "WARNING"
+                        )
                     )
                     layer_sampled_indices = random.choices(layer, k=strata_sample_size)
                 else:
@@ -217,7 +234,12 @@ class StratifiedSampler(ProteinSampler):
             )
             return sampled_protein_property
         else:
-            print("Warning: strata vector is incosistent in size with property vector.")
+            print("Warning: strata vector is incosistent in size with property vector")
+            log.warning(
+                "{:15s} Strata vector is incosistent in size with property vector".format(
+                    "WARNING"
+                )
+            )
             return None
 
 
@@ -297,6 +319,11 @@ class WeightedSampler(ProteinSampler):
             print(
                 "Weights not provided. They will be estimated from discretized property vector."
             )
+            log.warning(
+                "{:15s} Weights not provided. They will be estimated from discretized property vector.".format(
+                    "WARNING"
+                )
+            )
             if self.protein_property.discretized_property_vector is None:
                 self.protein_property.discretize_vector()
             self.weights = []
@@ -319,7 +346,12 @@ class WeightedSampler(ProteinSampler):
         return a single random sample of the frame list with the desired size
         """
         if len(self.weights) != len(self.property_vector):
-            print("Warning: weights vector of different size from property vector.")
+            print("Warning: weights vector of different size from property vector")
+            log.warning(
+                "{:15s} weights vector of different size from property vector".format(
+                    "WARNING"
+                )
+            )
         else:
             self.samples_indices = list(np.repeat(0, size))
             data_list = self._create_data_list()

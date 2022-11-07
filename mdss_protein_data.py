@@ -52,7 +52,7 @@ class ProteinData:
             permissive=False,
             topology_format="GRO",
         )
-        log.info("{:18s} Input trajectory is read".format("INPUT"))
+        log.info("{:15s} Input trajectory is read".format("INPUT"))
         return trajectory_data
 
     def _select_CA_atoms(self):
@@ -82,7 +82,7 @@ class ProteinData:
                 ),
             )
 
-        log.info("{:18s} Number of frames: {:2}".format("INPUT", len(frames)))
+        log.info("{:15s} Number of frames: {}".format("INPUT", len(frames)))
         return frames
 
     def _frame_indices_of_trajectory(self):
@@ -113,14 +113,14 @@ class ProteinData:
                 mask[i] = True
             else:
                 log.error(
-                    "{:18s} Expected int or slice in frame_selection_iterator()".format(
+                    "{:15s} Expected int or slice in frame_selection_iterator()".format(
                         "ERROR"
                     )
                 )
                 raise TypeError("Expected int or slice")
         selected_frames = trajectory_data[np.where(mask)[0]]
         log.info(
-            "{:18s} Number of selected frames: {:2}".format(
+            "{:15s} Number of selected frames: {}".format(
                 "OUTPUT", len(selected_frames)
             )
         )
@@ -144,7 +144,7 @@ class ProteinData:
                 mask[i] = True
             else:
                 log.error(
-                    "{:18s} Expected int or slice in frame_selection_iterator()".format(
+                    "{:15s} Expected int or slice in frame_selection_iterator()".format(
                         "ERROR"
                     )
                 )
@@ -152,7 +152,7 @@ class ProteinData:
         selected_frames = trajectory_data[np.where(mask)[0]]
         indices_of_selected_frames = [ts.frame for ts in selected_frames]
         log.info(
-            "{:18s} Indices of selected frames: {}".format(
+            "{:15s} Indices of selected frames: {}".format(
                 "OUTPUT", indices_of_selected_frames
             )
         )

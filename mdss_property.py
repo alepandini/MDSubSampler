@@ -24,7 +24,7 @@ class ProteinProperty:
     def __init__(self, protein_data, atom_selection="name CA"):
         if not isinstance(protein_data, ProteinData):
             log.warning(
-                "{:18s} A instance of ProteinData is required. protein_data attribute set to None".format(
+                "{:15s} A instance of ProteinData is required. protein_data attribute set to None".format(
                     "WARNING"
                 )
             )
@@ -39,8 +39,8 @@ class ProteinProperty:
         self.frame_indices = []
         self.recalculate = False
         self.property_key = self._add_reference_to_protein_data()
-        log.info("{:18s} Atom selection: {}".format("SELECTION", self.atom_selection))
-        log.info("{:18s} Property name: {}".format("SELECTION", self.display_name))
+        log.info("{:15s} Atom selection: {}".format("SELECTION", self.atom_selection))
+        log.info("{:15s} Property name: {}".format("SELECTION", self.display_name))
 
     @classmethod
     def from_xvg(cls, xvg_filepath):
@@ -89,7 +89,7 @@ class ProteinProperty:
         self.max_value = np.max(self.property_vector)
         self.avg_value = np.average(self.property_vector)
         log.info(
-            "{:18s} min = {:4.2f}, max = {:4.2f}, avg = {:4.2f}".format(
+            "{:15s} min = {:4.2f}, max = {:4.2f}, avg = {:4.2f}".format(
                 "STATISTICS", self.min_value, self.max_value, self.avg_value
             )
         )
@@ -116,7 +116,7 @@ class ProteinProperty:
         else:
             print("Warning: property is not associated to a protein data object.")
             log.warning(
-                "{:18s} Property is not associated to a protein data object".format(
+                "{:15s} Property is not associated to a protein data object".format(
                     "WARNING"
                 )
             )
@@ -129,7 +129,7 @@ class ProteinProperty:
         with open(outfilepath, "w") as f:
             for i, value in zip(self.frame_indices, self.property_vector):
                 f.write("{} {}\n".format(i, value))
-        log.info("{:18s} Property vector done".format("STEPS"))
+        log.info("{:15s} Property vector done".format("STEPS"))
 
     def write_discretized_property_vector(self, outfilepath):
         """
@@ -140,7 +140,7 @@ class ProteinProperty:
         with open(outfilepath, "w") as f:
             for i, value in zip(self.frame_indices, self.discretized_property_vector):
                 f.write("{} {}\n".format(i, value))
-        log.info("{:18s} Discretised property vector done".format("STEPS"))
+        log.info("{:15s} Discretised property vector done".format("STEPS"))
 
     def write_property_distribution_dict(self, outfilepath):
         """
@@ -151,7 +151,7 @@ class ProteinProperty:
         with open(outfilepath, "w") as f:
             for (key, value) in self.property_distribution_dict.items():
                 f.write("{} {}\n".format(key, value))
-        log.info("{:18s} Property distribution dict done".format("STEPS"))
+        log.info("{:15s} Property distribution dict done".format("STEPS"))
 
 
 class SampledProperty(ProteinProperty):

@@ -46,10 +46,10 @@ class Dissimilarity:
         self.dissimilarity = abs(
             self.target_property.avg_value - self.ref_property.avg_value
         )
+        log.info(
+            "{:15s} Dissimilarity score: {:4.5f}".format("OUTPUT", self.dissimilarity)
+        )
         return self.dissimilarity
-        # log.info(
-        #     "{:18s} Dissimilarity score: {:4.5f}".format("OUTPUT", self.dissimilarity)
-        # )
 
 
 class Bhattacharya(Dissimilarity):
@@ -82,7 +82,7 @@ class Bhattacharya(Dissimilarity):
         )
 
         log.info(
-            "{:18s} Dissimilarity score: {:4.5f}".format("OUTPUT", self.dissimilarity)
+            "{:15s} Dissimilarity score: {:4.5f}".format("OUTPUT", self.dissimilarity)
         )
         return self.dissimilarity
 
@@ -116,7 +116,7 @@ class KullbackLeibler(Dissimilarity):
         rel_entropy_vector = rel_entr(P, Q)
         self.dissimilarity = sum([v for v in rel_entropy_vector if not isinf(v)])
         log.info(
-            "{:18s} Dissimilarity score: {:4.5f}".format("OUTPUT", self.dissimilarity)
+            "{:15s} Dissimilarity score: {:4.5f}".format("OUTPUT", self.dissimilarity)
         )
         return self.dissimilarity
 
@@ -150,6 +150,6 @@ class Pearson(Dissimilarity):
             self.ref_property.property_distribution_dict,
         )
         log.info(
-            "{:18s} Dissimilarity score: {:4.5f}".format("OUTPUT", self.dissimilarity)
+            "{:15s} Dissimilarity score: {:4.5f}".format("OUTPUT", self.dissimilarity)
         )
         return self.dissimilarity
