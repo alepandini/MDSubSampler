@@ -1,3 +1,4 @@
+from numpy import require
 import mdss_geometrical_property
 import mdss_pca_property
 import mdss_protein_data
@@ -22,6 +23,7 @@ PROPERTY_CLASS_MAPPING = dict(
 SAMPLER_CLASSES = [
     mdss_sampler.RandomSampler,
     mdss_sampler.UniformSampler,
+    mdss_sampler.WeightedSampler,
     mdss_sampler.StratifiedSampler,
     mdss_sampler.BootstrappingSampler,
 ]

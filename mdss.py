@@ -27,6 +27,8 @@ def sampling_workflow(arg_list):
         sampler = sampler_class(property, args.seed_number)
     if args.sampler == "UniformSampler":
         sampler = sampler_class(property, args.strata_number)
+    elif args.sampler == "WeightedSampler":
+        sampler = sampler_class(property, args.seed_number)
     elif args.sampler == "StratifiedSampler":
         sampler = sampler_class(property, args.layers)
     elif args.sampler == "BootstrappingSampler":
