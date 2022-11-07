@@ -6,16 +6,16 @@ from mdss_logging import logging as log
 
 class ProteinData:
     """
-    A class used to represent the protein data
+    Represents protein data
 
     Attributes
-    ----------
+    -----------
     trajectory_filename : str
-        the path to the trajectory file of the protein
+        path to trajectory file
     topology_filename : str
-        the path to the topology file of the protein
+        path to topology file
     config_parameters : str
-        configuration parameters of the protein
+        protein's configuration parameters
     """
 
     def __init__(self, trajectory_filename, topology_filename, config_parameters=None):
@@ -35,16 +35,16 @@ class ProteinData:
         """
         Load trajectory and topology files into Universe to build the object
 
-        Parameters
-        ----------------------------
+        Attributes
+        -----------
         trajectory_filename: str,
-            the path to the trajectory file of the protein.
+            path to trajectory file
         topology_filename: str,
-            the path to the topology file of the protein
+            path to topology file
 
         Returns
-        ----------------------------
-        Return the number of atoms exist in the object
+        -----------
+        Number of atoms exist in object
         """
         trajectory_data = mda.Universe(
             topology_filename,
@@ -57,23 +57,18 @@ class ProteinData:
 
     def _select_CA_atoms(self):
         """
-        Read C-Alpha from the first frame of trajectory
+        Reads C-Alpha from the first frame of trajectory
 
         Returns
-        ----------------------------
-        Return the number of CA atoms from the AtomGroup
+        -----------
+        Number of CA atoms from AtomGroup
         """
         ca_atom_group = self.trajectory_data.select_atoms("name CA")
         return ca_atom_group
 
     def _frames_of_trajectory(self):
         """
-        Method that reads a trajectory and reads the frames that belong to it
-
-        Returns
-        ----------------------------
-        Return a dictionary that contains frame number, timestep for the frame for
-        the whole trajectory
+        Creates a dictionary with frame number and timestep for full trajectory
         """
         frames = []
         for x in range(len(self.trajectory_data.trajectory)):
@@ -92,11 +87,7 @@ class ProteinData:
 
     def _frame_indices_of_trajectory(self):
         """
-        Method that reads a trajectory and reads the frames that belong to it
-
-        Returns
-        ----------------------------
-        Return a list with the frame indices
+        Creates list with frames' indices for full trajectory
         """
         frame_indices = []
         for x in range(len(self.trajectory_data.trajectory)):
@@ -105,12 +96,14 @@ class ProteinData:
 
     def frame_selection_iterator(self, selection_of_frames):
         """
-        Method that receives as an input a selection of frames either single frame number
-        or sliced selection of frames over a trajectory.
+        Attributes
+        -----------
+        selection_of_frames: int,
+            single frame or slice of frames from trajectory
 
         Returns
-        ----------------------------
-        A FrameIteratorIndices object with the selected frames. This object has similar
+        -----------
+        FrameIteratorIndices object with the selected frames: This object has similar
         attributes to a trajectory object and can be used for further analysis.
         """
         trajectory_data = self.trajectory_data.trajectory
@@ -135,12 +128,14 @@ class ProteinData:
 
     def frame_selection_indices(self, selection_of_frames):
         """
-        Method that receives as an input a selection of frames either single frame number
-        or sliced selection of frames over a trajectory.
+        Attributes
+        -----------
+        selection_of_frames: int,
+            single frame or slice of frames from trajectory
 
         Returns
-        ----------------------------
-        A list with the indices of the selected frames
+        -----------
+        List with indices of selected frames
         """
         trajectory_data = self.trajectory_data.trajectory
         mask = np.array([False for _ in trajectory_data])
@@ -164,12 +159,18 @@ class ProteinData:
         return indices_of_selected_frames
 
     def add_property(self, protein_property, property_name):
+        """
+        Gets key from property dictionary
+        """
         timestamp = str(datetime.now().timestamp())
         key = "{}_{}".format(property_name, timestamp)
         self.property_dict[key] = protein_property
         return key
 
     def property_data_report(self):
+        """
+        Creates a report with key information and statistics for property
+        """
         report_dict = {}
         for k, v in self.property_dict.items():
             report_dict[k] = {

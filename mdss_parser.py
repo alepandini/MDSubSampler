@@ -1,7 +1,6 @@
 from numpy import require
 import mdss_geometrical_property
 import mdss_pca_property
-import mdss_protein_data
 import mdss_sampler
 import mdss_dissimilarity
 import argparse
