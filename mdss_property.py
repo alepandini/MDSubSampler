@@ -3,6 +3,7 @@ import MDAnalysis as mda
 from mdss_protein_data import ProteinData
 from mdss_logging import logging as log
 from mdss_dissimilarity import *
+from mdss_graph import *
 
 
 class ProteinProperty:
@@ -152,6 +153,13 @@ class ProteinProperty:
             for (key, value) in self.property_distribution_dict.items():
                 f.write("{} {}\n".format(key, value))
         log.info("{:15s} Property distribution dict done".format("STEPS"))
+
+    def plot_property_vector(self, outfilepath=None):
+        if outfilepath is None:
+            outfilepath = "{}_plot.png".format(display_name)
+        property_vector_plot = PropertyVectorPlot(self, outfilepath)
+        property_vector_plot.plot()
+        return property_vector_plot
 
 
 class SampledProperty(ProteinProperty):

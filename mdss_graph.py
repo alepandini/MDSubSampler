@@ -1,10 +1,15 @@
 import os
 
 
-def plot_distribution(property, data_filepath, prefix, output_folder):
-    """
-    Function that plots the distrubution of values from a specific file
-    """
-    filename = "{}_plot.png".format(prefix)
-    filepath = os.path.join(output_folder, filename)
-    property.plot_property(data_filepath, filepath)
+class PropertyVectorPlot:
+
+    def __init__(self, protein_property, outfilepath):
+        self.protein_property = protein_property
+        self.property_vector = protein_property.property_vector
+        self.frame_indices = protein_property.frame_indices
+        self.outfilepath = outfilepath
+
+    def plot(self, prefix="property_vector", outfilepath=None):
+        if outfilepath is None:
+            outfilepath = self.outfilepath
+        pass
