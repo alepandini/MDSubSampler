@@ -5,19 +5,14 @@ import numpy as np
 
 class TrjPCAProj(ProteinProperty):
     """
-    A Subclass of ProteinProperty class used to perform PCA on the protein
-    trajectory and calculates a pca_space vector with number of columns equal
-    the number of PCs and the number of rows equal the number of frames in the
-    trajectory.
-
-    Returns
-    ----------
-    pca_vector: A vector that will be used to sample the trajectory of the protein
+    Represents PCA property class. This class is used for calculation of pca_space
+    vector with number of columns being equal to the number of PCs and the number
+    of rows being equal to the number of frames in the trajectory.
     """
 
     display_name = "TrjPCAProj"
 
-    def __init__(self, protein_data, atom_selection='name CA'):
+    def __init__(self, protein_data, atom_selection="name CA"):
         super().__init__(protein_data, atom_selection)
         self.pca_model = None
         self.n_pcs = None
@@ -35,18 +30,21 @@ class TrjPCAProj(ProteinProperty):
             if pc_index > self.property_matrix.shape[1]:
                 print("Warning: PC index larger than number of PCs.")
             else:
-                self.property_vector = self.property_matrix[:,(pc_index-1)]
+                self.property_vector = self.property_matrix[:, (pc_index - 1)]
                 self.pc_index = pc_index
 
     def calculate_property(self, var_threshold=0.8, pc_filter=False):
         self._run_pca()
         self.n_pcs = self.pca_model.n_components
-        self.ed_n_pcs = np.where(self.pca_model.results.cumulated_variance > var_threshold)[0][0]
+        self.ed_n_pcs = np.where(
+            self.pca_model.results.cumulated_variance > var_threshold
+        )[0][0]
         atomgroup = self.protein_data.trajectory_data.select_atoms(self.atom_selection)
         if pc_filter:
             selected_pcs = self.ed_n_pcs
         else:
             selected_pcs = self.n_pcs
-        self.property_matrix = self.pca_model.transform(atomgroup, n_components=selected_pcs)
+        self.property_matrix = self.pca_model.transform(
+            atomgroup, n_components=selected_pcs
+        )
         self.select_pc()
-
