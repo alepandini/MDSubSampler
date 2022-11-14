@@ -1,3 +1,39 @@
+"""
+
+Scenario 002
+
+Purpose:             Given a single MD trajectory sampling different conformations 
+                     of a binding pocket, select a subset of frames with a range of 
+                     geometries for pocket opening.
+
+User:                Molecular dynamics user with basic understanding of coding 
+    
+Input:               Molecular dynamics trajectory 
+                     List of atoms for RMSD calculation 
+                     Reference structure of open (or close) state 
+                     List of atoms for RMSD fit [optional] 
+                     Subsample size and number of intervals along RMSD values 
+
+Sampling strategy:   Uniform random sampling 
+
+Type of property:    Numerical continuous 
+
+Property dependency: Dependent on single frame 
+
+Criterion:           Dissimilarity between distributions of values of original 
+                     and subsampled property 
+
+Scenario:	
+                    1. Read input trajectory and topology files 
+                    2. Read atoms lists, reference structure, subsample size and number
+                       of intervals 
+                    3. Calculate RMSD distribution for input trajectory 
+                    4. Uniform random subsample 
+                    5. Calculate RMSD distribution for subsampled trajectory 
+                    6. Calculate dissimilarity measure between distributions 
+
+"""
+
 #!/usr/bin/env python
 from mdss import sampling_workflow
 import sys

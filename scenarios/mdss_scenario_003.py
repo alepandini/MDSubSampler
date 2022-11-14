@@ -1,3 +1,35 @@
+"""
+
+Scenario 003
+
+Purpose:             Given a single MD trajectory sampling different conformational 
+                     motions of the protein, select a subset of frames proportionally 
+                     to the most frequent values of RMSD  
+
+User:                Molecular dynamics user with basic understanding of coding 
+    
+Input:               Molecular dynamics trajectory 
+                     Subsample size 
+
+Sampling strategy:   Weighted random sampling 
+
+Type of property:    Numerical continuous 
+
+Property dependency: Dependent on single frame 
+
+Criterion:           Dissimilarity between distributions of values of original 
+                     and subsampled property 
+
+Scenario:	
+                    1. Read input trajectory and topology files 
+                    2. Read subsample size 
+                    3. Calculate RMSD distribution for input trajectory 
+                    4. Weighted random sampling 
+                    5. Calculate RMSD distribution for subsampled trajectory 
+                    6. Calculate dissimilarity measure between distributions 
+
+"""
+
 #!/usr/bin/env python
 from mdss import sampling_workflow
 import sys
