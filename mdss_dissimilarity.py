@@ -6,8 +6,7 @@ from math import isinf
 
 class Dissimilarity:
     """
-    A class used to calculate the dissimilarity distance in terms of property between
-    a full protein trajectory and a sample of it to identify the difference
+    Represents dissimilarity measure between property of full and sample trajectory
 
     Attributes
     ----------
@@ -15,6 +14,7 @@ class Dissimilarity:
         Refers to the calculated property of the sampled or target protein trajectory
     ref_property : ProteinProperty object
         Refers to the reference calculated property (e.g. for the full protein trajectory)
+    n_bins : number of bins for generating the discretized vector
     """
 
     display_name = None
@@ -40,8 +40,8 @@ class Dissimilarity:
 
     def calculate_dissimilarity(self):
         """
-        Method that calculates the difference between the average values of the
-        two calculated property vectors.
+        Calculates dissimilarity between average values of target (sample trajectory)
+        and reference (original trajectory) properties
         """
         self.dissimilarity = abs(
             self.target_property.avg_value - self.ref_property.avg_value
@@ -54,8 +54,8 @@ class Dissimilarity:
 
 class Bhattacharya(Dissimilarity):
     """
-    A Subclass of the Dissimilarity class that calculates the Bhattacharya distance between
-    two property vectors
+    Represents the Bhattacharya dissimilarity between target (sample traj) and reference
+    (original traj) properties
 
     Attributes
     ----------
@@ -74,7 +74,8 @@ class Bhattacharya(Dissimilarity):
 
     def calculate_dissimilarity(self):
         """
-        Method that returns the Bhattacharya distance from distance between two vectors
+        Calculates Bhattacharya distance between target (sample traj) and reference
+        (original traj) properties
         """
         self.dissimilarity = dictances.bhattacharyya(
             self.target_property.property_distribution_dict,
@@ -89,8 +90,8 @@ class Bhattacharya(Dissimilarity):
 
 class KullbackLeibler(Dissimilarity):
     """
-    A Subclass of the Dissimilarity class that calculates the Kullback-Leibler divergence between
-    two property vectors
+    Represents the Kullback-Leibler divergence between target (sample traj) and reference
+    (original traj) properties
 
     Attributes
     ----------
@@ -109,7 +110,8 @@ class KullbackLeibler(Dissimilarity):
 
     def calculate_dissimilarity(self):
         """
-        Method that returns the KL divergence distance between two vectors
+        Calculates Kullback-Leibler divergence between target (sample traj) and reference
+        (original traj) properties
         """
         P = list(self.target_property.property_distribution_dict.values())
         Q = list(self.ref_property.property_distribution_dict.values())
@@ -123,8 +125,8 @@ class KullbackLeibler(Dissimilarity):
 
 class Pearson(Dissimilarity):
     """
-    A Subclass of the Dissimilarity class that calculates the Pearson distance between
-    two property vectors
+    Represents the Pearson distance between target (sample traj) and reference
+    (original traj) properties
 
     Attributes
     ----------
@@ -143,7 +145,8 @@ class Pearson(Dissimilarity):
 
     def calculate_dissimilarity(self):
         """
-        Method that returns the pearson distance between two vectors
+        Calculates pearson distance between target (sample traj) and reference
+        (original traj) properties
         """
         self.dissimilarity = dictances.pearson(
             self.target_property.property_distribution_dict,
