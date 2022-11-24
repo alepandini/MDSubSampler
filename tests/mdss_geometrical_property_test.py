@@ -1,17 +1,17 @@
-import mdss_geometrical_property
+import src.mdss.geometrical_property as g
 import pytest
 
 
 @pytest.mark.parametrize(
     "property_subclass , atom_selection",
     [
-        (mdss_geometrical_property.RMSDProperty, "name CA"),
+        (g.RMSDProperty, "name CA"),
         (
-            mdss_geometrical_property.DistanceBetweenAtoms,
+            g.DistanceBetweenAtoms,
             ["name CA", "name CA"],
         ),
-        (mdss_geometrical_property.RadiusOfGyrationProperty, "name CA"),
-        (mdss_geometrical_property.Angles, ["name CA", "name CA", "name CA"]),
+        (g.RadiusOfGyrationProperty, "name CA"),
+        (g.Angles, ["name CA", "name CA", "name CA"]),
         # (
         #     mdss_geometrical_property.DihedralAnglePhi,
         #     ["name CA", "name CA", "name CA", "name CA"],
@@ -33,13 +33,13 @@ def test_property_vector_and_indices_have_same_length(
 @pytest.mark.parametrize(
     "property_subclass , atom_selection",
     [
-        (mdss_geometrical_property.RMSDProperty, "name CA"),
+        (g.RMSDProperty, "name CA"),
         (
-            mdss_geometrical_property.DistanceBetweenAtoms,
+            g.DistanceBetweenAtoms,
             ["name CA", "name CA"],
         ),
-        (mdss_geometrical_property.RadiusOfGyrationProperty, "name CA"),
-        (mdss_geometrical_property.Angles, ["name CA", "name CA", "name CA"]),
+        (g.RadiusOfGyrationProperty, "name CA"),
+        (g.Angles, ["name CA", "name CA", "name CA"]),
     ],
 )
 def test_property_frame_indices_have_same_length(
@@ -53,9 +53,9 @@ def test_property_frame_indices_have_same_length(
 @pytest.mark.parametrize(
     "property_subclass, atom_selection",
     [
-        (mdss_geometrical_property.DistanceBetweenAtoms, "name CA"),
-        (mdss_geometrical_property.Angles, "name CA"),
-        (mdss_geometrical_property.DihedralAngles, "name CA"),
+        (g.DistanceBetweenAtoms, "name CA"),
+        (g.Angles, "name CA"),
+        (g.DihedralAngles, "name CA"),
     ],
 )
 def test_unexpected_atom_selection_raises_error(
@@ -68,13 +68,13 @@ def test_unexpected_atom_selection_raises_error(
 @pytest.mark.parametrize(
     "property_subclass, atom_selection",
     [
-        (mdss_geometrical_property.RMSDProperty, "name CA"),
+        (g.RMSDProperty, "name CA"),
         (
-            mdss_geometrical_property.DistanceBetweenAtoms,
+            g.DistanceBetweenAtoms,
             ["name CA", "name CA"],
         ),
-        (mdss_geometrical_property.RadiusOfGyrationProperty, "name CA"),
-        (mdss_geometrical_property.Angles, ["name CA", "name CA", "name CA"]),
+        (g.RadiusOfGyrationProperty, "name CA"),
+        (g.Angles, ["name CA", "name CA", "name CA"]),
     ],
 )
 def test_property_statistics_method_have_been_called_once(
@@ -89,13 +89,13 @@ def test_property_statistics_method_have_been_called_once(
 @pytest.mark.parametrize(
     "property_subclass, atom_selection",
     [
-        (mdss_geometrical_property.RMSDProperty, "name CA"),
+        (g.RMSDProperty, "name CA"),
         (
-            mdss_geometrical_property.DistanceBetweenAtoms,
+            g.DistanceBetweenAtoms,
             ["name CA", "name CA"],
         ),
-        (mdss_geometrical_property.RadiusOfGyrationProperty, "name CA"),
-        (mdss_geometrical_property.Angles, ["name CA", "name CA", "name CA"]),
+        (g.RadiusOfGyrationProperty, "name CA"),
+        (g.Angles, ["name CA", "name CA", "name CA"]),
     ],
 )
 def test_discretize_vector_method_have_been_called_once(

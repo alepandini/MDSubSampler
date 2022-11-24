@@ -27,11 +27,11 @@
 # 5:0.003142312466437116
 # 10:0.001085055552200252
 
-# python scenarios/mdss_scenario_001.py data/input.xtc data/input.gro test2909
+# python scenarios/scenario_001.py data/input.xtc data/input.gro test2909
 
-from mdss_protein_data import *
-from mdss_geometrical_property import *
-from mdss_sampler import *
+from src.mdss.protein_data import *
+from src.mdss.geometrical_property import *
+from src.mdss.sampler import *
 
 p_data = ProteinData("data/input.xtc", "data/input.gro")
 rmsd = RMSDProperty(p_data)

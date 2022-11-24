@@ -1,5 +1,5 @@
-import mdss_protein_data
-import mdss_parser as p
+import protein_data
+import parser as p
 import os
 import sys
 
@@ -26,7 +26,7 @@ def sampling_workflow(arg_list):
         property = property_class.from_xvg(args.xvg_file)
     # Otherwise read protein trajectory from input files and calculate property
     else:
-        p_data = mdss_protein_data.ProteinData(
+        p_data = protein_data.ProteinData(
             args.trajectory_file, args.topology_file, config_parameters=None
         )
         property = property_class(p_data, args.atom_selection)

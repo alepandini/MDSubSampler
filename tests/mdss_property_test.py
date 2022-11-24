@@ -1,8 +1,8 @@
 from os import rmdir
 import tempfile
 import os.path
-import mdss_property
-import mdss_sampler
+import src.mdss.property as p
+import src.mdss.sampler as s
 
 
 def test_write_property_vector_method(rmsd_property):
@@ -20,8 +20,8 @@ def test_write_discretized_property_vector_method(rmsd_property):
 
 
 def test_get_samples_average(rmsd_property):
-    p_sampler = mdss_sampler.ProteinSampler(rmsd_property)
-    sampled_property = mdss_property.SampledProperty(
+    p_sampler = s.ProteinSampler(rmsd_property)
+    sampled_property = p.SampledProperty(
         rmsd_property,
         p_sampler.property_vector,
         p_sampler.frame_indices,
@@ -32,8 +32,8 @@ def test_get_samples_average(rmsd_property):
 
 
 def test_get_samples_averages_method_called_in_get_averages(rmsd_property, spy_method):
-    p_sampler = mdss_sampler.ProteinSampler(rmsd_property)
-    sampled_property = mdss_property.SampledProperty(
+    p_sampler = s.ProteinSampler(rmsd_property)
+    sampled_property = p.SampledProperty(
         rmsd_property,
         p_sampler.property_vector,
         p_sampler.frame_indices,

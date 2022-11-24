@@ -1,7 +1,3 @@
-import mdss_protein_data
-import mdss_geometrical_property
-
-
 def test_frames_of_trajectory_has_expected_length(protein_data):
     frame_indices = protein_data._frames_of_trajectory()
     assert len(frame_indices) == len(protein_data.trajectory_data.trajectory)

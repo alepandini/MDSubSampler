@@ -1,8 +1,8 @@
 import numpy as np
 import MDAnalysis as mda
-from mdss_protein_data import ProteinData
-from mdss_logging import logging as log
-from mdss_dissimilarity import *
+from protein_data import ProteinData
+from logging import logging as log
+from dissimilarity import *
 
 
 class ProteinProperty:

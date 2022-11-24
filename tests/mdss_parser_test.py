@@ -1,4 +1,4 @@
-import mdss_parser as p
+import src.mdss.parser as p
 import pytest
 
 

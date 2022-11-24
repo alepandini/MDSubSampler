@@ -1,4 +1,4 @@
-import mdss_sampler
+import src.mdss.sampler as s
 import random
 import math
 import pytest
@@ -7,9 +7,9 @@ import pytest
 @pytest.mark.parametrize(
     "sampler_subclass, kwargs, expected",
     [
-        (mdss_sampler.RandomSampler, {}, 100),
-        (mdss_sampler.UniformSampler, {"strata_number": 10}, 99),
-        (mdss_sampler.BootstrappingSampler, {"number_of_iterations": 10}, 1000),
+        (s.RandomSampler, {}, 100),
+        (s.UniformSampler, {"strata_number": 10}, 99),
+        (s.BootstrappingSampler, {"number_of_iterations": 10}, 1000),
     ],
 )
 def test_sampler_sample_has_expected_length(
@@ -24,7 +24,7 @@ def test_stratified_sampler_sample_has_expected_length(rmsd_property):
     s_vector = [
         round((v + random.random()) * 13) for v in rmsd_property.property_vector
     ]
-    p_sampler = mdss_sampler.StratifiedSampler(rmsd_property, strata_vector=s_vector)
+    p_sampler = s.StratifiedSampler(rmsd_property, strata_vector=s_vector)
     sampled_prop = p_sampler.sample(100)
     assert math.isclose(len(sampled_prop.frame_indices), 100, rel_tol=3)
 
@@ -32,9 +32,9 @@ def test_stratified_sampler_sample_has_expected_length(rmsd_property):
 @pytest.mark.parametrize(
     "sampler_subclass, kwargs, expected",
     [
-        (mdss_sampler.RandomSampler, {}, 100),
-        (mdss_sampler.UniformSampler, {"strata_number": 10}, 99),
-        (mdss_sampler.BootstrappingSampler, {"number_of_iterations": 10}, 1000),
+        (s.RandomSampler, {}, 100),
+        (s.UniformSampler, {"strata_number": 10}, 99),
+        (s.BootstrappingSampler, {"number_of_iterations": 10}, 1000),
     ],
 )
 def test_sampler_sample_returns_subset(
@@ -51,18 +51,18 @@ def test_stratified_sampler_sample_returns_subset(protein_data, rmsd_property):
     s_vector = [
         round((v + random.random()) * 13) for v in rmsd_property.property_vector
     ]
-    p_sampler = mdss_sampler.StratifiedSampler(rmsd_property, s_vector)
+    p_sampler = s.StratifiedSampler(rmsd_property, s_vector)
     sampled_prop = p_sampler.sample(100)
     assert all(x in frame_indices for x in sampled_prop.frame_indices)
 
 
 @pytest.mark.parametrize("size", [100, "100", "30%", "30.8%"])
 def test_sample_calls_implementation(rmsd_property, spy_method, size):
-    p_sampler = mdss_sampler.ProteinSampler(rmsd_property)
+    p_sampler = s.ProteinSampler(rmsd_property)
     spy = spy_method(p_sampler, "_sample")
     p_sampler.sample(size)
     spy.assert_called_once_with(
-        mdss_sampler.convert_size(size, rmsd_property.protein_data.n_frames)
+        s.convert_size(size, rmsd_property.protein_data.n_frames)
     )
 
 
@@ -77,4 +77,4 @@ def test_sample_calls_implementation(rmsd_property, spy_method, size):
     ],
 )
 def test_convert_size(given, expected, n_frames):
-    assert mdss_sampler.convert_size(given, n_frames) == expected
+    assert s.convert_size(given, n_frames) == expected

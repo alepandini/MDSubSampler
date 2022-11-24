@@ -1,8 +1,8 @@
-from mdss_property import ProteinProperty
+from property import ProteinProperty
 from MDAnalysis.analysis import rms
 from MDAnalysis.analysis import distances
 from MDAnalysis.analysis import dihedrals
-from mdss_logging import logging as log
+from logging import logging as log
 import numpy as np
 
 

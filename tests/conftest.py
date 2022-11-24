@@ -2,8 +2,8 @@ import pytest
 import os
 import os.path
 import operator as op
-import mdss_protein_data
-import mdss_geometrical_property
+import src.mdss.protein_data as pd
+import src.mdss.geometrical_property as gp
 
 
 @pytest.fixture
@@ -44,13 +44,11 @@ def spy_method(mocker):
 
 @pytest.fixture
 def protein_data(traj_file, top_file):
-    return mdss_protein_data.ProteinData(traj_file, top_file, config_parameters=None)
+    return pd.ProteinData(traj_file, top_file, config_parameters=None)
 
 
 @pytest.fixture
 def rmsd_property(protein_data):
-    prop = mdss_geometrical_property.RMSDProperty(
-        protein_data, atom_selection="name CA"
-    )
+    prop = gp.RMSDProperty(protein_data, atom_selection="name CA")
     prop.calculate_property()
     return prop
