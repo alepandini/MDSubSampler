@@ -1,17 +1,19 @@
 """
 
-Scenario 003
+Scenario 001 
 
-Purpose:             Given a single MD trajectory sampling different conformational 
-                     motions of the protein, select a subset of frames proportionally 
-                     to the most frequent values of RMSD  
+Purpose:             Given a single MD trajectory sampling different global 
+                     conformations of the protein, select the smallest subset 
+                     of frames with a similar distribution of RMSD. 
 
 User:                Molecular dynamics user with basic understanding of coding 
     
 Input:               Molecular dynamics trajectory 
-                     Subsample size 
+                     Reference structure [optional] 
+                     Range of subsample sizes (or percentages) 
+                     Dissimilarity threshold [optional] 
 
-Sampling strategy:   Weighted random sampling 
+Sampling strategy:   Random sampling 
 
 Type of property:    Numerical continuous 
 
@@ -22,25 +24,26 @@ Criterion:           Dissimilarity between distributions of values of original
 
 Scenario:	
                     1. Read input trajectory and topology files 
-                    2. Read subsample size 
+                    2. Read list of subsample sizes – start from smaller size 
                     3. Calculate RMSD distribution for input trajectory 
-                    4. Weighted random sampling 
+                    4. Random subsample 
                     5. Calculate RMSD distribution for subsampled trajectory 
                     6. Calculate dissimilarity measure between distributions 
+                    7. If dissimilarity is not below threshold, repeat 4. - 7. 
+                       for next subsample size 
 
 """
 
 #!/usr/bin/env python
-from mdss import sampling_workflow
+from src.mdss.run import sampling_workflow
 import sys
 
 OUT_DIR = "testing"
 PROPERTY = "RMSDProperty"
 SELECTION = "name CA"
-SAMPLER = "WeightedSampler"
-STRATA_NUMBER = "200"
+SAMPLER = "RandomSampler"
 SIZE = "100"
-DISSIMILARITY = "Bhattacharya"
+DISSIMILARITY = "Dissimilarity"
 
 
 def main(trj_filename, top_filename, out_prefix):
@@ -61,8 +64,8 @@ def main(trj_filename, top_filename, out_prefix):
             SELECTION,
             "--sampler",
             SAMPLER,
-            "--strata-number",
-            STRATA_NUMBER,
+            "--seed-number",
+            "1999",
             "--size",
             str(SIZE),
             "--dissimilarity",
