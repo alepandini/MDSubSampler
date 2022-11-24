@@ -24,7 +24,7 @@ class ProteinProperty:
     def __init__(self, protein_data, atom_selection="name CA"):
         if not isinstance(protein_data, ProteinData):
             log.warning(
-                "{:15s} A instance of ProteinData is required. protein_data attribute set to None".format(
+                "{:15s} An instance of ProteinData is required. protein_data attribute set to None".format(
                     "WARNING"
                 )
             )
@@ -129,7 +129,7 @@ class ProteinProperty:
         with open(outfilepath, "w") as f:
             for i, value in zip(self.frame_indices, self.property_vector):
                 f.write("{} {}\n".format(i, value))
-        log.info("{:15s} Property vector done".format("STEPS"))
+        log.info("{:15s} Property vector was done".format("STEPS"))
 
     def write_discretized_property_vector(self, outfilepath):
         """
@@ -140,7 +140,7 @@ class ProteinProperty:
         with open(outfilepath, "w") as f:
             for i, value in zip(self.frame_indices, self.discretized_property_vector):
                 f.write("{} {}\n".format(i, value))
-        log.info("{:15s} Discretised property vector done".format("STEPS"))
+        log.info("{:15s} Discretised property vector was done".format("STEPS"))
 
     def write_property_distribution_dict(self, outfilepath):
         """
@@ -151,7 +151,7 @@ class ProteinProperty:
         with open(outfilepath, "w") as f:
             for (key, value) in self.property_distribution_dict.items():
                 f.write("{} {}\n".format(key, value))
-        log.info("{:15s} Property distribution dict done".format("STEPS"))
+        log.info("{:15s} Property distribution dictionary was done".format("STEPS"))
 
 
 class SampledProperty(ProteinProperty):
@@ -191,6 +191,11 @@ class SampledProperty(ProteinProperty):
         diss_obj.calculate_dissimilarity()
         self.dissimilarity_name = diss_obj.dissimilarity_name
         self.dissimilarity_threshold = diss_obj.dissimilarity_threshold
+        log.info(
+            "{:15s} Dissimilarity between full and sampled property was calculated".format(
+                "STEPS"
+            )
+        )
         return diss_obj.dissimilarity
 
     def calculate_property(self):

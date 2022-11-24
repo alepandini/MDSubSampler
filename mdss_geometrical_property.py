@@ -57,6 +57,7 @@ class RMSDProperty(ProteinProperty):
                     "WARNING"
                 )
             )
+        log.info("{:15s} RMSD property was calculated".format("STEPS"))
 
 
 class DistanceBetweenAtoms(ProteinProperty):
@@ -117,6 +118,11 @@ class DistanceBetweenAtoms(ProteinProperty):
                     "WARNING"
                 )
             )
+        log.info(
+            "{:15s} Distance between atoms property property was calculated".format(
+                "STEPS"
+            )
+        )
 
 
 class RadiusOfGyrationProperty(ProteinProperty):
@@ -146,6 +152,9 @@ class RadiusOfGyrationProperty(ProteinProperty):
 
         self._property_statistics()
         self.discretize_vector()
+        log.info(
+            "{:15s} Radius of gyration property property was calculated".format("STEPS")
+        )
 
 
 class Angles(ProteinProperty):
@@ -219,6 +228,7 @@ class Angles(ProteinProperty):
                     "WARNING"
                 )
             )
+        log.info("{:15s} Angle between 3 atoms property was calculated".format("STEPS"))
 
 
 class DihedralAngles(ProteinProperty):
@@ -271,6 +281,7 @@ class DihedralAnglePhi(DihedralAngles):
                     "WARNING"
                 )
             )
+        log.info("{:15s} Dihedral angle phi property was calculated".format("STEPS"))
 
 
 class DihedralAnglePsi(DihedralAngles):
@@ -299,3 +310,4 @@ class DihedralAnglePsi(DihedralAngles):
                     "WARNING"
                 )
             )
+        log.info("{:15s} Dihedral angle psi property was calculated".format("STEPS"))

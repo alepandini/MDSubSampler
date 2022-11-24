@@ -1,6 +1,7 @@
 from mdss_property import ProteinProperty
 import MDAnalysis.analysis.pca as pca
 import numpy as np
+from mdss_logging import logging as log
 
 
 class TrjPCAProj(ProteinProperty):
@@ -26,9 +27,17 @@ class TrjPCAProj(ProteinProperty):
     def select_pc(self, pc_index=1):
         if not self.n_pcs:
             print("Warning: values not available. Please calculate property values.")
+            log.warning(
+                "{:15s} Values not available. Please calculate property values".format(
+                    "WARNING"
+                )
+            )
         else:
             if pc_index > self.property_matrix.shape[1]:
                 print("Warning: PC index larger than number of PCs.")
+                log.warning(
+                    "{:15s} PC index larger than number of PCs.".format("WARNING")
+                )
             else:
                 self.property_vector = self.property_matrix[:, (pc_index - 1)]
                 self.pc_index = pc_index
@@ -48,3 +57,4 @@ class TrjPCAProj(ProteinProperty):
             atomgroup, n_components=selected_pcs
         )
         self.select_pc()
+        log.info("{:15s} PCA property was calculated".format("STEPS"))
