@@ -14,7 +14,8 @@ class Dissimilarity:
         Refers to the calculated property of the sampled or target protein trajectory
     ref_property : ProteinProperty object
         Refers to the reference calculated property (e.g. for the full protein trajectory)
-    n_bins : number of bins for generating the discretized vector
+    n_bins : int
+        number of bins for generating the discretized vector
     """
 
     display_name = None

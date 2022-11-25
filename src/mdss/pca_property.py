@@ -43,6 +43,10 @@ class TrjPCAProj(ProteinProperty):
                 self.pc_index = pc_index
 
     def calculate_property(self, var_threshold=0.8, pc_filter=False):
+        """
+        Calculates pca property including all trajectory frames
+        """
+
         self._run_pca()
         self.n_pcs = self.pca_model.n_components
         self.ed_n_pcs = np.where(

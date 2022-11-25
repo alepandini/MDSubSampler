@@ -7,8 +7,8 @@ import sys
 
 def convert_size(size, n_frames):
     """
-    Converts sample size of traj into int: User input could be
-    given as percentage or int
+    Converts sample size of traj into int
+    User input could be given as percentage or int
     """
     if isinstance(size, int):
         return size
@@ -30,13 +30,14 @@ def convert_size(size, n_frames):
 
 class ProteinSampler:
     """
-    Creates sample of protein trajectory
+    Represents Sampler Class
 
     Attributes
     ----------
-    protein_data: ProteinData class object
+    protein_property: ProteinProperty class object
+        The object has access to all methods and attributes of ProteinProperty class
     dissimilarity_measure: Dissimilarity class object
-        dissimilarity measure between full and sample trajectory
+        Dissimilarity measure between full and sample trajectory
     """
 
     display_name = None
@@ -113,13 +114,16 @@ class ProteinSampler:
 
 class RandomSampler(ProteinSampler):
     """
-     A Subclass of ProteinSampler class that uses Random Sampling
-     Attributes
+    Represents Random Sampler
+
+    Attributes
      ----------
-    protein_data: ProteinData class object
-         The frame_list can be accessed through this object
-     seed: int
-         Number that initialise a random-number generator
+    protein_property: ProteinProperty class object
+        The object has access to all methods and attributes of ProteinProperty class
+    seed: int
+        Number that initialise a random-number generator
+    dissimilarity_measure: Dissimilarity class object
+        Default measure is Bhattacharya
     """
 
     display_name = "Random Sampling"
@@ -132,14 +136,14 @@ class RandomSampler(ProteinSampler):
 
     def _sample(self, size):
         """
-        Method that generates a random sample of a list
+        Performs Random Sampling
         Attributes
         ----------
         size: int
-            The sample size ?
+            The sample size - user's choice
         Returns
         ----------
-        return a single random sample of the frame list with the desired size
+        A sampled_protein_property object
         """
         self.samples_indices = list(np.repeat(0, size))
         data_list = self._create_data_list()
@@ -151,13 +155,14 @@ class RandomSampler(ProteinSampler):
 
 class StratifiedSampler(ProteinSampler):
     """
-     A Subclass of ProteinSampler class that uses Stratified Sampling
-    Attributes
-         ----------
-        protein_data: ProteinData class object
-            The frame_list can be accessed through this object
-         layers: list
-            2D list that consists of strata lables one for each point
+    Represents Stratified sampler class
+    ----------
+    protein_property: ProteinProperty class object
+        The object has access to all methods and attributes of ProteinProperty class
+    strata_vector: list
+        2D list that consists of strata lables one for each point
+    dissimilarity_measure: Dissimilarity class object
+        Default measure is Bhattacharya
     """
 
     display_name = "Stratified Sampling"
@@ -178,14 +183,14 @@ class StratifiedSampler(ProteinSampler):
 
     def _sample(self, size):
         """
-        Method that performs the stratified sampling
+        Performs Stratified Sampling
         Attributes
         ----------
         size: int
-            Whole sample size
+            The sample size - user's choice
         Returns
         ----------
-        return a single stratified sample
+        A sampled_protein_property object
         """
         population_size = sum(len(layer) for layer in self.layers.values())
         if population_size == len(self.protein_property.property_vector):
@@ -249,17 +254,15 @@ class StratifiedSampler(ProteinSampler):
 
 class UniformSampler(ProteinSampler):
     """
-    A Subclass of ProteinSampler class that uses Uniform Sampling. A sample is generated
-    from a frame list with uniform distribution.Samples are uniformly distributed over the
-    half-open interval [low, high) (includes low, but excludes high)
+    Represents Uniform Sampler
     Attributes
     ----------
-    protein_data: ProteinData class object
-        The frame_list can be accessed through this object
-    low: float
-        Lower boundary of the output interval. The default value is 0.
-    high: float
-        Upper boundary of the output interval. The default value is 1.0.
+    protein_property: ProteinProperty class object
+        The object has access to all methods and attributes of ProteinProperty class
+    strata_number: int
+        ?
+    dissimilarity_measure: Dissimilarity class object
+        Default measure is Bhattacharya
     """
 
     display_name = "Uniform Sampling"
@@ -280,15 +283,10 @@ class UniformSampler(ProteinSampler):
 
     def _sample(self, size):
         """
-        Method that generates a uniform sample of a list
-        Attributes
-        ----------
-        size: int
-            The sample size
+        Performs Uniform Sampling
         Returns
         ----------
-        Return random integers from the “discrete uniform” distribution of the specified dtype
-        in the “half-open” interval [low, high).
+        A sampled_protein_property object
         """
         strat_sampler = StratifiedSampler(self.protein_property, self.strata_vector)
         sampled_protein_property = strat_sampler.sample(size)
@@ -298,15 +296,16 @@ class UniformSampler(ProteinSampler):
 
 class WeightedSampler(ProteinSampler):
     """
-     A Subclass of ProteinSampler class that uses Weighted random Sampling
-     Attributes
-     ----------
-    protein_data: ProteinData class object
-         The frame_list can be accessed through this object
-     seed: int
-         Number that initialise a random-number generator
-     weights_vector:
-         Vector of weights for each element in the sample
+    Represents Wighted Sampler
+    ----------
+    protein_property: ProteinProperty class object
+        The object has access to all methods and attributes of ProteinProperty class
+    seed: int
+        Number that initialise a random-number generator
+    weights_vector:
+        Vector of weights for each element in the sample
+    dissimilarity_measure: Dissimilarity class object
+        Default measure is Bhattacharya
     """
 
     display_name = "Weighted Sampling"
@@ -341,14 +340,14 @@ class WeightedSampler(ProteinSampler):
 
     def _sample(self, size):
         """
-        Method that generates a random sample of a list
+        Performs Weighted Sampling
         Attributes
         ----------
         size: int
-            The sample size ?
+            The sample size - user's choice
         Returns
         ----------
-        return a single random sample of the frame list with the desired size
+        A sampled_protein_property object
         """
         if len(self.weights) != len(self.property_vector):
             print("Warning: weights vector of different size from property vector")
@@ -372,14 +371,17 @@ class WeightedSampler(ProteinSampler):
 
 class BootstrappingSampler(ProteinSampler):
     """
-    A Subclass of ProteinSampler class that uses Bootstrapping Sampling
+    Represents Bootstrapping Sampler
     Attributes
     ----------
-    protein_data: object
-        ProteinData class object that has access to all methods and attributes
-        of ProteinData class. The frame_list can be accessed through it.
+    protein_property: ProteinProperty class object
+        The object has access to all methods and attributes of ProteinProperty class
     number_of_iterations: int
         This is the number of times the random sampling method is performed
+    seed: int
+        Number that initialise a random-number generator
+    dissimilarity_measure: Dissimilarity class object
+        Default measure is Bhattacharya
     """
 
     display_name = "Bootstrapping Sampling"
@@ -397,14 +399,14 @@ class BootstrappingSampler(ProteinSampler):
 
     def _sample(self, size):
         """
-        Method that does the bootstrapping sampling
+        Performs Bootstrapping sampling
         Attributes
         ----------
         size: int
-            This is the desired size of the sample each time we iterate
+            The sample size - user's choice
         Returns
         ----------
-        return a list of bootstrapped samples
+        A sampled_protein_property object
         """
         data_list = self._create_data_list()
         sampled_data_vector = []
