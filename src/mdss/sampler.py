@@ -260,7 +260,7 @@ class UniformSampler(ProteinSampler):
     protein_property: ProteinProperty class object
         The object has access to all methods and attributes of ProteinProperty class
     strata_number: int
-        ?
+        The number of intervals where sampling is done.
     dissimilarity_measure: Dissimilarity class object
         Default measure is Bhattacharya
     """
