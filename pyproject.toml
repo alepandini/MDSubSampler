@@ -4,14 +4,17 @@ version = "0.1.0"
 description = ""
 authors = ["Namir Oues <namir.oues@brunel.ac.uk>"]
 readme = "README.md"
+packages = [
+    { include = "mdss" },
+]
 
 [tool.poetry.dependencies]
 python = "^3.9"
 dictances = "1.5.3"
 matplotlib = "^3.6.2"
 MDAnalysis = "2.1.0"
-numpy = "^1.23.4"
-pandas = "^1.5.1"
+numpy = "^1.23.5"
+pandas = "^1.5.2"
 seaborn = "^0.12.1"
 sklearn = "^0.0.post1"
 pytest = "^7.2.0"
@@ -23,3 +26,12 @@ black = "^22.10.0"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+mdss = "mdss.run:run"
+mdss_scenario_1 = "mdss.scenarios.scenario_1:run"
+mdss_scenario_2 = "mdss.scenarios.scenario_2:run"
+mdss_scenario_3 = "mdss.scenarios.scenario_3:run"
+
+
+
