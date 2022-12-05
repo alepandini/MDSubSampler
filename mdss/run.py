@@ -1,4 +1,4 @@
-import protein_data
+import mdss.protein_data as pd
 import parser as p
 import os
 import sys
@@ -28,7 +28,7 @@ def sampling_workflow(arg_list):
     if args.xvg_file is not None:
         property = property_class.from_xvg(args.xvg_file)
     else:
-        p_data = protein_data.ProteinData(
+        p_data = pd.ProteinData(
             args.trajectory_file, args.topology_file, config_parameters=None
         )
         property = property_class(p_data, args.atom_selection)

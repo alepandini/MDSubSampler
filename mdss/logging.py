@@ -1,4 +1,4 @@
-import logging
+import mdss.logging as log
 import os
 import sys
 import os.path
@@ -16,9 +16,9 @@ if not logging_configured:
     filename = datetime.now().strftime("log_%Y_%m_%d_%H_%M_%S.txt")
     filepath = os.path.join(log_dir, filename)
 
-    logging.basicConfig(
+    log.basicConfig(
         filename=filepath,
-        level=logging.INFO,
+        level=log.INFO,
         format="%(asctime)s %(levelname)s %(message)s",
         filemode="w",
     )

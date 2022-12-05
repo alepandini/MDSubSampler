@@ -14,7 +14,7 @@ The utilities file consists of the following functions:
 """
 import os
 import psutil
-import protein_data
+import mdss.protein_data as pd
 
 
 class NotEnoughMemoryError(Exception):
@@ -35,7 +35,7 @@ def check_file_size(filepath):
 
 
 def check_trajectory_size(trajectory_file_path, topology_file_path):
-    protein_data = protein_data.ProteinData(
+    protein_data = pd.ProteinData(
         trajectory_file_path,
         topology_file_path,
         config_parameters=None,
@@ -71,7 +71,7 @@ def check_multiple_trajectories_size(list_of_traj, list_of_top):
 
 
 def check_number_of_residues(trajectory_file_path, topology_file_path, atom_selection):
-    protein_data = protein_data.ProteinData(
+    protein_data = pd.ProteinData(
         trajectory_file_path,
         topology_file_path,
         config_parameters=None,

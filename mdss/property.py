@@ -1,7 +1,7 @@
 import numpy as np
 import MDAnalysis as mda
-from protein_data import ProteinData
-from logging import logging as log
+from mdss.protein_data import ProteinData
+from mdss.logging import logging as log
 from dissimilarity import *
 
 

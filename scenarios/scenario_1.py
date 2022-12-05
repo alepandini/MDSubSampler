@@ -35,7 +35,7 @@ Scenario:
 """
 
 #!/usr/bin/env python
-from src.mdss.run import sampling_workflow
+from mdss.run import sampling_workflow
 import sys
 
 OUT_DIR = "testing"

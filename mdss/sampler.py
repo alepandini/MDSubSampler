@@ -1,7 +1,7 @@
 import numpy as np
 import random
-from property import SampledProperty
-from dissimilarity import *
+from mdss.property import SampledProperty
+from mdss.dissimilarity import *
 import sys
 
 

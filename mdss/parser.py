@@ -1,38 +1,38 @@
 from numpy import require
-import geometrical_property
-import pca_property
-import sampler
-import dissimilarity
+import mdss.geometrical_property as gp
+import mdss.pca_property as pca
+import mdss.sampler as s
+import mdss.dissimilarity as d
 import argparse
 import sys
 import operator as op
 
 PROPERTY_CLASSES = [
-    geometrical_property.RMSDProperty,
-    geometrical_property.DistanceBetweenAtoms,
-    geometrical_property.RadiusOfGyrationProperty,
-    pca_property.TrjPCAProj,
-    geometrical_property.DihedralAngles,
-    geometrical_property.Angles,
+    gp.RMSDProperty,
+    gp.DistanceBetweenAtoms,
+    gp.RadiusOfGyrationProperty,
+    pca.TrjPCAProj,
+    gp.DihedralAngles,
+    gp.Angles,
 ]
 PROPERTY_CLASS_MAPPING = dict(
     (property.__name__, property) for property in PROPERTY_CLASSES
 )
 
 SAMPLER_CLASSES = [
-    sampler.RandomSampler,
-    sampler.UniformSampler,
-    sampler.WeightedSampler,
-    sampler.StratifiedSampler,
-    sampler.BootstrappingSampler,
+    s.Randoms,
+    s.Uniforms,
+    s.Weighteds,
+    s.Stratifieds,
+    s.BootstrappingSampler,
 ]
 SAMPLER_CLASS_MAPPING = dict((sampler.__name__, sampler) for sampler in SAMPLER_CLASSES)
 
 DISSIMILARITY_CLASSES = [
-    dissimilarity.Dissimilarity,
-    dissimilarity.Bhattacharya,
-    dissimilarity.KullbackLeibler,
-    dissimilarity.Pearson,
+    d.Dissimilarity,
+    d.Bhattacharya,
+    d.KullbackLeibler,
+    d.Pearson,
 ]
 DISSIMILARITY_CLASS_MAPPING = dict(
     (dissimilarity.__name__, dissimilarity) for dissimilarity in DISSIMILARITY_CLASSES
@@ -144,9 +144,9 @@ def parse_args(arg_list):
     args = parser.parse_args(arg_list)
 
     if args.property in [
-        geometrical_property.DistanceBetweenAtoms.__name__,
-        geometrical_property.DihedralAngles.__name__,
-        geometrical_property.Angles.__name__,
+        gp.DistanceBetweenAtoms.__name__,
+        gp.DihedralAngles.__name__,
+        gp.Angles.__name__,
     ]:
         args.atom_selection = args.atom_selection.split(",")
 
@@ -180,16 +180,14 @@ def parse_args(arg_list):
             print("{} is required for {}".format(argument, property.__name__))
             sys.exit(1)
 
-    require_sampler_argument(sampler.RandomSampler, "seed_number")
-    require_sampler_argument(sampler.StratifiedSampler, "strata_vector")
-    require_sampler_argument(sampler.UniformSampler, "strata_number")
-    require_sampler_argument(sampler.BootstrappingSampler, "number_of_iterations")
+    require_sampler_argument(s.RandomSampler, "seed_number")
+    require_sampler_argument(s.StratifiedSampler, "strata_vector")
+    require_sampler_argument(s.UniformSampler, "strata_number")
+    require_sampler_argument(s.BootstrappingSampler, "number_of_iterations")
 
-    require_property_argument(geometrical_property.RMSDProperty, "fit")
-    require_property_argument(
-        geometrical_property.DistanceBetweenAtoms, "atom_selection"
-    )
-    require_property_argument(geometrical_property.DihedralAngles, "atom_selection")
-    require_property_argument(geometrical_property.Angles, "atom_selection")
+    require_property_argument(gp.RMSDProperty, "fit")
+    require_property_argument(gp.DistanceBetweenAtoms, "atom_selection")
+    require_property_argument(gp.DihedralAngles, "atom_selection")
+    require_property_argument(gp.Angles, "atom_selection")
 
     return args

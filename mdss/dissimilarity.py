@@ -1,6 +1,6 @@
 import dictances
 from scipy.special import rel_entr
-from logging import logging as log
+from mdss.logging import logging as log
 from math import isinf
 
 
