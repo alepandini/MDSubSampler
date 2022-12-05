@@ -131,7 +131,7 @@ def parse_args(arg_list):
         "--size",
         dest="size",
         type=str,
-        help="Sample size or percentage (<=100%) of trajectory frames (e.g. 1000 or 30%)",
+        help="Sample size or percentage (<= 100%%) of trajectory frames (e.g. 1000 or 30%%)",
     )
 
     parser.add_argument(

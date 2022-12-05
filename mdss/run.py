@@ -89,6 +89,10 @@ def main(arg_list):
     sampling_workflow(arg_list)
 
 
-if __name__ == "__main__":
+def run():
     arg_list = sys.argv[1:]
     main(arg_list)
+
+
+if __name__ == "__main__":
+    run()

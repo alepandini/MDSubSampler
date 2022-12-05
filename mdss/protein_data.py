@@ -1,7 +1,7 @@
 from datetime import datetime
 import MDAnalysis as mda
 import numpy as np
-from mdss.logging import log
+from mdss.log_setup import log
 
 
 class ProteinData:

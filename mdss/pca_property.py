@@ -1,7 +1,7 @@
 from mdss.property import ProteinProperty
 import MDAnalysis.analysis.pca as pca
 import numpy as np
-from mdss.logging import log
+from mdss.log_setup import log
 
 
 class TrjPCAProj(ProteinProperty):
