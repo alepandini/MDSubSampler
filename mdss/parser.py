@@ -20,10 +20,10 @@ PROPERTY_CLASS_MAPPING = dict(
 )
 
 SAMPLER_CLASSES = [
-    s.Randoms,
-    s.Uniforms,
-    s.Weighteds,
-    s.Stratifieds,
+    s.RandomSampler,
+    s.UniformSampler,
+    s.WeightedSampler,
+    s.StratifiedSampler,
     s.BootstrappingSampler,
 ]
 SAMPLER_CLASS_MAPPING = dict((sampler.__name__, sampler) for sampler in SAMPLER_CLASSES)

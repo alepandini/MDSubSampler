@@ -1,5 +1,5 @@
 import mdss.protein_data as pd
-import parser as p
+import mdss.parser as p
 import os
 import sys
 

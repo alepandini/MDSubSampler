@@ -1,4 +1,4 @@
-import mdss.logging as log
+import logging as log
 import os
 import sys
 import os.path
