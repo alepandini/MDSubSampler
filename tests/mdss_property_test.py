@@ -1,8 +1,8 @@
 from os import rmdir
 import tempfile
 import os.path
-import src.mdss.property as p
-import src.mdss.sampler as s
+import mdss.property as p
+import mdss.sampler as s
 
 
 def test_write_property_vector_method(rmsd_property):

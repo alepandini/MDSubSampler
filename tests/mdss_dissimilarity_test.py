@@ -1,6 +1,6 @@
 from audioop import rms
-import src.mdss.dissimilarity as d
-import src.mdss.sampler as s
+import mdss.dissimilarity as d
+import mdss.sampler as s
 import pytest
 
 

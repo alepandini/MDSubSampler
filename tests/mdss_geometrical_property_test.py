@@ -1,4 +1,4 @@
-import src.mdss.geometrical_property as g
+import mdss.geometrical_property as g
 import pytest
 
 

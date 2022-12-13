@@ -2,8 +2,8 @@ import pytest
 import os
 import os.path
 import operator as op
-import src.mdss.protein_data as pd
-import src.mdss.geometrical_property as gp
+import mdss.protein_data as pd
+import mdss.geometrical_property as gp
 
 
 @pytest.fixture

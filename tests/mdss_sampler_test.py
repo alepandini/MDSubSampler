@@ -1,4 +1,4 @@
-import src.mdss.sampler as s
+import mdss.sampler as s
 import random
 import math
 import pytest

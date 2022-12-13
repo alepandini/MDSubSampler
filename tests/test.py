@@ -29,9 +29,9 @@
 
 # python scenarios/scenario_001.py data/input.xtc data/input.gro test2909
 
-from src.mdss.protein_data import *
-from src.mdss.geometrical_property import *
-from src.mdss.sampler import *
+from mdss.protein_data import *
+from mdss.geometrical_property import *
+from mdss.sampler import *
 
 p_data = ProteinData("data/input.xtc", "data/input.gro")
 rmsd = RMSDProperty(p_data)
