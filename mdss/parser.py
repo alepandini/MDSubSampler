@@ -190,4 +190,9 @@ def parse_args(arg_list):
     require_property_argument(gp.DihedralAngles, "atom_selection")
     require_property_argument(gp.Angles, "atom_selection")
 
+    # if "," in args.size:
+    #     args.size = [int(s) for s in args.size.split(",")]
+
+    print(args)
+
     return args

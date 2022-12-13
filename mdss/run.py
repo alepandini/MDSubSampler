@@ -23,7 +23,7 @@ def sampling_workflow(arg_list):
     property_class = p.PROPERTY_CLASS_MAPPING[args.property]
     """
     Check if user input includes an xvg file with precalculated property
-    οtherwise read protein trajectory from input files and calculate property
+    otherwise read protein trajectory from input files and calculate property
     """
     if args.xvg_file is not None:
         property = property_class.from_xvg(args.xvg_file)
@@ -51,6 +51,12 @@ def sampling_workflow(arg_list):
     """
     Get the sample of the vector with calculated property with user's input size
     """
+    # if isinstance(args.size, list):
+    #     # run sample many times
+    #     property_sample = sampler.scan_sample_size(
+    #         perc_vector=None, dissimilarity_threshold=None
+    #     )
+    # else:
     property_sample = sampler.sample(args.size)
     """
     Create dissimilarity class object with user's input dissimilarity

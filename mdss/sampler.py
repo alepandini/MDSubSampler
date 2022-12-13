@@ -24,6 +24,7 @@ def convert_size(size, n_frames):
 
         size = prc * n_frames / 100
         return round(size)
+
     log.info("{:15s} Sample size was converted to int".format("STEPS"))
     return int(size)
 
@@ -108,7 +109,7 @@ class ProteinSampler:
         else:
             print("Percentage values should be smaller than 100")
             log.warning(
-                "{:15s} Percentage values should be smaller than 100".format("WARNING")
+                "{:15s} Percentage values should be smaller than 100".format("WARN")
             )
 
 
