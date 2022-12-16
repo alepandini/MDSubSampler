@@ -128,6 +128,13 @@ def parse_args(arg_list):
         help="Number of iterations",
     )
     parser.add_argument(
+        "--weights-vector",
+        dest="weights_vector",
+        type=list,
+        help="Vector with weights",
+    )
+
+    parser.add_argument(
         "--size",
         dest="size",
         type=str,
@@ -190,8 +197,8 @@ def parse_args(arg_list):
     require_property_argument(gp.DihedralAngles, "atom_selection")
     require_property_argument(gp.Angles, "atom_selection")
 
-    # if "," in args.size:
-    #     args.size = [int(s) for s in args.size.split(",")]
+    if "," in args.size:
+        args.size = [int(s) for s in args.size.split(",")]
 
     print(args)
 
