@@ -157,3 +157,11 @@ class Pearson(Dissimilarity):
             "{:15s} Dissimilarity score: {:4.5f}".format("OUTPUT", self.dissimilarity)
         )
         return self.dissimilarity
+
+
+dissimilarity_class_dict = {
+    "Bhattacharya": Bhattacharya,
+    "KullbackLeibler": KullbackLeibler,
+    "Pearson": Pearson,
+    "Dissimilarity": Dissimilarity,
+}
