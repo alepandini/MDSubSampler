@@ -1,5 +1,6 @@
 import mdss.protein_data as pd
 import mdss.parser as p
+from mdss.dissimilarity import *
 import os
 import sys
 
@@ -39,25 +40,41 @@ def sampling_workflow(arg_list):
     """
     sampler_class = p.SAMPLER_CLASS_MAPPING[args.sampler]
     if args.sampler == "RandomSampler":
-        sampler = sampler_class(property, args.seed_number)
+        sampler = sampler_class(
+            property, args.seed_number, dissimilarity_class_dict[args.dissimilarity]
+        )
     if args.sampler == "UniformSampler":
-        sampler = sampler_class(property, args.strata_number)
+        sampler = sampler_class(
+            property, args.strata_number, dissimilarity_class_dict[args.dissimilarity]
+        )
     elif args.sampler == "WeightedSampler":
-        sampler = sampler_class(property, args.seed_number)
+        sampler = sampler_class(
+            property,
+            args.seed_number,
+            args.weights_vector,
+            dissimilarity_class_dict[args.dissimilarity],
+        )
     elif args.sampler == "StratifiedSampler":
-        sampler = sampler_class(property, args.layers)
+        sampler = sampler_class(
+            property, args.strata_vector, dissimilarity_class_dict[args.dissimilarity]
+        )
     elif args.sampler == "BootstrappingSampler":
-        sampler = sampler_class(property, args.number_of_iterations)
+        sampler = sampler_class(
+            property,
+            args.number_of_iterations,
+            args.seed_number,
+            dissimilarity_class_dict[args.dissimilarity],
+        )
     """
     Get the sample of the vector with calculated property with user's input size
     """
-    # if isinstance(args.size, list):
-    #     # run sample many times
-    #     property_sample = sampler.scan_sample_size(
-    #         perc_vector=None, dissimilarity_threshold=None
-    #     )
-    # else:
-    property_sample = sampler.sample(args.size)
+    if isinstance(args.size, list):
+        # run sample many times
+        property_sample = sampler.scan_sample_size(
+            perc_vector=args.size, dissimilarity_threshold=None
+        )
+    else:
+        property_sample = sampler.sample(args.size)
     """
     Create dissimilarity class object with user's input dissimilarity
     """
