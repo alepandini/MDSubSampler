@@ -96,6 +96,7 @@ class ProteinSampler:
                     if sampled_property.ref_dissimilarity <= dissimilarity_threshold:
                         selected_size = p
                         selected_sample_key = sampled_property.property_key
+                print(sampled_property.ref_dissimilarity)
             if selected_sample_key is None:
                 print("Warning: no sample meeting dissimilarity threshold")
                 log.warning(
