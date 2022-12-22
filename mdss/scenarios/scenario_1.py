@@ -1,5 +1,6 @@
 """
 Scenario 001 
+
 Purpose:             Given a single MD trajectory sampling different global 
                      conformations of the protein, select the smallest subset 
                      of frames with a similar distribution of RMSD. 
@@ -9,9 +10,13 @@ Input:               Molecular dynamics trajectory
                      Reference structure [optional] 
                      Range of subsample sizes (or percentages) 
                      Dissimilarity threshold [optional] 
+
 Sampling strategy:   Random sampling 
+
 Type of property:    Numerical continuous 
+
 Property dependency: Dependent on single frame 
+
 Criterion:           Dissimilarity between distributions of values of original 
                      and subsampled property 
 Scenario:	
@@ -61,6 +66,7 @@ def main(trj_filename, top_filename, out_prefix):
             str(SIZE),
             "--dissimilarity",
             DISSIMILARITY,
+            "--fit",
         ]
     )
     print(dissimilarity_score)
