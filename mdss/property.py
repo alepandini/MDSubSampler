@@ -178,9 +178,9 @@ class SampledProperty(ProteinProperty):
         self.samples_indices = samples_indices
         self.dissimilarity_name = None
         self.dissimilarity_threshold = None
+        self._property_statistics()
         self.ref_dissimilarity = self._get_dissimilarity_to_ref(dissimilarity_measure)
         self.display_name = "Sampled_{}".format(original_property.display_name)
-        self._property_statistics()
         self.property_key = self._add_reference_to_protein_data()
 
     def _get_dissimilarity_to_ref(self, dissimilarity_measure):
