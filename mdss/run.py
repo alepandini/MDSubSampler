@@ -1,5 +1,6 @@
 import mdss.protein_data as pd
 import mdss.parser as p
+from mdss.property import SampledProperty
 from mdss.dissimilarity import *
 import os
 import sys
@@ -93,10 +94,12 @@ def sampling_workflow(arg_list):
     filepath = os.path.join(args.output_folder, filename)
     property.write_property_vector(filepath)
     """
-    Create file with calculated property for sample trajectory
+    Create file with calculated property for sample trajectory or list with sample trajectories
     """
     filename_sample = "{}_{}_sample_{}.dat".format(
-        args.file_prefix, property_class.display_name, dissimilarity_class.display_name
+        args.file_prefix,
+        property_class.display_name,
+        dissimilarity_class.display_name,
     )
     filepath_sample = os.path.join(args.output_folder, filename_sample)
     property_sample.write_property_vector(filepath_sample)
