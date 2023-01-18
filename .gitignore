@@ -139,7 +139,10 @@ dmypy.json
 logs/
 
 # data
-data/*.npz
+data/
 
 # graphs
 png/
+
+#testing
+testing/
