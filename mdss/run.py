@@ -1,6 +1,5 @@
 import mdss.protein_data as pd
 import mdss.parser as p
-from mdss.property import SampledProperty
 from mdss.dissimilarity import *
 import os
 import sys
@@ -88,7 +87,9 @@ def sampling_workflow(arg_list):
     if isinstance(args.size, list):
         # run sample many times
         property_sample = sampler.scan_sample_size(
-            perc_vector=args.size, dissimilarity_threshold=None
+            perc_vector=args.size,
+            dissimilarity_threshold=None,
+            step_recording=args.step_recording,
         )
     else:
         property_sample = sampler.sample(args.size)
