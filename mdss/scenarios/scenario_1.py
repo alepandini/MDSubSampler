@@ -38,7 +38,9 @@ OUT_DIR = "testing"
 PROPERTY = "RMSDProperty"
 SELECTION = "name CA"
 SAMPLER = "RandomSampler"
-SIZE = "100"
+SIZE = "20"  # The format could be either int (ie 20) meaning 20
+# frames in sample or perc (ie 20%) meaning 20% of number of frames in sample
+# if list (ie 10,20,30) then it is percentage of total frames in sample
 DISSIMILARITY = "Dissimilarity"
 
 
