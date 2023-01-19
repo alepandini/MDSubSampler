@@ -113,14 +113,15 @@ def sampling_workflow(arg_list):
     """
     Create file with calculated property for sample trajectory or list with sample trajectories
     """
-    filename_sample = "{}_{}_sample_{}.dat".format(
-        args.file_prefix,
-        property_class.display_name,
-        dissimilarity_class.display_name,
-    )
-    filepath_sample = os.path.join(args.output_folder, filename_sample)
-    property_sample.write_property_vector(filepath_sample)
-    """
+    if not args.step_recording:
+        filename_sample = "{}_{}_sample_{}.dat".format(
+            args.file_prefix,
+            property_class.display_name,
+            dissimilarity_class.display_name,
+        )
+        filepath_sample = os.path.join(args.output_folder, filename_sample)
+        property_sample.write_property_vector(filepath_sample)
+        """
     Crete file with data report that includes important statistics about trajectory
     """
     p_data.property_data_report()
