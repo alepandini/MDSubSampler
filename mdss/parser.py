@@ -148,6 +148,13 @@ def parse_args(arg_list):
         help="Dissimilarity between distributions",
     )
 
+    parser.add_argument(
+        "--step-recording",
+        dest="step_recording",
+        action="store_true",
+        help="In case of user input is a list of samples then all samples generated are recorded",
+    )
+
     args = parser.parse_args(arg_list)
 
     if args.property in [
