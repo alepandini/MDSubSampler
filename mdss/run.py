@@ -42,29 +42,45 @@ def sampling_workflow(arg_list):
     sampler_class = p.SAMPLER_CLASS_MAPPING[args.sampler]
     if args.sampler == "RandomSampler":
         sampler = sampler_class(
-            property, args.seed_number, dissimilarity_class_dict[args.dissimilarity]
+            protein_property=property,
+            seed_number=args.seed_number,
+            output_folder=args.output_folder,
+            file_prefix=args.file_prefix,
+            dissimilarity_measure=dissimilarity_class_dict[args.dissimilarity],
         )
     if args.sampler == "UniformSampler":
         sampler = sampler_class(
-            property, args.strata_number, dissimilarity_class_dict[args.dissimilarity]
+            protein_property=property,
+            strata_number=args.strata_number,
+            output_folder=args.output_folder,
+            file_prefix=args.file_prefix,
+            dissimilarity_measure=dissimilarity_class_dict[args.dissimilarity],
         )
     elif args.sampler == "WeightedSampler":
         sampler = sampler_class(
-            property,
-            args.seed_number,
-            args.weights_vector,
-            dissimilarity_class_dict[args.dissimilarity],
+            protein_property=property,
+            seed_number=args.seed_number,
+            output_folder=args.output_folder,
+            file_prefix=args.file_prefix,
+            weights_vector=args.weights_vector,
+            dissimilarity_measure=dissimilarity_class_dict[args.dissimilarity],
         )
     elif args.sampler == "StratifiedSampler":
         sampler = sampler_class(
-            property, args.strata_vector, dissimilarity_class_dict[args.dissimilarity]
+            protein_property=property,
+            output_folder=args.output_folder,
+            file_prefix=args.file_prefix,
+            strata_vector=args.strata_vector,
+            dissimilarity_measure=dissimilarity_class_dict[args.dissimilarity],
         )
     elif args.sampler == "BootstrappingSampler":
         sampler = sampler_class(
-            property,
-            args.number_of_iterations,
-            args.seed_number,
-            dissimilarity_class_dict[args.dissimilarity],
+            protein_property=property,
+            output_folder=args.output_folder,
+            file_prefix=args.file_prefix,
+            number_of_iterations=args.number_of_iterations,
+            seed_number=args.seed_number,
+            dissimilarity_measure=dissimilarity_class_dict[args.dissimilarity],
         )
     """
     Get the sample of the vector with calculated property with user's input size
