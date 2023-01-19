@@ -2,7 +2,6 @@ import numpy as np
 import random
 from mdss.property import SampledProperty
 from mdss.dissimilarity import *
-
 import sys
 import os
 
@@ -89,7 +88,7 @@ class ProteinSampler:
         pass
 
     def scan_sample_size(
-        self, perc_vector=None, dissimilarity_threshold=None, step_recording=True
+        self, perc_vector=None, dissimilarity_threshold=None, step_recording=False
     ):
         selected_size = None
         selected_sample_key = None
@@ -98,20 +97,17 @@ class ProteinSampler:
         if sum([x > 100 for x in perc_vector]) == 0:
             n_frames = len(self.property_vector)
             perc_vector.sort(reverse=True)
-            if step_recording == True:
-                for p in perc_vector:
-                    sampled_property = self.sample(round(p * n_frames / 100))
-                    if sampled_property is not None:
-                        if dissimilarity_threshold is None:
-                            dissimilarity_threshold = (
-                                sampled_property.dissimilarity_threshold
-                            )
-                        if (
-                            sampled_property.ref_dissimilarity
-                            <= dissimilarity_threshold
-                        ):
-                            selected_size = p
-                            selected_sample_key = sampled_property.property_key
+            for p in perc_vector:
+                sampled_property = self.sample(round(p * n_frames / 100))
+                if sampled_property is not None:
+                    if dissimilarity_threshold is None:
+                        dissimilarity_threshold = (
+                            sampled_property.dissimilarity_threshold
+                        )
+                    if sampled_property.ref_dissimilarity <= dissimilarity_threshold:
+                        selected_size = p
+                        selected_sample_key = sampled_property.property_key
+                if step_recording:
                     filename = "{}_{}_{}_{}.dat".format(
                         self.file_prefix,
                         p,
