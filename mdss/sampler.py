@@ -98,6 +98,7 @@ class ProteinSampler:
             n_frames = len(self.property_vector)
             perc_vector.sort(reverse=True)
             for p in perc_vector:
+                log.info("{:15s} Sample perc: {:4.5f}".format("INFO", p))
                 sampled_property = self.sample(round(p * n_frames / 100))
                 if sampled_property is not None:
                     if dissimilarity_threshold is None:

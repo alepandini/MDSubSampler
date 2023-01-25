@@ -1,6 +1,7 @@
 import mdss.protein_data as pd
 import mdss.parser as p
 from mdss.dissimilarity import *
+from mdss.log_setup import log
 import os
 import sys
 
@@ -16,6 +17,9 @@ def sampling_workflow(arg_list):
     args = p.parse_args(arg_list)
     print(args)
 
+    log.info(
+            "{:15s} Replica number: {:4.5s}".format("INPUT", args.file_prefix)
+        )
     if not os.path.exists(args.output_folder):
         os.makedirs(args.output_folder)
     """
