@@ -17,9 +17,7 @@ def sampling_workflow(arg_list):
     args = p.parse_args(arg_list)
     print(args)
 
-    log.info(
-            "{:15s} Replica number: {:4.5s}".format("INPUT", args.file_prefix)
-        )
+    log.info("{:15s} Replica number: {:4.5s}".format("INPUT", args.file_prefix))
     if not os.path.exists(args.output_folder):
         os.makedirs(args.output_folder)
     """
@@ -36,7 +34,7 @@ def sampling_workflow(arg_list):
         p_data = pd.ProteinData(
             args.trajectory_file, args.topology_file, config_parameters=None
         )
-        property = property_class(p_data, args.atom_selection)
+        property = property_class(p_data, args.atom_selection, args.fit)
         property.calculate_property()
     """
     Create sampler class object with user's input sampler
