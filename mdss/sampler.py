@@ -241,7 +241,7 @@ class StratifiedSampler(ProteinSampler):
                         "INPUT"
                     )
                 )
-                return None
+                raise TypeError("Size should be at least half the number of layers")
 
             self.samples_indices = []
             sample_index = 0
