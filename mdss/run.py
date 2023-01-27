@@ -9,7 +9,6 @@ import sys
 def sampling_workflow(arg_list):
     """
     Implements sampling of data and measures dissimilarity between distributions
-
     Attributes
     -----------
     arg_list: List of arguments that were inputed by the user in the parser
@@ -101,10 +100,6 @@ def sampling_workflow(arg_list):
     dissimilarity_class = p.DISSIMILARITY_CLASS_MAPPING[args.dissimilarity]
     dissimilarity_object = dissimilarity_class(property, property_sample)
     """
-    Calculate dissimilarity between full and sample trajectory
-    """
-    dissimilarity_score = dissimilarity_object.calculate_dissimilarity()
-    """
     Create file with calculated property for full trajectory
     """
     filename = "{}_{}_{}.dat".format(
@@ -123,12 +118,10 @@ def sampling_workflow(arg_list):
         )
         filepath_sample = os.path.join(args.output_folder, filename_sample)
         property_sample.write_property_vector(filepath_sample)
-        """
-    Crete file with data report that includes important statistics about trajectory
+    """
+    Create file with data report that includes important statistics about trajectory
     """
     p_data.property_data_report()
-    print("Dissimilarity: {}".format(dissimilarity_score))
-    return dissimilarity_score
 
 
 def main(arg_list):
