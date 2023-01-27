@@ -43,7 +43,7 @@ PROPERTY = "RMSDProperty"
 SELECTION = "resid 120:160"
 SAMPLER = "UniformSampler"
 STRATA_NUMBER = "200"
-SIZE = "100"
+SIZE = "10,20,30"
 DISSIMILARITY = "Bhattacharya"
 
 
@@ -71,9 +71,10 @@ def main(trj_filename, top_filename, out_prefix):
             str(SIZE),
             "--dissimilarity",
             DISSIMILARITY,
+            "--fit",
+            "--step-recording",
         ]
     )
-    print(dissimilarity_score)
 
 
 def run():
