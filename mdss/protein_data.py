@@ -52,7 +52,6 @@ class ProteinData:
             permissive=False,
             topology_format="GRO",
         )
-        log.info("{:15s} Input trajectory was read successfully".format("INPUT"))
         return trajectory_data
 
     def _select_CA_atoms(self):
@@ -114,7 +113,7 @@ class ProteinData:
             else:
                 log.error(
                     "{:15s} Expected int or slice in frame_selection_iterator()".format(
-                        "ERROR"
+                        "STEPS"
                     )
                 )
                 raise TypeError("Expected int or slice")
@@ -145,7 +144,7 @@ class ProteinData:
             else:
                 log.error(
                     "{:15s} Expected int or slice in frame_selection_iterator()".format(
-                        "ERROR"
+                        "STEPS"
                     )
                 )
                 raise TypeError("Expected int or slice")
@@ -179,9 +178,4 @@ class ProteinData:
                 "atom_selection": v.atom_selection,
                 "name": v.display_name,
             }
-        log.info(
-            "{:15s} Property data report with important statistics was generated".format(
-                "STEPS"
-            )
-        )
         return report_dict

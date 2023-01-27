@@ -25,7 +25,7 @@ class ProteinProperty:
         if not isinstance(protein_data, ProteinData):
             log.warning(
                 "{:15s} An instance of ProteinData is required. protein_data attribute set to None".format(
-                    "WARNING"
+                    "STEPS"
                 )
             )
             protein_data = None
@@ -39,8 +39,8 @@ class ProteinProperty:
         self.frame_indices = []
         self.recalculate = False
         self.property_key = self._add_reference_to_protein_data()
-        log.info("{:15s} Atom selection: {}".format("SELECTION", self.atom_selection))
-        log.info("{:15s} Property name: {}".format("SELECTION", self.display_name))
+        log.info("{:15s} Atom selection: {}".format("INPUT", self.atom_selection))
+        log.info("{:15s} Property name: {}".format("INPUT", self.display_name))
 
     @classmethod
     def from_xvg(cls, xvg_filepath):
@@ -117,7 +117,7 @@ class ProteinProperty:
             print("Warning: property is not associated to a protein data object.")
             log.warning(
                 "{:15s} Property is not associated to a protein data object".format(
-                    "WARNING"
+                    "STEPS"
                 )
             )
             return False
@@ -129,7 +129,6 @@ class ProteinProperty:
         with open(outfilepath, "w") as f:
             for i, value in zip(self.frame_indices, self.property_vector):
                 f.write("{} {}\n".format(i, value))
-        log.info("{:15s} Property vector was done".format("STEPS"))
 
     def write_discretized_property_vector(self, outfilepath):
         """
@@ -140,7 +139,6 @@ class ProteinProperty:
         with open(outfilepath, "w") as f:
             for i, value in zip(self.frame_indices, self.discretized_property_vector):
                 f.write("{} {}\n".format(i, value))
-        log.info("{:15s} Discretised property vector was done".format("STEPS"))
 
     def write_property_distribution_dict(self, outfilepath):
         """
@@ -151,7 +149,6 @@ class ProteinProperty:
         with open(outfilepath, "w") as f:
             for (key, value) in self.property_distribution_dict.items():
                 f.write("{} {}\n".format(key, value))
-        log.info("{:15s} Property distribution dictionary was done".format("STEPS"))
 
 
 class SampledProperty(ProteinProperty):
@@ -191,11 +188,6 @@ class SampledProperty(ProteinProperty):
         diss_obj.calculate_dissimilarity()
         self.dissimilarity_name = diss_obj.dissimilarity_name
         self.dissimilarity_threshold = diss_obj.dissimilarity_threshold
-        log.info(
-            "{:15s} Dissimilarity between full and sampled property was calculated".format(
-                "STEPS"
-            )
-        )
         return diss_obj.dissimilarity
 
     def calculate_property(self):

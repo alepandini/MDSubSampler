@@ -54,10 +54,9 @@ class RMSDProperty(ProteinProperty):
             print("Property cannot be calculated without associated protein data")
             log.warning(
                 "{:18s} Property cannot be calculated without associated protein data".format(
-                    "WARNING"
+                    "STEPS"
                 )
             )
-        log.info("{:15s} RMSD property was calculated".format("STEPS"))
 
 
 class DistanceBetweenAtoms(ProteinProperty):
@@ -78,7 +77,7 @@ class DistanceBetweenAtoms(ProteinProperty):
         if not isinstance(atom_selection, list) or len(atom_selection) != 2:
             log.error(
                 "{:18s} Expecting atom_selection to be a list of 2 selections in DistanceBetweenAtoms class".format(
-                    "ERROR"
+                    "INPUT"
                 )
             )
             raise RuntimeError("Expecting atom_selection to be a list of 2 selections")
@@ -115,14 +114,9 @@ class DistanceBetweenAtoms(ProteinProperty):
             print("Property cannot be calculated without associated protein data")
             log.warning(
                 "{:18s} Property cannot be calculated without associated protein data".format(
-                    "WARNING"
+                    "STEPS"
                 )
             )
-        log.info(
-            "{:15s} Distance between atoms property property was calculated".format(
-                "STEPS"
-            )
-        )
 
 
 class RadiusOfGyrationProperty(ProteinProperty):
@@ -152,9 +146,6 @@ class RadiusOfGyrationProperty(ProteinProperty):
 
         self._property_statistics()
         self.discretize_vector()
-        log.info(
-            "{:15s} Radius of gyration property property was calculated".format("STEPS")
-        )
 
 
 class Angles(ProteinProperty):
@@ -175,7 +166,7 @@ class Angles(ProteinProperty):
         if not isinstance(atom_selection, list) or len(atom_selection) != 3:
             log.error(
                 "{:18s} Expecting atom_selection to be a list of 3 selections in Angles class".format(
-                    "ERROR"
+                    "INPUT"
                 )
             )
             raise RuntimeError("Expecting atom_selection to be a list of 3 selections")
@@ -225,10 +216,9 @@ class Angles(ProteinProperty):
             print("Property cannot be calculated without associated protein data")
             log.warning(
                 "{:18s} Property cannot be calculated without associated protein data".format(
-                    "WARNING"
+                    "STEPS"
                 )
             )
-        log.info("{:15s} Angle between 3 atoms property was calculated".format("STEPS"))
 
 
 class DihedralAngles(ProteinProperty):
@@ -247,7 +237,7 @@ class DihedralAngles(ProteinProperty):
         if not isinstance(atom_selection, list) or len(atom_selection) != 4:
             log.error(
                 "{:18s} Expecting atom_selection to be a list of 4 selections in DihedralAngles class".format(
-                    "ERROR"
+                    "INPUT"
                 )
             )
             raise RuntimeError("Expecting atom_selection to be a list of 4 selections")
@@ -278,10 +268,9 @@ class DihedralAnglePhi(DihedralAngles):
             print("Property cannot be calculated without associated protein data")
             log.warning(
                 "{:18s} Property cannot be calculated without associated protein data".format(
-                    "WARNING"
+                    "STEPS"
                 )
             )
-        log.info("{:15s} Dihedral angle phi property was calculated".format("STEPS"))
 
 
 class DihedralAnglePsi(DihedralAngles):
@@ -307,7 +296,6 @@ class DihedralAnglePsi(DihedralAngles):
             print("Property cannot be calculated without associated protein data")
             log.warning(
                 "{:18s} Property cannot be calculated without associated protein data".format(
-                    "WARNING"
+                    "STEPS"
                 )
             )
-        log.info("{:15s} Dihedral angle psi property was calculated".format("STEPS"))

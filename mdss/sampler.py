@@ -19,14 +19,12 @@ def convert_size(size, n_frames):
         if prc > 100:
             print("size percentage {} is not less than 100%".format(prc))
             log.error(
-                "{:15s} Size percentage {} is not less than 100%".format("ERROR", prc)
+                "{:15s} Size percentage {} is not less than 100%".format("INPUT", prc)
             )
             sys.exit(1)
 
         size = prc * n_frames / 100
         return round(size)
-
-    log.info("{:15s} Sample size was converted to int".format("STEPS"))
     return int(size)
 
 
@@ -76,7 +74,6 @@ class ProteinSampler:
             self.samples_indices,
             self.dissimilarity_measure,
         )
-        log.info("{:15s} Sampled property was created".format("STEPS"))
         return sampled_protein_property
 
     def sample(self, size):
@@ -98,7 +95,7 @@ class ProteinSampler:
             n_frames = len(self.property_vector)
             perc_vector.sort(reverse=True)
             for p in perc_vector:
-                log.info("{:15s} Sample perc: {:4.5f}".format("INFO", p))
+                log.info("{:15s} Sample perc: {:4.5f}".format("INPUT", p))
                 sampled_property = self.sample(round(p * n_frames / 100))
                 if sampled_property is not None:
                     if dissimilarity_threshold is None:
@@ -120,7 +117,7 @@ class ProteinSampler:
             if selected_sample_key is None:
                 print("Warning: no sample meeting dissimilarity threshold")
                 log.warning(
-                    "{:15s} No sample meeting dissimilarity threshold".format("WARNING")
+                    "{:15s} No sample meeting dissimilarity threshold".format("STEPS")
                 )
                 return None
             else:
@@ -130,7 +127,7 @@ class ProteinSampler:
         else:
             print("Percentage values should be smaller than 100")
             log.warning(
-                "{:15s} Percentage values should be smaller than 100".format("WARN")
+                "{:15s} Percentage values should be smaller than 100".format("INPUT")
             )
 
 
@@ -181,7 +178,6 @@ class RandomSampler(ProteinSampler):
         data_list = self._create_data_list()
         sampled_data_vector = random.sample(data_list, size)
         sampled_protein_property = self._create_sampled_property(sampled_data_vector)
-        log.info("{:15s} Random sample was created".format("STEPS"))
         return sampled_protein_property
 
 
@@ -242,7 +238,7 @@ class StratifiedSampler(ProteinSampler):
                 print("Warning: Size should be at least half the number of layers")
                 log.warning(
                     "{:15s} Size should be at least half the number of layers".format(
-                        "WARNING"
+                        "INPUT"
                     )
                 )
                 return None
@@ -256,7 +252,7 @@ class StratifiedSampler(ProteinSampler):
                     )
                     log.warning(
                         "{:15s} Strata size smaller than required sample. Sampling with replacement.".format(
-                            "WARNING"
+                            "INPUT"
                         )
                     )
                     layer_sampled_indices = random.choices(layer, k=strata_sample_size)
@@ -282,13 +278,12 @@ class StratifiedSampler(ProteinSampler):
             sampled_protein_property = self._create_sampled_property(
                 sampled_data_vector
             )
-            log.info("{:15s} Stratified sample was created".format("STEPS"))
             return sampled_protein_property
         else:
             print("Warning: strata vector is incosistent in size with property vector")
             log.warning(
                 "{:15s} Strata vector is incosistent in size with property vector".format(
-                    "WARNING"
+                    "STEPS"
                 )
             )
             return None
@@ -348,7 +343,6 @@ class UniformSampler(ProteinSampler):
             self.dissimilarity_measure,
         )
         sampled_protein_property = strat_sampler.sample(size)
-        log.info("{:15s} Uniform sample was created".format("STEPS"))
         return sampled_protein_property
 
 
@@ -390,7 +384,7 @@ class WeightedSampler(ProteinSampler):
             )
             log.warning(
                 "{:15s} Weights not provided. They will be estimated from discretized property vector.".format(
-                    "WARNING"
+                    "STEPS"
                 )
             )
             if self.protein_property.discretized_property_vector is None:
@@ -418,7 +412,7 @@ class WeightedSampler(ProteinSampler):
             print("Warning: weights vector of different size from property vector")
             log.warning(
                 "{:15s} Weights vector of different size from property vector".format(
-                    "WARNING"
+                    "STEPS"
                 )
             )
         else:
@@ -430,7 +424,6 @@ class WeightedSampler(ProteinSampler):
             sampled_protein_property = self._create_sampled_property(
                 sampled_data_vector
             )
-            log.info("{:15s} Weighted sample was created".format("STEPS"))
             return sampled_protein_property
 
 
@@ -488,5 +481,4 @@ class BootstrappingSampler(ProteinSampler):
             sampled_data_vector.extend(current_sample)
             self.samples_indices.extend(list(np.repeat(i, size)))
         sampled_protein_property = self._create_sampled_property(sampled_data_vector)
-        log.info("{:15s} Bootstrapped sample was created".format("STEPS"))
         return sampled_protein_property
