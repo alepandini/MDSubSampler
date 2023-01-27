@@ -340,7 +340,13 @@ class UniformSampler(ProteinSampler):
         ----------
         A sampled_protein_property object
         """
-        strat_sampler = StratifiedSampler(self.protein_property, self.strata_vector)
+        strat_sampler = StratifiedSampler(
+            self.protein_property,
+            self.output_folder,
+            self.file_prefix,
+            self.strata_vector,
+            self.dissimilarity_measure,
+        )
         sampled_protein_property = strat_sampler.sample(size)
         log.info("{:15s} Uniform sample was created".format("STEPS"))
         return sampled_protein_property
