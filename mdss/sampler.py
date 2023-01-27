@@ -117,7 +117,7 @@ class ProteinSampler:
             if selected_sample_key is None:
                 print("Warning: no sample meeting dissimilarity threshold")
                 log.warning(
-                    "{:15s} No sample meeting dissimilarity threshold".format("STEPS")
+                    "{:12s} No sample meeting dissimilarity threshold".format("STEPS")
                 )
                 return None
             else:
@@ -127,7 +127,7 @@ class ProteinSampler:
         else:
             print("Percentage values should be smaller than 100")
             log.warning(
-                "{:15s} Percentage values should be smaller than 100".format("INPUT")
+                "{:12s} Percentage values should be smaller than 100".format("INPUT")
             )
 
 
@@ -236,8 +236,8 @@ class StratifiedSampler(ProteinSampler):
             strata_sample_size = round(size / self.n_layers)
             if strata_sample_size < 1:
                 print("Warning: Size should be at least half the number of layers")
-                log.warning(
-                    "{:15s} Size should be at least half the number of layers".format(
+                log.warn(
+                    "{:12s} Size should be at least half the number of layers".format(
                         "INPUT"
                     )
                 )
@@ -251,7 +251,7 @@ class StratifiedSampler(ProteinSampler):
                         "Warning: strata size smaller than required sample. Sampling with replacement."
                     )
                     log.warning(
-                        "{:15s} Strata size smaller than required sample. Sampling with replacement.".format(
+                        "{:12s} Strata size smaller than required sample. Sampling with replacement.".format(
                             "INPUT"
                         )
                     )
@@ -282,7 +282,7 @@ class StratifiedSampler(ProteinSampler):
         else:
             print("Warning: strata vector is incosistent in size with property vector")
             log.warning(
-                "{:15s} Strata vector is incosistent in size with property vector".format(
+                "{:12s} Strata vector is incosistent in size with property vector".format(
                     "STEPS"
                 )
             )
@@ -383,7 +383,7 @@ class WeightedSampler(ProteinSampler):
                 "Weights not provided. They will be estimated from discretized property vector."
             )
             log.warning(
-                "{:15s} Weights not provided. They will be estimated from discretized property vector.".format(
+                "{:12s} Weights not provided. They will be estimated from discretized property vector.".format(
                     "STEPS"
                 )
             )
@@ -411,7 +411,7 @@ class WeightedSampler(ProteinSampler):
         if len(self.weights) != len(self.property_vector):
             print("Warning: weights vector of different size from property vector")
             log.warning(
-                "{:15s} Weights vector of different size from property vector".format(
+                "{:12s} Weights vector of different size from property vector".format(
                     "STEPS"
                 )
             )

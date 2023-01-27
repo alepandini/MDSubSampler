@@ -53,7 +53,7 @@ class RMSDProperty(ProteinProperty):
         else:
             print("Property cannot be calculated without associated protein data")
             log.warning(
-                "{:18s} Property cannot be calculated without associated protein data".format(
+                "{:12s} Property cannot be calculated without associated protein data".format(
                     "STEPS"
                 )
             )
@@ -113,7 +113,7 @@ class DistanceBetweenAtoms(ProteinProperty):
         else:
             print("Property cannot be calculated without associated protein data")
             log.warning(
-                "{:18s} Property cannot be calculated without associated protein data".format(
+                "{:12s} Property cannot be calculated without associated protein data".format(
                     "STEPS"
                 )
             )
@@ -215,7 +215,7 @@ class Angles(ProteinProperty):
         else:
             print("Property cannot be calculated without associated protein data")
             log.warning(
-                "{:18s} Property cannot be calculated without associated protein data".format(
+                "{:12s} Property cannot be calculated without associated protein data".format(
                     "STEPS"
                 )
             )
@@ -267,7 +267,7 @@ class DihedralAnglePhi(DihedralAngles):
         else:
             print("Property cannot be calculated without associated protein data")
             log.warning(
-                "{:18s} Property cannot be calculated without associated protein data".format(
+                "{:12s} Property cannot be calculated without associated protein data".format(
                     "STEPS"
                 )
             )
@@ -295,7 +295,7 @@ class DihedralAnglePsi(DihedralAngles):
         else:
             print("Property cannot be calculated without associated protein data")
             log.warning(
-                "{:18s} Property cannot be calculated without associated protein data".format(
+                "{:12s} Property cannot be calculated without associated protein data".format(
                     "STEPS"
                 )
             )

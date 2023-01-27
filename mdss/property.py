@@ -24,7 +24,7 @@ class ProteinProperty:
     def __init__(self, protein_data, atom_selection="name CA"):
         if not isinstance(protein_data, ProteinData):
             log.warning(
-                "{:15s} An instance of ProteinData is required. protein_data attribute set to None".format(
+                "{:12s} An instance of ProteinData is required. protein_data attribute set to None".format(
                     "STEPS"
                 )
             )
@@ -116,7 +116,7 @@ class ProteinProperty:
         else:
             print("Warning: property is not associated to a protein data object.")
             log.warning(
-                "{:15s} Property is not associated to a protein data object".format(
+                "{:12s} Property is not associated to a protein data object".format(
                     "STEPS"
                 )
             )

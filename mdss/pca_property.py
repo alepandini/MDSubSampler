@@ -28,7 +28,7 @@ class TrjPCAProj(ProteinProperty):
         if not self.n_pcs:
             print("Warning: values not available. Please calculate property values.")
             log.warning(
-                "{:15s} Values not available. Please calculate property values".format(
+                "{:12s} Values not available. Please calculate property values".format(
                     "STEPS"
                 )
             )
@@ -36,7 +36,7 @@ class TrjPCAProj(ProteinProperty):
             if pc_index > self.property_matrix.shape[1]:
                 print("Warning: PC index larger than number of PCs.")
                 log.warning(
-                    "{:15s} PC index larger than number of PCs.".format("STEPS")
+                    "{:12s} PC index larger than number of PCs.".format("STEPS")
                 )
             else:
                 self.property_vector = self.property_matrix[:, (pc_index - 1)]
