@@ -69,10 +69,9 @@ def main(trj_filename, top_filename, out_prefix):
             "--dissimilarity",
             DISSIMILARITY,
             "--fit",
-            "--step-recording"
+            "--step-recording",
         ]
     )
-    print(dissimilarity_score)
 
 
 def run():
