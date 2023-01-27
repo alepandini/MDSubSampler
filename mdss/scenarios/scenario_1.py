@@ -38,10 +38,10 @@ OUT_DIR = "testing"
 PROPERTY = "RMSDProperty"
 SELECTION = "name CA"
 SAMPLER = "RandomSampler"
-SIZE = "20"  # The format could be either int (ie 20) meaning 20
+SIZE = "0.05,0.1,0.25,0.5,1,2.5,5,10,20,25,50"  # The format could be either int (ie 20) meaning 20
 # frames in sample or perc (ie 20%) meaning 20% of number of frames in sample
 # if list (ie 10,20,30) then it is percentage of total frames in sample
-DISSIMILARITY = "Dissimilarity"
+DISSIMILARITY = "Bhattacharya"
 
 
 def main(trj_filename, top_filename, out_prefix):
@@ -69,6 +69,7 @@ def main(trj_filename, top_filename, out_prefix):
             "--dissimilarity",
             DISSIMILARITY,
             "--fit",
+            "--step-recording"
         ]
     )
     print(dissimilarity_score)
