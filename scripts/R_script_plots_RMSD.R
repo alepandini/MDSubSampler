@@ -65,7 +65,7 @@ R1_R10_50 <- read.table("1_10_50.0_RMSD_Bhattacharyya.dat")
 ###############################################################################
 # Function that generates plots with distributions
 ###############################################################################
-ref_hist <- function(ref_prop_values, prop_values, plot_title, n_breaks = 30){
+ref_hist <- function(ref_prop_values, prop_values, plot_title, n_breaks = 50){
   min_value = min(c(min(ref_prop_values),min(prop_values)))
   max_value = max(c(max(ref_prop_values),max(prop_values)))
   breaks_seq = seq(min_value, max_value, (max_value - min_value)/n_breaks)
@@ -73,7 +73,7 @@ ref_hist <- function(ref_prop_values, prop_values, plot_title, n_breaks = 30){
     ref_prop_values,
     freq=FALSE, 
     breaks = breaks_seq,
-    ylim = c(0,0.05),
+    ylim = c(0,1),
     border = NA,
     col = rgb(1,0,0,0.3),
     xlab = '',
@@ -83,7 +83,7 @@ ref_hist <- function(ref_prop_values, prop_values, plot_title, n_breaks = 30){
     prop_values, 
     freq=FALSE, 
     breaks=breaks_seq, 
-    ylim = c(0,0.05), 
+    ylim = c(0,1), 
     border = NA,
     col = rgb(0,0,1,0.3),
     xlab = '',
