@@ -29,7 +29,13 @@ class ProteinData:
         self.n_frames = self.trajectory_data.trajectory.n_frames
         self.frames = self._frames_of_trajectory()
         self.frame_indices = self._frame_indices_of_trajectory()
+        self.ref_coordinates = self._read_topology(self.topology_filename)
         self.property_dict = {}
+
+    def _read_topology(self, topology_filename):
+        top = mda.Universe(topology_filename)
+        topology_frame = top.trajectory[0].positions
+        return topology_frame
 
     def _read_trajectory(self, trajectory_filename, topology_filename):
         """
