@@ -175,7 +175,6 @@ class ProteinData:
     # def cast_output_ML():
     #     # selection_of_frames = 
     #     # selected_frames_trajectory = frame_selection_iterator(self, selection_of_frames)
-    #     pass
 
     def add_property(self, protein_property, property_name):
         """
