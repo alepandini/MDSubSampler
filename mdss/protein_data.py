@@ -1,4 +1,5 @@
 from datetime import datetime
+from re import L
 import MDAnalysis as mda
 import numpy as np
 from mdss.log_setup import log
@@ -29,6 +30,7 @@ class ProteinData:
         self.n_frames = self.trajectory_data.trajectory.n_frames
         self.frames = self._frames_of_trajectory()
         self.frame_indices = self._frame_indices_of_trajectory()
+        self.selected_frames = self.frame_selection_iterator([1,5,10,255])
         self.ref_coordinates = self._read_topology(self.topology_filename)
         self.property_dict = {}
 
@@ -162,6 +164,18 @@ class ProteinData:
             )
         )
         return indices_of_selected_frames
+
+    def write_xtc_file(self):
+        protein = self.trajectory_data.select_atoms("protein")
+        selection = self.selected_frames
+        with mda.Writer("test_protein.xtc", protein.n_atoms) as W:
+	        for ts in selection:
+		        W.write(protein)
+
+    # def cast_output_ML():
+    #     # selection_of_frames = 
+    #     # selected_frames_trajectory = frame_selection_iterator(self, selection_of_frames)
+    #     pass
 
     def add_property(self, protein_property, property_name):
         """
