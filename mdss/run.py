@@ -123,6 +123,16 @@ def sampling_workflow(arg_list):
     """
     p_data.property_data_report()
 
+    """
+    Save selected frames of SubSampled trajectory into an xtc file
+    """
+    filename = "{}_{}_{}.xtc".format(
+        args.file_prefix, property_class.display_name, dissimilarity_class.display_name
+    )
+    filepath = os.path.join(args.output_folder, filename)
+    selected_frames = p_data.frame_selection_indices(property_sample.frame_indices)
+    p_data.write_xtc_file(filepath, selected_frames)
+
 
 def main(arg_list):
     sampling_workflow(arg_list)
