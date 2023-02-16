@@ -130,6 +130,19 @@ class ProteinSampler:
                     )
                     self.protein_data.write_xtc_file(filepath, selected_frames)
 
+                    filename = "{}_{}_{}_{}".format(
+                        self.file_prefix,
+                        int(p),
+                        self.protein_property.display_name,
+                        self.dissimilarity_measure.display_name,
+                    )
+                    filepath = os.path.join(self.output_folder, filename)
+                    subsampled_traj = self.protein_data.frame_selection_iterator(
+                        sampled_property.frame_indices
+                    )
+                    self.protein_data.cast_output_traj_to_numpy(
+                        filepath, subsampled_traj
+                    )
             if selected_sample_key is None:
                 print("Warning: no sample meeting dissimilarity threshold")
                 log.warning(
