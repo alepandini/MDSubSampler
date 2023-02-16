@@ -1,8 +1,11 @@
 from datetime import datetime
+from copy import deepcopy
 from re import L
 import MDAnalysis as mda
 import numpy as np
 from mdss.log_setup import log
+import numpy as np
+import pandas as pd
 
 
 class ProteinData:
@@ -170,9 +173,12 @@ class ProteinData:
             for ts in selected_frames:
                 W.write(protein)
 
-    # def cast_output_ML():
-    #     # selection_of_frames =
-    #     # selected_frames_trajectory = frame_selection_iterator(self, selection_of_frames)
+    def cast_output_traj_to_numpy(self, subsampled_traj):
+        coordinates_numpy = []
+        for ts in subsampled_traj:
+            coordinates_numpy.append(deepcopy(ts.positions))
+        coordinates_numpy = np.array(coordinates_numpy)
+        return coordinates_numpy
 
     def add_property(self, protein_property, property_name):
         """
