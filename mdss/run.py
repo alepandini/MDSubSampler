@@ -2,6 +2,7 @@ import mdss.protein_data as pd
 import mdss.parser as p
 from mdss.dissimilarity import *
 from mdss.log_setup import log
+from mdss.utilities import write_stuff
 import os
 import sys
 
@@ -115,7 +116,14 @@ def sampling_workflow(arg_list):
     """
     Create file with calculated property for sample trajectory or list with sample trajectories
     """
-    if not args.step_recording:
+    if not args.step_recording:  # and not isinstance(args.size, list):
+        # write_stuff(
+        #     args=args,
+        #     p_prop=property_class,
+        #     s_prop=property_sample,
+        #     diss=dissimilarity_class,
+        #     p_data=p_data
+        # )
         filename_sample = "{}_{}_sample_{}.dat".format(
             args.file_prefix,
             property_class.display_name,
@@ -123,30 +131,33 @@ def sampling_workflow(arg_list):
         )
         filepath_sample = os.path.join(args.output_folder, filename_sample)
         property_sample.write_property_vector(filepath_sample)
+        """
+        Save selected frames of SubSampled trajectory into an xtc file
+        """
+        filename = "{}_{}_{}.xtc".format(
+            args.file_prefix,
+            property_class.display_name,
+            dissimilarity_class.display_name,
+        )
+        filepath = os.path.join(args.output_folder, filename)
+        selected_frames = p_data.frame_selection_indices(property_sample.frame_indices)
+        p_data.write_xtc_file(filepath, selected_frames)
+        """
+        Export output of SubSampled trajectory in numpy format for ML use
+        """
+        filename = "{}_{}_{}".format(
+            args.file_prefix,
+            property_class.display_name,
+            dissimilarity_class.display_name,
+        )
+        filepath = os.path.join(args.output_folder, filename)
+        subsampled_traj = p_data.frame_selection_iterator(property_sample.frame_indices)
+        p_data.cast_output_traj_to_numpy(filepath, subsampled_traj)
+
     """
     Create file with data report that includes important statistics about trajectory
     """
     p_data.property_data_report()
-
-    """
-    Save selected frames of SubSampled trajectory into an xtc file
-    """
-    filename = "{}_{}_{}.xtc".format(
-        args.file_prefix, property_class.display_name, dissimilarity_class.display_name
-    )
-    filepath = os.path.join(args.output_folder, filename)
-    selected_frames = p_data.frame_selection_indices(property_sample.frame_indices)
-    p_data.write_xtc_file(filepath, selected_frames)
-
-    """
-    Export output of SubSampled trajectory in numpy format for ML use
-    """
-    filename = "{}_{}_{}".format(
-        args.file_prefix, property_class.display_name, dissimilarity_class.display_name
-    )
-    filepath = os.path.join(args.output_folder, filename)
-    subsampled_traj = p_data.frame_selection_iterator(property_sample.frame_indices)
-    p_data.cast_output_traj_to_numpy(filepath, subsampled_traj)
 
 
 def main(arg_list):
