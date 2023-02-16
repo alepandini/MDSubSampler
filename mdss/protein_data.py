@@ -26,18 +26,23 @@ class ProteinData:
         self.trajectory_data = self._read_trajectory(
             self.trajectory_filename, self.topology_filename
         )
+        self.topology_data = self._read_topology(self.topology_filename)
         self.ca_atom_group = self._select_CA_atoms()
         self.n_frames = self.trajectory_data.trajectory.n_frames
         self.frames = self._frames_of_trajectory()
         self.frame_indices = self._frame_indices_of_trajectory()
+<<<<<<< HEAD
         # self.selected_frames = self.frame_selection_iterator([1, 5, 10, 255])
         self.ref_coordinates = self._read_topology(self.topology_filename)
+=======
+        self.selected_frames = self.frame_selection_iterator([1,5,10,255])
+        self.ref_coordinates = self.topology_data.trajectory[0].positions
+>>>>>>> 57aedd82310fcc0ec9ca052532c5d96cdfbd2e08
         self.property_dict = {}
 
     def _read_topology(self, topology_filename):
-        top = mda.Universe(topology_filename)
-        topology_frame = top.trajectory[0].positions
-        return topology_frame
+        top_data = mda.Universe(topology_filename)
+        return top_data
 
     def _read_trajectory(self, trajectory_filename, topology_filename):
         """

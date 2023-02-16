@@ -24,7 +24,7 @@ class RMSDProperty(ProteinProperty):
         self.fit = fit
         super().__init__(protein_data, atom_selection)
 
-    def calculate_property(self, frame_index=0):
+    def calculate_property(self, frame_index=None):
         """
         Calculates RMSD property of frame list for a selection of atoms
         """
@@ -84,7 +84,7 @@ class DistanceBetweenAtoms(ProteinProperty):
 
         super().__init__(protein_data, atom_selection)
 
-    def calculate_property(self, frame_index=0):
+    def calculate_property(self, frame_index=None):
         """
         Calculates distance between two given set of atoms
         """
@@ -173,7 +173,7 @@ class Angles(ProteinProperty):
 
         super().__init__(protein_data, atom_selection)
 
-    def calculate_property(self, frame_index=0):
+    def calculate_property(self, frame_index=None):
         """
         Calculates angle between three given atoms
         """
@@ -252,7 +252,7 @@ class DihedralAnglePhi(DihedralAngles):
 
     display_name = "Dihedral Angle phi between 4 selected atoms"
 
-    def calculate_property(self, frame_index=0):
+    def calculate_property(self, frame_index=None):
         if self.set_reference_coordinates(frame_index):
             u = self.protein_data.trajectory_data
             for frame in self.protein_data.frame_indices:
@@ -280,7 +280,7 @@ class DihedralAnglePsi(DihedralAngles):
 
     display_name = "Dihedral Angle psi between 4 selected atoms"
 
-    def calculate_property(self, frame_index=0):
+    def calculate_property(self, frame_index=None):
         if self.set_reference_coordinates(frame_index):
             u = self.protein_data.trajectory_data
             for frame in self.protein_data.frame_indices:

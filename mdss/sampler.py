@@ -45,11 +45,13 @@ class ProteinSampler:
     def __init__(
         self,
         protein_property,
+        protein_data,
         output_folder,
         file_prefix,
         dissimilarity_measure=Bhattacharya,
     ):
         self.protein_property = protein_property
+        self.protein_data = protein_data
         self.property_vector = protein_property.property_vector
         self.frame_indices = protein_property.frame_indices
         self.sampled_property_vector = None
@@ -114,6 +116,19 @@ class ProteinSampler:
                     )
                     filepath = os.path.join(self.output_folder, filename)
                     sampled_property.write_property_vector(filepath)
+
+                    # filename = "{}_{}_{}_{}.xtc".format(
+                    #     self.file_prefix,
+                    #     p,
+                    #     self.protein_property.display_name,
+                    #     self.dissimilarity_measure.display_name,
+                    # )
+                    # filepath = os.path.join(self.output_folder, filename)
+                    # selected_frames = self.protein_data.frame_selection_indices(
+                    #     sampled_property.frame_indices
+                    # )
+                    # self.protein_data.write_xtc_file(filepath, selected_frames)
+
             if selected_sample_key is None:
                 print("Warning: no sample meeting dissimilarity threshold")
                 log.warning(
