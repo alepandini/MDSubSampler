@@ -94,21 +94,25 @@ class ProteinProperty:
             )
         )
 
-    def set_reference_coordinates(self, frame_index=0):
+    def set_reference_coordinates(self, frame_index=None):
         """
         Sets up on first frame and extracts copy of coordinates
         """
         if self.protein_data is not None:
-            self.protein_data.trajectory_data.trajectory[frame_index]
+            if frame_index is None:
+                trj_data = self.protein_data.topology_data
+            else:
+                trj_data = self.protein_data.trajectory_data
+                trj_data.trajectory[frame_index]
             if isinstance(self.atom_selection, list):
                 self.ref_coordinates = [
-                    self.protein_data.trajectory_data.select_atoms(
+                    trj_data.select_atoms(
                         selection
                     ).positions.copy()
                     for selection in self.atom_selection
                 ]
             else:
-                self.ref_coordinates = self.protein_data.trajectory_data.select_atoms(
+                self.ref_coordinates = trj_data.select_atoms(
                     self.atom_selection
                 ).positions.copy()
                 self.ref_frame_index = frame_index
