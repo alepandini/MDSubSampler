@@ -138,6 +138,12 @@ def sampling_workflow(arg_list):
     selected_frames = p_data.frame_selection_indices(property_sample.frame_indices)
     p_data.write_xtc_file(filepath, selected_frames)
 
+    """
+    Export output of SubSampled trajectory in numpy format for ML use
+    """
+    subsampled_traj = p_data.frame_selection_iterator(property_sample.frame_indices)
+    p_data.cast_output_traj_to_numpy(subsampled_traj)
+
 
 def main(arg_list):
     sampling_workflow(arg_list)
