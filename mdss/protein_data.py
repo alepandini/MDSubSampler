@@ -31,13 +31,7 @@ class ProteinData:
         self.n_frames = self.trajectory_data.trajectory.n_frames
         self.frames = self._frames_of_trajectory()
         self.frame_indices = self._frame_indices_of_trajectory()
-<<<<<<< HEAD
-        # self.selected_frames = self.frame_selection_iterator([1, 5, 10, 255])
-        self.ref_coordinates = self._read_topology(self.topology_filename)
-=======
-        self.selected_frames = self.frame_selection_iterator([1,5,10,255])
         self.ref_coordinates = self.topology_data.trajectory[0].positions
->>>>>>> 57aedd82310fcc0ec9ca052532c5d96cdfbd2e08
         self.property_dict = {}
 
     def _read_topology(self, topology_filename):
