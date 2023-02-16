@@ -173,12 +173,12 @@ class ProteinData:
             for ts in selected_frames:
                 W.write(protein)
 
-    def cast_output_traj_to_numpy(self, subsampled_traj):
+    def cast_output_traj_to_numpy(self, outfile, subsampled_traj):
         coordinates_numpy = []
         for ts in subsampled_traj:
             coordinates_numpy.append(deepcopy(ts.positions))
         coordinates_numpy = np.array(coordinates_numpy)
-        return coordinates_numpy
+        np.save(outfile, coordinates_numpy)
 
     def add_property(self, protein_property, property_name):
         """
