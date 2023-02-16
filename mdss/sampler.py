@@ -115,19 +115,20 @@ class ProteinSampler:
                         self.dissimilarity_measure.display_name,
                     )
                     filepath = os.path.join(self.output_folder, filename)
+
                     sampled_property.write_property_vector(filepath)
 
-                    # filename = "{}_{}_{}_{}.xtc".format(
-                    #     self.file_prefix,
-                    #     p,
-                    #     self.protein_property.display_name,
-                    #     self.dissimilarity_measure.display_name,
-                    # )
-                    # filepath = os.path.join(self.output_folder, filename)
-                    # selected_frames = self.protein_data.frame_selection_indices(
-                    #     sampled_property.frame_indices
-                    # )
-                    # self.protein_data.write_xtc_file(filepath, selected_frames)
+                    filename = "{}_{}_{}_{}.xtc".format(
+                        self.file_prefix,
+                        p,
+                        self.protein_property.display_name,
+                        self.dissimilarity_measure.display_name,
+                    )
+                    filepath = os.path.join(self.output_folder, filename)
+                    selected_frames = self.protein_data.frame_selection_indices(
+                        sampled_property.frame_indices
+                    )
+                    self.protein_data.write_xtc_file(filepath, selected_frames)
 
             if selected_sample_key is None:
                 print("Warning: no sample meeting dissimilarity threshold")
@@ -165,6 +166,7 @@ class RandomSampler(ProteinSampler):
     def __init__(
         self,
         protein_property,
+        protein_data,
         output_folder,
         file_prefix,
         seed_number=1999,
@@ -172,10 +174,11 @@ class RandomSampler(ProteinSampler):
     ):
         random.seed(seed_number)
         super().__init__(
-            protein_property,
-            output_folder,
-            file_prefix,
-            dissimilarity_measure,
+            protein_property=protein_property,
+            protein_data=protein_data,
+            output_folder=output_folder,
+            file_prefix=file_prefix,
+            dissimilarity_measure=dissimilarity_measure,
         )
 
     def _sample(self, size):
@@ -213,6 +216,7 @@ class StratifiedSampler(ProteinSampler):
     def __init__(
         self,
         protein_property,
+        protein_data,
         output_folder,
         file_prefix,
         strata_vector,
@@ -228,10 +232,11 @@ class StratifiedSampler(ProteinSampler):
             self.layers[label] = strata_indices
         self.n_layers = len(self.layers.keys())
         super().__init__(
-            protein_property,
-            output_folder,
-            file_prefix,
-            dissimilarity_measure,
+            protein_property=protein_property,
+            protein_data=protein_data,
+            output_folder=output_folder,
+            file_prefix=file_prefix,
+            dissimilarity_measure=dissimilarity_measure,
         )
 
     def _sample(self, size):
@@ -322,16 +327,18 @@ class UniformSampler(ProteinSampler):
     def __init__(
         self,
         protein_property,
+        protein_data,
         output_folder,
         file_prefix,
         strata_number,
         dissimilarity_measure=Bhattacharya,
     ):
         super().__init__(
-            protein_property,
-            output_folder,
-            file_prefix,
-            dissimilarity_measure,
+            protein_property=protein_property,
+            protein_data=protein_data,
+            output_folder=output_folder,
+            file_prefix=file_prefix,
+            dissimilarity_measure=dissimilarity_measure,
         )
         self.bin_size = (
             self.protein_property.max_value - self.protein_property.min_value
@@ -352,6 +359,7 @@ class UniformSampler(ProteinSampler):
         """
         strat_sampler = StratifiedSampler(
             self.protein_property,
+            self.protein_data,
             self.output_folder,
             self.file_prefix,
             self.strata_vector,
@@ -380,6 +388,7 @@ class WeightedSampler(ProteinSampler):
     def __init__(
         self,
         protein_property,
+        protein_data,
         output_folder,
         file_prefix,
         seed_number=1999,
@@ -388,10 +397,11 @@ class WeightedSampler(ProteinSampler):
     ):
         random.seed(seed_number)
         super().__init__(
-            protein_property,
-            output_folder,
-            file_prefix,
-            dissimilarity_measure,
+            protein_property=protein_property,
+            protein_data=protein_data,
+            output_folder=output_folder,
+            file_prefix=file_prefix,
+            dissimilarity_measure=dissimilarity_measure,
         )
         if weights_vector is None:
             print(
@@ -462,6 +472,7 @@ class BootstrappingSampler(ProteinSampler):
     def __init__(
         self,
         protein_property,
+        protein_data,
         output_folder,
         file_prefix,
         number_of_iterations,
@@ -471,10 +482,11 @@ class BootstrappingSampler(ProteinSampler):
         random.seed(seed_number)
         self.number_of_iterations = number_of_iterations
         super().__init__(
-            protein_property,
-            output_folder,
-            file_prefix,
-            dissimilarity_measure,
+            protein_property=protein_property,
+            protein_data=protein_data,
+            output_folder=output_folder,
+            file_prefix=file_prefix,
+            dissimilarity_measure=dissimilarity_measure,
         )
 
     def _sample(self, size):

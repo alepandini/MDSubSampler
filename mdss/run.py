@@ -43,6 +43,7 @@ def sampling_workflow(arg_list):
     if args.sampler == "RandomSampler":
         sampler = sampler_class(
             protein_property=property,
+            protein_data=p_data,
             seed_number=args.seed_number,
             output_folder=args.output_folder,
             file_prefix=args.file_prefix,
@@ -51,6 +52,7 @@ def sampling_workflow(arg_list):
     if args.sampler == "UniformSampler":
         sampler = sampler_class(
             protein_property=property,
+            protein_data=p_data,
             strata_number=args.strata_number,
             output_folder=args.output_folder,
             file_prefix=args.file_prefix,
@@ -59,6 +61,7 @@ def sampling_workflow(arg_list):
     elif args.sampler == "WeightedSampler":
         sampler = sampler_class(
             protein_property=property,
+            protein_data=p_data,
             seed_number=args.seed_number,
             output_folder=args.output_folder,
             file_prefix=args.file_prefix,
@@ -68,6 +71,7 @@ def sampling_workflow(arg_list):
     elif args.sampler == "StratifiedSampler":
         sampler = sampler_class(
             protein_property=property,
+            protein_data=p_data,
             output_folder=args.output_folder,
             file_prefix=args.file_prefix,
             strata_vector=args.strata_vector,
@@ -76,6 +80,7 @@ def sampling_workflow(arg_list):
     elif args.sampler == "BootstrappingSampler":
         sampler = sampler_class(
             protein_property=property,
+            protein_data=p_data,
             output_folder=args.output_folder,
             file_prefix=args.file_prefix,
             number_of_iterations=args.number_of_iterations,
