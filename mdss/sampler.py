@@ -110,7 +110,7 @@ class ProteinSampler:
                 if step_recording:
                     filename = "{}_{}_{}_{}.dat".format(
                         self.file_prefix,
-                        p,
+                        int(p),
                         self.protein_property.display_name,
                         self.dissimilarity_measure.display_name,
                     )
@@ -120,7 +120,7 @@ class ProteinSampler:
 
                     filename = "{}_{}_{}_{}.xtc".format(
                         self.file_prefix,
-                        p,
+                        int(p),
                         self.protein_property.display_name,
                         self.dissimilarity_measure.display_name,
                     )
