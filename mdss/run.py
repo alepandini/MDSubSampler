@@ -141,8 +141,12 @@ def sampling_workflow(arg_list):
     """
     Export output of SubSampled trajectory in numpy format for ML use
     """
+    filename = "{}_{}_{}".format(
+        args.file_prefix, property_class.display_name, dissimilarity_class.display_name
+    )
+    filepath = os.path.join(args.output_folder, filename)
     subsampled_traj = p_data.frame_selection_iterator(property_sample.frame_indices)
-    p_data.cast_output_traj_to_numpy(subsampled_traj)
+    p_data.cast_output_traj_to_numpy(filepath, subsampled_traj)
 
 
 def main(arg_list):
