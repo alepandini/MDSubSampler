@@ -161,11 +161,6 @@ class ProteinData:
                 raise TypeError("Expected int or slice")
         selected_frames = trajectory_data[np.where(mask)[0]]
         indices_of_selected_frames = [ts.frame for ts in selected_frames]
-        log.info(
-            "{:15s} Indices of selected frames: {}".format(
-                "OUTPUT", indices_of_selected_frames
-            )
-        )
         return indices_of_selected_frames
 
     def write_xtc_file(self, outfilepath, selected_frames):

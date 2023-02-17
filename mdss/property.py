@@ -88,11 +88,6 @@ class ProteinProperty:
         self.min_value = np.min(self.property_vector)
         self.max_value = np.max(self.property_vector)
         self.avg_value = np.average(self.property_vector)
-        log.info(
-            "{:15s} min = {:4.2f}, max = {:4.2f}, avg = {:4.2f}".format(
-                "STATISTICS", self.min_value, self.max_value, self.avg_value
-            )
-        )
 
     def set_reference_coordinates(self, frame_index=None):
         """

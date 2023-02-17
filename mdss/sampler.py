@@ -76,7 +76,11 @@ class ProteinSampler:
             n_frames = len(self.property_vector)
             perc_vector.sort(reverse=True)
             for p in perc_vector:
-                log.info("{:15s} Sample perc: {:4.5f}".format("INPUT", p))
+                log.info(
+                    "{:15s} Sample percentage size: {:4.5s}".format(
+                        "INPUT", str(round(p))
+                    )
+                )
                 sampled_property = self.sample(round(p * n_frames / 100))
                 if sampled_property is not None:
                     if dissimilarity_threshold is None:
@@ -105,6 +109,11 @@ class ProteinSampler:
                         diss=self.dissimilarity_measure,
                         p_data=self.protein_data,
                     )
+            log.info(
+                "{:15s} Output files for all sample sizes were generated successfully".format(
+                    "OUTPUT"
+                )
+            )
             if selected_sample_key is None:
                 print("Warning: no sample meeting dissimilarity threshold")
                 log.warning(

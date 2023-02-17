@@ -17,7 +17,7 @@ def sampling_workflow(arg_list):
     args = p.parse_args(arg_list)
     print(args)
 
-    log.info("{:15s} Replica number: {:4.5s}".format("INPUT", args.file_prefix))
+    log.info("{:15s} Prefix: {:4.5s}".format("INPUT", args.file_prefix))
     if not os.path.exists(args.output_folder):
         os.makedirs(args.output_folder)
     """
@@ -117,6 +117,9 @@ def sampling_workflow(arg_list):
     Generate all output files in case of a single sample size as input
     """
     if not isinstance(args.size, list):
+        log.info(
+            "{:15s} Sample percentage size: {:4.5s}".format("INPUT", str(args.size))
+        )
         write_output_files(
             output_folder=args.output_folder,
             file_prefix=args.file_prefix,
@@ -126,11 +129,16 @@ def sampling_workflow(arg_list):
             p_data=p_data,
             p=args.size,
         )
-
+        log.info(
+            "{:15s} Output files for the selected sample size were generated successfully".format(
+                "OUTPUT"
+            )
+        )
     """
     Create file with data report that includes important statistics about trajectory
     """
     p_data.property_data_report()
+    log.info("{:15s} Statistics report was generated successfully".format("OUTPUT"))
 
 
 def main(arg_list):
