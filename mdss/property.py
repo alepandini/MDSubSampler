@@ -106,9 +106,7 @@ class ProteinProperty:
                 trj_data.trajectory[frame_index]
             if isinstance(self.atom_selection, list):
                 self.ref_coordinates = [
-                    trj_data.select_atoms(
-                        selection
-                    ).positions.copy()
+                    trj_data.select_atoms(selection).positions.copy()
                     for selection in self.atom_selection
                 ]
             else:
@@ -166,6 +164,7 @@ class SampledProperty(ProteinProperty):
         sampled_property_vector,
         sampled_frame_indices,
         samples_indices,
+        sample_size,
         dissimilarity_measure=Bhattacharya,
     ):
         self.protein_data = original_property.protein_data
@@ -181,7 +180,7 @@ class SampledProperty(ProteinProperty):
         self.dissimilarity_threshold = None
         self._property_statistics()
         self.ref_dissimilarity = self._get_dissimilarity_to_ref(dissimilarity_measure)
-        self.display_name = "Sampled_{}".format(original_property.display_name)
+        self.display_name = "{}_{}".format(sample_size, original_property.display_name)
         self.property_key = self._add_reference_to_protein_data()
 
     def _get_dissimilarity_to_ref(self, dissimilarity_measure):

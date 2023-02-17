@@ -196,9 +196,9 @@ class ProteinData:
         report_dict = {}
         for k, v in self.property_dict.items():
             report_dict[k] = {
-                "min": v.min_value,
-                "max": v.max_value,
+                "min": round(v.min_value, 3),
+                "max": round(v.max_value, 3),
                 "atom_selection": v.atom_selection,
-                "name": v.display_name,
+                "property_name": v.display_name,
             }
         return report_dict

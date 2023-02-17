@@ -67,7 +67,7 @@ class ProteinSampler:
         data_list = [(i, v) for i, v in enumerate(property_indices_tuples)]
         return data_list
 
-    def _create_sampled_property(self, sampled_data_vector):
+    def _create_sampled_property(self, sampled_data_vector, size):
         self.sampled_property_vector = [r[1][0] for r in sampled_data_vector]
         self.sampled_frame_indices = [r[1][1] for r in sampled_data_vector]
         sampled_protein_property = SampledProperty(
@@ -75,6 +75,7 @@ class ProteinSampler:
             self.sampled_property_vector,
             self.sampled_frame_indices,
             self.samples_indices,
+            size,
             self.dissimilarity_measure,
         )
         return sampled_protein_property
@@ -192,7 +193,9 @@ class RandomSampler(ProteinSampler):
         self.samples_indices = list(np.repeat(0, size))
         data_list = self._create_data_list()
         sampled_data_vector = random.sample(data_list, size)
-        sampled_protein_property = self._create_sampled_property(sampled_data_vector)
+        sampled_protein_property = self._create_sampled_property(
+            sampled_data_vector, size
+        )
         return sampled_protein_property
 
 
@@ -293,7 +296,7 @@ class StratifiedSampler(ProteinSampler):
                 sample_index += 1
 
             sampled_protein_property = self._create_sampled_property(
-                sampled_data_vector
+                sampled_data_vector, size
             )
             return sampled_protein_property
         else:
@@ -444,7 +447,7 @@ class WeightedSampler(ProteinSampler):
                 data_list, weights=self.weights, k=size
             )
             sampled_protein_property = self._create_sampled_property(
-                sampled_data_vector
+                sampled_data_vector, size
             )
             return sampled_protein_property
 
@@ -504,5 +507,7 @@ class BootstrappingSampler(ProteinSampler):
             current_sample = random.sample(data_list, size)
             sampled_data_vector.extend(current_sample)
             self.samples_indices.extend(list(np.repeat(i, size)))
-        sampled_protein_property = self._create_sampled_property(sampled_data_vector)
+        sampled_protein_property = self._create_sampled_property(
+            sampled_data_vector, size
+        )
         return sampled_protein_property

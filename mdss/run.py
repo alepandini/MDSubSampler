@@ -92,18 +92,19 @@ def sampling_workflow(arg_list):
     Generate all output files in case of list of sample sizes as input
     """
     if isinstance(args.size, list):
-        property_sample = sampler.scan_sample_size(
+        sampled_property = sampler.scan_sample_size(
             perc_vector=args.size,
             dissimilarity_threshold=None,
             step_recording=args.step_recording,
         )
     else:
-        property_sample = sampler.sample(args.size)
+        sampled_property = sampler.sample(round(int(args.size) * p_data.n_frames / 100))
+
     """
     Create dissimilarity class object with user's input dissimilarity
     """
     dissimilarity_class = p.DISSIMILARITY_CLASS_MAPPING[args.dissimilarity]
-    dissimilarity_object = dissimilarity_class(property, property_sample)
+    dissimilarity_object = dissimilarity_class(property, sampled_property)
     """
     Generate file with calculated property for full trajectory
     """
@@ -120,7 +121,7 @@ def sampling_workflow(arg_list):
             output_folder=args.output_folder,
             file_prefix=args.file_prefix,
             p_prop=property,
-            s_prop=property_sample,
+            s_prop=sampled_property,
             diss=dissimilarity_object,
             p_data=p_data,
             p=args.size,
@@ -129,7 +130,10 @@ def sampling_workflow(arg_list):
     """
     Create file with data report that includes important statistics about trajectory
     """
-    p_data.property_data_report()
+    report = p_data.property_data_report()
+    import code
+
+    code.interact(local=locals())
 
 
 def main(arg_list):
