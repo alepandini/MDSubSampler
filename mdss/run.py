@@ -137,7 +137,9 @@ def sampling_workflow(arg_list):
     """
     Create file with data report that includes important statistics about trajectory
     """
-    p_data.property_data_report()
+    filename = "{}_{}.json".format(args.file_prefix, "stats_report")
+    filepath = os.path.join(args.output_folder, filename)
+    p_data.property_data_report(filepath)
     log.info("{:15s} Statistics report was generated successfully".format("OUTPUT"))
 
 

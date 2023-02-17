@@ -185,7 +185,7 @@ class ProteinData:
         self.property_dict[key] = protein_property
         return key
 
-    def property_data_report(self):
+    def property_data_report(self, filepath):
         """
         Creates a report with key information and statistics for property
         """
@@ -198,5 +198,5 @@ class ProteinData:
                 "property_name": v.display_name,
             }
 
-        with open("Stats_report.json", "w") as f:
+        with open(filepath, "w") as f:
             json.dump(report_dict, f, indent=2)
