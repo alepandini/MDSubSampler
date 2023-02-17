@@ -6,6 +6,7 @@ import numpy as np
 from mdss.log_setup import log
 import numpy as np
 import pandas as pd
+import json
 
 
 class ProteinData:
@@ -201,4 +202,6 @@ class ProteinData:
                 "atom_selection": v.atom_selection,
                 "property_name": v.display_name,
             }
-        return report_dict
+
+        with open("Stats_report.json", "w") as f:
+            json.dump(report_dict, f, indent=2)

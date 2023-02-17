@@ -130,10 +130,7 @@ def sampling_workflow(arg_list):
     """
     Create file with data report that includes important statistics about trajectory
     """
-    report = p_data.property_data_report()
-    import code
-
-    code.interact(local=locals())
+    p_data.property_data_report()
 
 
 def main(arg_list):
