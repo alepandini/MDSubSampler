@@ -125,26 +125,26 @@ def write_output_files(
     p_data.cast_output_traj_to_numpy(filepath, subsampled_traj)
 
 
-def convert_size(size, n_frames):
-    """
-    Converts sample size of traj into int
-    User input could be given as percentage or int
-    """
-    if isinstance(size, int):
-        return size
+# def convert_size(size, n_frames):
+#     """
+#     Converts sample size of traj into int
+#     User input could be given as percentage or int
+#     """
+#     if isinstance(size, int):
+#         return size
 
-    if size.endswith("%"):
-        prc = float(size.rstrip("%"))
-        if prc > 100:
-            print("size percentage {} is not less than 100%".format(prc))
-            log.error(
-                "{:15s} Size percentage {} is not less than 100%".format("INPUT", prc)
-            )
-            sys.exit(1)
+#     if size.endswith("%"):
+#         prc = float(size.rstrip("%"))
+#         if prc > 100:
+#             print("size percentage {} is not less than 100%".format(prc))
+#             log.error(
+#                 "{:15s} Size percentage {} is not less than 100%".format("INPUT", prc)
+#             )
+#             sys.exit(1)
 
-        size = prc * n_frames / 100
-        return round(size)
-    return int(size)
+#         size = prc * n_frames / 100
+#         return round(size)
+#     return int(size)
 
 
 # This will run only if this file is run as a script

@@ -130,7 +130,7 @@ def sampling_workflow(arg_list):
             p=args.size,
         )
         log.info(
-            "{:15s} Output files for the selected sample size were generated successfully".format(
+            "{:15s} Output files for selected sample size were generated successfully".format(
                 "OUTPUT"
             )
         )

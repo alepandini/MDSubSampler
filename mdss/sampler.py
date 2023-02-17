@@ -3,7 +3,6 @@ import random
 from mdss.property import SampledProperty
 from mdss.dissimilarity import *
 from mdss.utilities import write_output_files
-from mdss.utilities import convert_size
 
 
 class ProteinSampler:
@@ -58,11 +57,6 @@ class ProteinSampler:
         return sampled_protein_property
 
     def sample(self, size):
-        return self._sample(
-            convert_size(size, self.protein_property.protein_data.n_frames)
-        )
-
-    def _sample(self, size):
         pass
 
     def scan_sample_size(
@@ -165,7 +159,7 @@ class RandomSampler(ProteinSampler):
             dissimilarity_measure=dissimilarity_measure,
         )
 
-    def _sample(self, size):
+    def sample(self, size):
         """
         Performs Random Sampling
         Attributes
@@ -225,7 +219,7 @@ class StratifiedSampler(ProteinSampler):
             dissimilarity_measure=dissimilarity_measure,
         )
 
-    def _sample(self, size):
+    def sample(self, size):
         """
         Performs Stratified Sampling
         Attributes
@@ -336,7 +330,7 @@ class UniformSampler(ProteinSampler):
         )
         self.strata_vector = np.digitize(self.property_vector, self.bins_vector)
 
-    def _sample(self, size):
+    def sample(self, size):
         """
         Performs Uniform Sampling
         Returns
@@ -408,7 +402,7 @@ class WeightedSampler(ProteinSampler):
         else:
             self.weights = weights_vector
 
-    def _sample(self, size):
+    def sample(self, size):
         """
         Performs Weighted Sampling
         Attributes
@@ -475,7 +469,7 @@ class BootstrappingSampler(ProteinSampler):
             dissimilarity_measure=dissimilarity_measure,
         )
 
-    def _sample(self, size):
+    def sample(self, size):
         """
         Performs Bootstrapping sampling
         Attributes
