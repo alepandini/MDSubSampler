@@ -39,7 +39,7 @@ from mdss.run import sampling_workflow
 import sys
 
 OUT_DIR = "testing"
-PROPERTY = "RMSDProperty"
+PROPERTY = "RMSD"
 SELECTION = "resid 120:160"
 SAMPLER = "UniformSampler"
 STRATA_NUMBER = "200"

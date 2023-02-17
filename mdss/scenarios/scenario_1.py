@@ -35,13 +35,11 @@ from mdss.run import sampling_workflow
 import sys
 
 OUT_DIR = "testing"
-PROPERTY = "RMSDProperty"
+PROPERTY = "RMSD"
 SELECTION = "name CA"
 SAMPLER = "RandomSampler"
-# SIZE = "0.05,0.1,0.25,0.5,1,2.5,5,10,20,25,50"  # The format could be either int (ie 20) meaning 20
-SIZE = "10,20,30"
-# frames in sample or perc (ie 20%) meaning 20% of number of frames in sample
-# if list (ie 10,20,30) then it is percentage of total frames in sample
+# SIZE = "0.05,0.1,0.25,0.5,1,2.5,5,10,20,25,50"
+SIZE = "10,20"  # Size input is in int format but corresponds to percentage of total number of frames
 DISSIMILARITY = "Bhattacharya"
 
 

@@ -4,7 +4,7 @@ import pytest
 
 def test_parser_with_all_arguments():
     OUT_DIR = "testing"
-    PROPERTY = "RMSDProperty"
+    PROPERTY = "RMSD"
     SELECTION = "name CA"
     SAMPLER = "RandomSampler"
     SIZE = "100"
@@ -41,7 +41,7 @@ def test_parser_with_all_arguments():
 
 def test_parser_with_all_arguments():
     OUT_DIR = "testing"
-    PROPERTY = "RMSDProperty"
+    PROPERTY = "RMSD"
     SELECTION = "name CA"
     SAMPLER = "RandomSampler"
     SIZE = "100"
@@ -78,7 +78,7 @@ def test_parser_with_all_arguments():
 
 def test_parser_with_missing_traj_file():
     OUT_DIR = "testing"
-    PROPERTY = "RMSDProperty"
+    PROPERTY = "RMSD"
     SELECTION = "name CA"
     SAMPLER = "RandomSampler"
     SIZE = "100"
@@ -113,7 +113,7 @@ def test_parser_with_missing_traj_file():
 
 def test_parser_with_missing_seeds_number():
     OUT_DIR = "testing"
-    PROPERTY = "RMSDProperty"
+    PROPERTY = "RMSD"
     SELECTION = "name CA"
     SAMPLER = "RandomSampler"
     SIZE = "100"

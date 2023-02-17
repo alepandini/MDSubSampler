@@ -35,7 +35,7 @@ from mdss.run import sampling_workflow
 import sys
 
 OUT_DIR = "testing"
-PROPERTY = "RMSDProperty"
+PROPERTY = "RMSD"
 SELECTION = "name CA"
 SAMPLER = "WeightedSampler"
 STRATA_NUMBER = "200"

@@ -8,7 +8,7 @@ import sys
 import operator as op
 
 PROPERTY_CLASSES = [
-    gp.RMSDProperty,
+    gp.RMSD,
     gp.DistanceBetweenAtoms,
     gp.RadiusOfGyrationProperty,
     pca.TrjPCAProj,
@@ -199,7 +199,7 @@ def parse_args(arg_list):
     require_sampler_argument(s.UniformSampler, "strata_number")
     require_sampler_argument(s.BootstrappingSampler, "number_of_iterations")
 
-    require_property_argument(gp.RMSDProperty, "fit")
+    require_property_argument(gp.RMSD, "fit")
     require_property_argument(gp.DistanceBetweenAtoms, "atom_selection")
     require_property_argument(gp.DihedralAngles, "atom_selection")
     require_property_argument(gp.Angles, "atom_selection")

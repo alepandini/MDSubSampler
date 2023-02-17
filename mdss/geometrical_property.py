@@ -6,7 +6,7 @@ from mdss.log_setup import log
 import numpy as np
 
 
-class RMSDProperty(ProteinProperty):
+class RMSD(ProteinProperty):
     """
     Represents RMSD property class
     Attributes

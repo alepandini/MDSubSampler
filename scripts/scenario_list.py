@@ -5,7 +5,7 @@ import src.mdss.utilities as u
 import sys
 
 OUT_DIR = "testing"
-PROPERTY = "RMSDProperty"
+PROPERTY = "RMSD"
 SELECTION = "name CA"
 SAMPLER = "RandomSampler"
 SIZE = "100"

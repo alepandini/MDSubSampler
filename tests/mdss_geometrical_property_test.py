@@ -5,7 +5,7 @@ import pytest
 @pytest.mark.parametrize(
     "property_subclass , atom_selection",
     [
-        (g.RMSDProperty, "name CA"),
+        (g.RMSD, "name CA"),
         (
             g.DistanceBetweenAtoms,
             ["name CA", "name CA"],
@@ -33,7 +33,7 @@ def test_property_vector_and_indices_have_same_length(
 @pytest.mark.parametrize(
     "property_subclass , atom_selection",
     [
-        (g.RMSDProperty, "name CA"),
+        (g.RMSD, "name CA"),
         (
             g.DistanceBetweenAtoms,
             ["name CA", "name CA"],
@@ -68,7 +68,7 @@ def test_unexpected_atom_selection_raises_error(
 @pytest.mark.parametrize(
     "property_subclass, atom_selection",
     [
-        (g.RMSDProperty, "name CA"),
+        (g.RMSD, "name CA"),
         (
             g.DistanceBetweenAtoms,
             ["name CA", "name CA"],
@@ -89,7 +89,7 @@ def test_property_statistics_method_have_been_called_once(
 @pytest.mark.parametrize(
     "property_subclass, atom_selection",
     [
-        (g.RMSDProperty, "name CA"),
+        (g.RMSD, "name CA"),
         (
             g.DistanceBetweenAtoms,
             ["name CA", "name CA"],

@@ -13,9 +13,7 @@ The utilities file consists of the following functions:
 
 """
 import os
-import sys
 import psutil
-from mdss.log_setup import log
 import mdss.protein_data as pd
 
 
@@ -123,28 +121,6 @@ def write_output_files(
     filepath = os.path.join(output_folder, filename)
     subsampled_traj = p_data.frame_selection_iterator(s_prop.frame_indices)
     p_data.cast_output_traj_to_numpy(filepath, subsampled_traj)
-
-
-# def convert_size(size, n_frames):
-#     """
-#     Converts sample size of traj into int
-#     User input could be given as percentage or int
-#     """
-#     if isinstance(size, int):
-#         return size
-
-#     if size.endswith("%"):
-#         prc = float(size.rstrip("%"))
-#         if prc > 100:
-#             print("size percentage {} is not less than 100%".format(prc))
-#             log.error(
-#                 "{:15s} Size percentage {} is not less than 100%".format("INPUT", prc)
-#             )
-#             sys.exit(1)
-
-#         size = prc * n_frames / 100
-#         return round(size)
-#     return int(size)
 
 
 # This will run only if this file is run as a script

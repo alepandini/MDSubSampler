@@ -34,7 +34,7 @@ from mdss.geometrical_property import *
 from mdss.sampler import *
 
 p_data = ProteinData("data/input.xtc", "data/input.gro")
-rmsd = RMSDProperty(p_data)
+rmsd = RMSD(p_data)
 rmsd.calculate_property()
 rmsd.discretize_vector()
 

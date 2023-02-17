@@ -49,6 +49,6 @@ def protein_data(traj_file, top_file):
 
 @pytest.fixture
 def rmsd_property(protein_data):
-    prop = gp.RMSDProperty(protein_data, atom_selection="name CA")
+    prop = gp.RMSD(protein_data, atom_selection="name CA")
     prop.calculate_property()
     return prop

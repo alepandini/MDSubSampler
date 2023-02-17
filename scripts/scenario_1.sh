@@ -15,7 +15,7 @@ OUT_PREFIX=$3
 ######################################################################
 #   preset parameters
 OUT_DIR=$PWD
-PROPERTY="RMSDProperty"
+PROPERTY="RMSD"
 SELECTION="name CA"
 SAMPLER="RandomSampler"
 SIZE=100
@@ -53,7 +53,7 @@ python3.10 mdss.py \
 #   --top "data/user.gro" \
 #   --prefix "user" \
 #   --output-folder "data/results" \
-#   --property='RMSDProperty' \
+#   --property='RMSD' \
 #   --atom-selection='name CA' \
 #   --sampler='RandomSampler' \
 #   --seed-number=1999 \

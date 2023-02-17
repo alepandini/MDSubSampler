@@ -5,7 +5,6 @@ import MDAnalysis as mda
 import numpy as np
 from mdss.log_setup import log
 import numpy as np
-import pandas as pd
 import json
 
 
