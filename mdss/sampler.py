@@ -2,6 +2,7 @@ import numpy as np
 import random
 from mdss.property import SampledProperty
 from mdss.dissimilarity import *
+from mdss.utilities import write_output_files
 import sys
 import os
 
@@ -108,40 +109,23 @@ class ProteinSampler:
                         selected_size = p
                         selected_sample_key = sampled_property.property_key
                 if step_recording:
-                    filename = "{}_{}_{}_{}.dat".format(
-                        self.file_prefix,
-                        int(p),
-                        self.protein_property.display_name,
-                        self.dissimilarity_measure.display_name,
+                    write_output_files(
+                        output_folder=self.output_folder,
+                        file_prefix=self.file_prefix,
+                        p_prop=self.protein_property,
+                        s_prop=sampled_property,
+                        diss=self.dissimilarity_measure,
+                        p_data=self.protein_data,
+                        p=p,
                     )
-                    filepath = os.path.join(self.output_folder, filename)
-
-                    sampled_property.write_property_vector(filepath)
-
-                    filename = "{}_{}_{}_{}.xtc".format(
-                        self.file_prefix,
-                        int(p),
-                        self.protein_property.display_name,
-                        self.dissimilarity_measure.display_name,
-                    )
-                    filepath = os.path.join(self.output_folder, filename)
-                    selected_frames = self.protein_data.frame_selection_indices(
-                        sampled_property.frame_indices
-                    )
-                    self.protein_data.write_xtc_file(filepath, selected_frames)
-
-                    filename = "{}_{}_{}_{}".format(
-                        self.file_prefix,
-                        int(p),
-                        self.protein_property.display_name,
-                        self.dissimilarity_measure.display_name,
-                    )
-                    filepath = os.path.join(self.output_folder, filename)
-                    subsampled_traj = self.protein_data.frame_selection_iterator(
-                        sampled_property.frame_indices
-                    )
-                    self.protein_data.cast_output_traj_to_numpy(
-                        filepath, subsampled_traj
+                else:
+                    write_output_files(
+                        output_folder=self.output_folder,
+                        file_prefix=self.file_prefix,
+                        p_prop=self.protein_property,
+                        s_prop=sampled_property,
+                        diss=self.dissimilarity_measure,
+                        p_data=self.protein_data,
                     )
             if selected_sample_key is None:
                 print("Warning: no sample meeting dissimilarity threshold")

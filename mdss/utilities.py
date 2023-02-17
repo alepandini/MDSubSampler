@@ -87,36 +87,38 @@ def check_file_exists(filepath):
         raise FileNotFoundError("File {} does not exist".format(filepath))
 
 
-def write_stuff(args, p_prop, s_prop, diss, p_data, p=None):
-    p_format = "_" if p is None else f"_{p}_"
+def write_output_files(
+    output_folder, file_prefix, p_prop, s_prop, diss, p_data, p=None
+):
+    p_format = "_" if p is None else f"_{int(p)}_"
 
     filename = "{}{}{}_{}.dat".format(
-        args.file_prefix,
+        file_prefix,
         p_format,
         p_prop.display_name,
         diss.display_name,
     )
-    filepath = os.path.join(args.output_folder, filename)
+    filepath = os.path.join(output_folder, filename)
 
     s_prop.write_property_vector(filepath)
 
     filename = "{}{}{}_{}.xtc".format(
-        args.file_prefix,
+        file_prefix,
         p_format,
         p_prop.display_name,
         diss.display_name,
     )
-    filepath = os.path.join(args.output_folder, filename)
+    filepath = os.path.join(output_folder, filename)
     selected_frames = p_data.frame_selection_indices(s_prop.frame_indices)
     p_data.write_xtc_file(filepath, selected_frames)
 
     filename = "{}{}{}_{}".format(
-        args.file_prefix,
+        file_prefix,
         p_format,
         p_prop.display_name,
         diss.display_name,
     )
-    filepath = os.path.join(args.output_folder, filename)
+    filepath = os.path.join(output_folder, filename)
     subsampled_traj = p_data.frame_selection_iterator(s_prop.frame_indices)
     p_data.cast_output_traj_to_numpy(filepath, subsampled_traj)
 
