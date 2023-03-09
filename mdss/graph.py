@@ -1,7 +1,7 @@
 import os
 
 
-class PropertyVectorPlot:
+class PropertyPlot:
     """
     Represents the vector plot after property calculation
 
