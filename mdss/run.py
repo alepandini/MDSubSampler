@@ -2,6 +2,7 @@ import mdss.protein_data as pd
 import mdss.parser as p
 from mdss.dissimilarity import *
 from mdss.log_setup import log
+import mdss.graph as g
 from mdss.utilities import write_output_files
 import os
 import sys
@@ -141,6 +142,14 @@ def sampling_workflow(arg_list):
     filepath = os.path.join(args.output_folder, filename)
     p_data.property_data_report(filepath)
     log.info("{:15s} Statistics report was generated successfully".format("OUTPUT"))
+
+    """
+    Create property distribution plot
+    """
+    filename = "{}_{}.png".format(args.file_prefix, "plot")
+    filepath = os.path.join(args.output_folder, filename)
+    graph = g.PropertyPlot(property, sampled_property, filepath)
+    graph.plot(args.file_prefix, filepath)
 
 
 def main(arg_list):
