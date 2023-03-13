@@ -32,13 +32,6 @@ class PropertyPlot:
         df = pd.DataFrame(list)
         return df
 
-    def normalise(self, df):
-        """
-        Normalise the data
-        """
-        df_norm = (df - df.min()) / (df.max() - df.min())
-        return df_norm
-
     def plot_overlap_density(
         self,
         property_name,
@@ -89,12 +82,8 @@ class PropertyPlot:
         if outfilepath is None:
             outfilepath = self.outfilepath
 
-        reference = self.normalise(
-            self.convert_list_to_data_frame(self.property.property_vector)
-        )
-        sample = self.normalise(
-            self.convert_list_to_data_frame(self.sampled_property.property_vector)
-        )
+        reference = self.convert_list_to_data_frame(self.property.property_vector)
+        sample = self.convert_list_to_data_frame(self.sampled_property.property_vector)
 
         self.plot_overlap_density(
             self.property_name, reference, sample, outfilepath, n_breaks=50
