@@ -165,7 +165,8 @@ class ProteinData:
     def write_xtc_file(self, outfilepath, selected_frames):
         protein = self.trajectory_data.select_atoms("protein")
         with mda.Writer(outfilepath, protein.n_atoms) as W:
-            for ts in selected_frames:
+            for t_idx in selected_frames:
+                self.trajectory_data.trajectory[t_idx]
                 W.write(protein)
 
     def cast_output_traj_to_numpy(self, outfile, subsampled_traj):
