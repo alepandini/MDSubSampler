@@ -54,4 +54,4 @@ class PropertyPlot:
         plt.hist(reference, bins=20, alpha=0.5, density=True, label="reference")
         plt.hist(sample, bins=20, alpha=0.5, density=True, label="sample")
         plt.legend(loc="upper right")
-        plt.savefig("plot.png")
+        plt.savefig(outfilepath)
