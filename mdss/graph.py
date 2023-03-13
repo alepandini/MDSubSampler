@@ -1,8 +1,7 @@
-import os
 import matplotlib.pyplot as plt
 import pandas as pd
-import math
 import numpy as np
+import math
 
 
 class PropertyPlot:
@@ -48,12 +47,9 @@ class PropertyPlot:
         outfilepath,
         n_breaks=50,
     ):
-        df1_min = float(df1.min())
-        df2_min = float(df2.min())
-        df1_max = float(df2.max())
-        df2_max = float(df2.max())
-        min_plot_value = min(df1_min, df2_min)
-        max_plot_value = max(df1_max, df2_max)
+
+        min_plot_value = min(float(df1.min()), float(df2.min()))
+        max_plot_value = max(float(df2.max()), float(df2.max()))
 
         breaks_seq = []
         for i in np.arange(
