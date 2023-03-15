@@ -66,7 +66,7 @@ class PropertyPlot:
         plt.xlim(math.floor(min_plot_value), math.ceil(max_plot_value))
         plt.ylim(0, 1)
         plt.xlabel(
-            "{}_{}".format(property_name, "/Å"),
+            "{}{}".format(property_name, "/Å"),
             fontsize="12",
             horizontalalignment="center",
         )
@@ -77,3 +77,4 @@ class PropertyPlot:
         )
         plt.legend(loc="upper right")
         plt.savefig(outfilepath)
+        plt.clf()
