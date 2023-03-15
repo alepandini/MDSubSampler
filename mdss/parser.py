@@ -30,7 +30,7 @@ SAMPLER_CLASS_MAPPING = dict((sampler.__name__, sampler) for sampler in SAMPLER_
 
 DISSIMILARITY_CLASSES = [
     d.Dissimilarity,
-    d.Bhattacharya,
+    d.Bhattacharyya,
     d.KullbackLeibler,
     d.Pearson,
 ]

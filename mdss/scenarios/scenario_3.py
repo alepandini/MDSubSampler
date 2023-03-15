@@ -40,7 +40,7 @@ SELECTION = "name CA"
 SAMPLER = "WeightedSampler"
 STRATA_NUMBER = "200"
 SIZE = "100"
-DISSIMILARITY = "Bhattacharya"
+DISSIMILARITY = "Bhattacharyya"
 
 
 def main(trj_filename, top_filename, out_prefix):

@@ -26,7 +26,7 @@ class ProteinSampler:
         protein_data,
         output_folder,
         file_prefix,
-        dissimilarity_measure=Bhattacharya,
+        dissimilarity_measure=Bhattacharyya,
     ):
         self.protein_property = protein_property
         self.protein_data = protein_data
@@ -149,7 +149,7 @@ class RandomSampler(ProteinSampler):
     seed: int
         Number that initialise a random-number generator
     dissimilarity_measure: Dissimilarity class object
-        Default measure is Bhattacharya
+        Default measure is Bhattacharyya
     """
 
     display_name = "Random Sampling"
@@ -161,7 +161,7 @@ class RandomSampler(ProteinSampler):
         output_folder,
         file_prefix,
         seed_number=1999,
-        dissimilarity_measure=Bhattacharya,
+        dissimilarity_measure=Bhattacharyya,
     ):
         random.seed(seed_number)
         super().__init__(
@@ -201,7 +201,7 @@ class StratifiedSampler(ProteinSampler):
     strata_vector: list
         2D list that consists of strata lables one for each point
     dissimilarity_measure: Dissimilarity class object
-        Default measure is Bhattacharya
+        Default measure is Bhattacharyya
     """
 
     display_name = "Stratified Sampling"
@@ -213,7 +213,7 @@ class StratifiedSampler(ProteinSampler):
         output_folder,
         file_prefix,
         strata_vector,
-        dissimilarity_measure=Bhattacharya,
+        dissimilarity_measure=Bhattacharyya,
     ):
         self.strata_vector = strata_vector
         strata_labels = sorted(set(strata_vector))
@@ -312,7 +312,7 @@ class UniformSampler(ProteinSampler):
     strata_number: int
         The number of intervals where sampling is done.
     dissimilarity_measure: Dissimilarity class object
-        Default measure is Bhattacharya
+        Default measure is Bhattacharyya
     """
 
     display_name = "Uniform Sampling"
@@ -324,7 +324,7 @@ class UniformSampler(ProteinSampler):
         output_folder,
         file_prefix,
         strata_number,
-        dissimilarity_measure=Bhattacharya,
+        dissimilarity_measure=Bhattacharyya,
     ):
         super().__init__(
             protein_property=protein_property,
@@ -373,7 +373,7 @@ class WeightedSampler(ProteinSampler):
     weights_vector:
         Vector of weights for each element in the sample
     dissimilarity_measure: Dissimilarity class object
-        Default measure is Bhattacharya
+        Default measure is Bhattacharyya
     """
 
     display_name = "Weighted Sampling"
@@ -386,7 +386,7 @@ class WeightedSampler(ProteinSampler):
         file_prefix,
         seed_number=1999,
         weights_vector=None,
-        dissimilarity_measure=Bhattacharya,
+        dissimilarity_measure=Bhattacharyya,
     ):
         random.seed(seed_number)
         super().__init__(
@@ -457,7 +457,7 @@ class BootstrappingSampler(ProteinSampler):
     seed: int
         Number that initialise a random-number generator
     dissimilarity_measure: Dissimilarity class object
-        Default measure is Bhattacharya
+        Default measure is Bhattacharyya
     """
 
     display_name = "Bootstrapping Sampling"
@@ -470,7 +470,7 @@ class BootstrappingSampler(ProteinSampler):
         file_prefix,
         number_of_iterations,
         seed_number=1999,
-        dissimilarity_measure=Bhattacharya,
+        dissimilarity_measure=Bhattacharyya,
     ):
         random.seed(seed_number)
         self.number_of_iterations = number_of_iterations

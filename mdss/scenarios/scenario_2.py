@@ -44,7 +44,7 @@ SELECTION = "resid 120:160"
 SAMPLER = "UniformSampler"
 STRATA_NUMBER = "200"
 SIZE = "10,20,30"
-DISSIMILARITY = "Bhattacharya"
+DISSIMILARITY = "Bhattacharyya"
 
 
 def main(trj_filename, top_filename, out_prefix):

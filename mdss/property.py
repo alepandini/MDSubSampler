@@ -161,7 +161,7 @@ class SampledProperty(ProteinProperty):
         sampled_frame_indices,
         samples_indices,
         sample_size,
-        dissimilarity_measure=Bhattacharya,
+        dissimilarity_measure=Bhattacharyya,
     ):
         self.protein_data = original_property.protein_data
         self.atom_selection = original_property.atom_selection

@@ -53,9 +53,9 @@ class Dissimilarity:
         return self.dissimilarity
 
 
-class Bhattacharya(Dissimilarity):
+class Bhattacharyya(Dissimilarity):
     """
-    Represents the Bhattacharya dissimilarity between target (sample traj) and reference
+    Represents the Bhattacharyya dissimilarity between target (sample traj) and reference
     (original traj) properties
 
     Attributes
@@ -70,12 +70,12 @@ class Bhattacharya(Dissimilarity):
 
     def __init__(self, target_property, ref_property):
         super().__init__(target_property, ref_property)
-        self.dissimilarity_name = "Bhattacharya"
+        self.dissimilarity_name = "Bhattacharyya"
         self.dissimilarity_threshold = 0.2
 
     def calculate_dissimilarity(self):
         """
-        Calculates Bhattacharya distance between target (sample traj) and reference
+        Calculates Bhattacharyya distance between target (sample traj) and reference
         (original traj) properties
         """
         self.dissimilarity = dictances.bhattacharyya(
@@ -160,7 +160,7 @@ class Pearson(Dissimilarity):
 
 
 dissimilarity_class_dict = {
-    "Bhattacharya": Bhattacharya,
+    "Bhattacharyya": Bhattacharyya,
     "KullbackLeibler": KullbackLeibler,
     "Pearson": Pearson,
     "Dissimilarity": Dissimilarity,

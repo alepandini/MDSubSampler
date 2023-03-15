@@ -39,8 +39,8 @@ PROPERTY = "RMSD"
 SELECTION = "name CA"
 SAMPLER = "RandomSampler"
 # SIZE = "0.05,0.1,0.25,0.5,1,2.5,5,10,20,25,50"
-SIZE = "10,20"  # Size input is in int format but corresponds to percentage of total number of frames
-DISSIMILARITY = "Bhattacharya"
+SIZE = "10,20,30"  # Size input is in int format but corresponds to percentage of total number of frames
+DISSIMILARITY = "Bhattacharyya"
 
 
 def main(trj_filename, top_filename, out_prefix):
