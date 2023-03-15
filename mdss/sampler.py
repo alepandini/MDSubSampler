@@ -90,7 +90,6 @@ class ProteinSampler:
                         file_prefix=self.file_prefix,
                         p_prop=self.protein_property,
                         s_prop=sampled_property,
-                        diss=self.dissimilarity_measure,
                         p_data=self.protein_data,
                         p=p,
                     )
@@ -100,7 +99,6 @@ class ProteinSampler:
                         file_prefix=self.file_prefix,
                         p_prop=self.protein_property,
                         s_prop=sampled_property,
-                        diss=self.dissimilarity_measure,
                         p_data=self.protein_data,
                     )
             log.info(

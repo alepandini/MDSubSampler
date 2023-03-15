@@ -22,7 +22,12 @@ class ProteinData:
         protein's configuration parameters
     """
 
-    def __init__(self, trajectory_filename, topology_filename, config_parameters=None):
+    def __init__(
+        self,
+        trajectory_filename,
+        topology_filename,
+        config_parameters=None,
+    ):
 
         self.trajectory_filename = trajectory_filename
         self.topology_filename = topology_filename
@@ -197,6 +202,5 @@ class ProteinData:
                 "atom_selection": v.atom_selection,
                 "property_name": v.display_name,
             }
-
         with open(filepath, "w") as f:
             json.dump(report_dict, f, indent=2)

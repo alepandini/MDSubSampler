@@ -33,7 +33,9 @@ def sampling_workflow(arg_list):
         property = property_class.from_xvg(args.xvg_file)
     else:
         p_data = pd.ProteinData(
-            args.trajectory_file, args.topology_file, config_parameters=None
+            args.trajectory_file,
+            args.topology_file,
+            config_parameters=None,
         )
         property = property_class(p_data, args.atom_selection, args.fit)
         property.calculate_property()
@@ -109,9 +111,7 @@ def sampling_workflow(arg_list):
     """
     Generate file with calculated property for full trajectory
     """
-    filename = "{}_{}_{}.dat".format(
-        args.file_prefix, property_class.display_name, dissimilarity_class.display_name
-    )
+    filename = "{}_{}.dat".format(args.file_prefix, property_class.display_name)
     filepath = os.path.join(args.output_folder, filename)
     property.write_property_vector(filepath)
     """
@@ -126,7 +126,6 @@ def sampling_workflow(arg_list):
             file_prefix=args.file_prefix,
             p_prop=property,
             s_prop=sampled_property,
-            diss=dissimilarity_object,
             p_data=p_data,
             p=args.size,
         )
