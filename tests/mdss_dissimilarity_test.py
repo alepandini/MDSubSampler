@@ -17,7 +17,7 @@ def test_calculate_dissimilarity(rmsd_property):
 @pytest.mark.parametrize(
     "dissimilarity_subclass, mocked_function",
     [
-        (d.Bhattacharya, "dictances.bhattacharyya"),
+        (d.Bhattacharyya, "dictances.bhattacharyya"),
         (d.Pearson, "dictances.pearson"),
     ],
 )
