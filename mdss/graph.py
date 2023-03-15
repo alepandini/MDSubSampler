@@ -31,7 +31,9 @@ class PropertyPlot:
         df = pd.DataFrame(list)
         return df
 
-    def plot(self, property_name, reference_df, sample_df, outfilepath=None):
+    def plot(
+        self, property_name, reference_df, sample_df, sample_size, outfilepath=None
+    ):
         """
         Plots distribution of a given property vector and saves the file.
 
@@ -76,5 +78,16 @@ class PropertyPlot:
             horizontalalignment="center",
         )
         plt.legend(loc="upper right")
+        plt.title(
+            "{} {} {} {} {} {}".format(
+                "Sample size:",
+                sample_size,
+                "\n",
+                self.sampled_property.dissimilarity_name,
+                "distance:",
+                round(self.sampled_property.ref_dissimilarity, 5),
+            )
+        )
+
         plt.savefig(outfilepath)
         plt.clf()

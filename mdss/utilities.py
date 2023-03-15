@@ -126,7 +126,7 @@ def plot_property(output_folder, file_prefix, p_prop, s_prop, p=None):
     )
     filepath = os.path.join(output_folder, filename)
     graph = g.PropertyPlot(p_prop, s_prop, filepath)
-    graph.plot(p_prop.display_name, p_prop, s_prop, filepath)
+    graph.plot(p_prop.display_name, p_prop, s_prop, p, filepath)
 
 
 # This will run only if this file is run as a script
