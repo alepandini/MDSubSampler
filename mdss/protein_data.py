@@ -201,7 +201,12 @@ class ProteinData:
                 "max": round(v.max_value, 3),
                 "atom_selection": v.atom_selection,
                 "property_name": v.display_name,
-                "dissimilarity": v.ref_dissimilarity,
+                "dissimilarity": round(v.ref_dissimilarity, 5),
+                "size": len(v.frame_indices),
             }
+            if hasattr(v, "ref_property"):
+                report_dict[k]["size_percent"] = (
+                    100 * len(v.frame_indices) / len(v.ref_property.frame_indices)
+                )
         with open(filepath, "w") as f:
             json.dump(report_dict, f, indent=2)
