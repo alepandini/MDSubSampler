@@ -202,10 +202,10 @@ class ProteinData:
                 "atom_selection": v.atom_selection,
                 "property_name": v.display_name,
                 "dissimilarity": round(v.ref_dissimilarity, 5),
-                "size": len(v.frame_indices),
+                "traj_size": len(v.frame_indices),
             }
             if hasattr(v, "ref_property"):
-                report_dict[k]["size_percent"] = (
+                report_dict[k]["sample_percent"] = (
                     100 * len(v.frame_indices) / len(v.ref_property.frame_indices)
                 )
         with open(filepath, "w") as f:
