@@ -3,6 +3,7 @@ import random
 from mdss.property import SampledProperty
 from mdss.dissimilarity import *
 from mdss.utilities import write_output_files
+from mdss.utilities import plot_property
 
 
 class ProteinSampler:
@@ -93,6 +94,13 @@ class ProteinSampler:
                         p_data=self.protein_data,
                         p=p,
                     )
+                    plot_property(
+                        output_folder=self.output_folder,
+                        file_prefix=self.file_prefix,
+                        p_prop=self.protein_property,
+                        s_prop=sampled_property,
+                        p=p,
+                    )
                 else:
                     write_output_files(
                         output_folder=self.output_folder,
@@ -101,6 +109,13 @@ class ProteinSampler:
                         s_prop=sampled_property,
                         p_data=self.protein_data,
                     )
+                    plot_property(
+                        output_folder=self.output_folder,
+                        file_prefix=self.file_prefix,
+                        p_prop=self.protein_property,
+                        s_prop=sampled_property,
+                    )
+
             log.info(
                 "{:15s} Output files for all sample sizes were generated successfully".format(
                     "OUTPUT"
