@@ -37,6 +37,7 @@ class ProteinProperty:
         self.discretized_property_vector = []
         self.property_distribution_dict = {}
         self.frame_indices = []
+        self.ref_dissimilarity = 0
         self.recalculate = False
         self.property_key = self._add_reference_to_protein_data()
         log.info("{:15s} Atom selection: {}".format("INPUT", self.atom_selection))

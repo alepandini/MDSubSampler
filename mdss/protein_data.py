@@ -201,6 +201,7 @@ class ProteinData:
                 "max": round(v.max_value, 3),
                 "atom_selection": v.atom_selection,
                 "property_name": v.display_name,
+                "dissimilarity": v.ref_dissimilarity,
             }
         with open(filepath, "w") as f:
             json.dump(report_dict, f, indent=2)
