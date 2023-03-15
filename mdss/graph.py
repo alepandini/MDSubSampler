@@ -20,7 +20,6 @@ class PropertyPlot:
         self.property = property
         self.property_vector = property.property_vector
         self.sampled_property = sampled_property
-        self.property_name = property.display_name
         self.sampled_property_vector = sampled_property.property_vector
         self.frame_indices = property.frame_indices
         self.outfilepath = outfilepath
@@ -32,17 +31,28 @@ class PropertyPlot:
         df = pd.DataFrame(list)
         return df
 
-    def plot_overlap_density(
-        self,
-        property_name,
-        df1,
-        df2,
-        outfilepath,
-        n_breaks=50,
-    ):
+    def plot(self, property_name, reference_df, sample_df, outfilepath=None):
+        """
+        Plots distribution of a given property vector and saves the file.
 
-        min_plot_value = min(float(df1.min()), float(df2.min()))
-        max_plot_value = max(float(df2.max()), float(df2.max()))
+        Attributes
+        -----------
+        prefix: str
+            Prefix that will be used in filename when saved in outfilepath
+        outfilepath : str
+            Path where output file with plot will be saved
+        """
+        if outfilepath is None:
+            outfilepath = self.outfilepath
+
+        reference_df = self.convert_list_to_data_frame(self.property.property_vector)
+        sample_df = self.convert_list_to_data_frame(
+            self.sampled_property.property_vector
+        )
+
+        min_plot_value = min(float(reference_df.min()), float(sample_df.min()))
+        max_plot_value = max(float(reference_df.max()), float(sample_df.max()))
+        n_breaks = 50
 
         breaks_seq = []
         for i in np.arange(
@@ -51,8 +61,8 @@ class PropertyPlot:
             breaks_seq.append(i)
 
         plt.style.use("ggplot")
-        plt.hist(df1, breaks_seq, alpha=0.5, label="reference", density=True)
-        plt.hist(df2, breaks_seq, alpha=0.5, label="sample", density=True)
+        plt.hist(reference_df, breaks_seq, alpha=0.5, label="reference", density=True)
+        plt.hist(sample_df, breaks_seq, alpha=0.5, label="sample", density=True)
         plt.xlim(math.floor(min_plot_value), math.ceil(max_plot_value))
         plt.ylim(0, 1)
         plt.xlabel(
@@ -67,24 +77,3 @@ class PropertyPlot:
         )
         plt.legend(loc="upper right")
         plt.savefig(outfilepath)
-
-    def plot(self, prefix="property_vector", outfilepath=None):
-        """
-        Plots distribution of a given property vector and saves the file.
-
-        Attributes
-        -----------
-        prefix: str
-            Prefix that will be used in filename when saved in outfilepath
-        outfilepath : str
-            Path where output file with plot will be saved
-        """
-        if outfilepath is None:
-            outfilepath = self.outfilepath
-
-        reference = self.convert_list_to_data_frame(self.property.property_vector)
-        sample = self.convert_list_to_data_frame(self.sampled_property.property_vector)
-
-        self.plot_overlap_density(
-            self.property_name, reference, sample, outfilepath, n_breaks=50
-        )
