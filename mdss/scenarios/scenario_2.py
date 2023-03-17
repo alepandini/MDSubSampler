@@ -43,7 +43,7 @@ PROPERTY = "RMSD"
 SELECTION = "resid 120:160"
 SAMPLER = "UniformSampler"
 STRATA_NUMBER = "200"
-SIZE = "10,20,30"
+SIZE = "10"
 DISSIMILARITY = "Bhattacharyya"
 
 

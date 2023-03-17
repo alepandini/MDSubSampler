@@ -38,8 +38,8 @@ OUT_DIR = "testing"
 PROPERTY = "RMSD"
 SELECTION = "name CA"
 SAMPLER = "WeightedSampler"
-STRATA_NUMBER = "200"
-SIZE = "100"
+STRATA_NUMBER = None
+SIZE = "10"
 DISSIMILARITY = "Bhattacharyya"
 
 
