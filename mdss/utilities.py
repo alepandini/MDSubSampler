@@ -89,7 +89,7 @@ def check_file_exists(filepath):
 
 
 def write_output_files(output_folder, file_prefix, p_prop, s_prop, p_data, p=None):
-    p_format = "_" if p is None else f"_{int(p)}_"
+    p_format = "_" if p is None else f"_{p}_"
 
     filename = "{}{}{}.dat".format(
         file_prefix,
@@ -120,7 +120,7 @@ def write_output_files(output_folder, file_prefix, p_prop, s_prop, p_data, p=Non
 
 
 def plot_property(output_folder, file_prefix, p_prop, s_prop, p=None):
-    p_format = "_" if p is None else f"_{int(p)}_"
+    p_format = "_" if p is None else f"_{p}_"
     filename = "{}{}{}_{}.png".format(
         file_prefix, p_format, p_prop.display_name, "plot"
     )
