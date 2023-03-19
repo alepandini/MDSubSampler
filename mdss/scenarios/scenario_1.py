@@ -3,8 +3,9 @@ Scenario 001
 
 Purpose:             Given a single MD trajectory sampling different global 
                      conformations of the protein, select the smallest subset 
-                     of frames with a similar distribution of RMSD. 
-User:                Molecular dynamics user with basic understanding of coding 
+                     of frames with a similar distribution of RMSD 
+                     
+User:                Molecular dynamics user with basic understanding of coding
     
 Input:               Molecular dynamics trajectory 
                      Reference structure [optional] 
@@ -26,8 +27,8 @@ Scenario:
                     4. Random subsample 
                     5. Calculate RMSD distribution for subsampled trajectory 
                     6. Calculate dissimilarity measure between distributions 
-                    7. If dissimilarity is not below threshold, repeat 4. - 7. 
-                       for next subsample size 
+                    7. If dissimilarity is not below threshold, repeat steps 4 to 7 
+                       for next subsample size in the list
 """
 
 #!/usr/bin/env python
