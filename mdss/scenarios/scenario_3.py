@@ -38,8 +38,8 @@ OUT_DIR = "testing"
 PROPERTY = "RMSD"
 SELECTION = "name CA"
 SAMPLER = "WeightedSampler"
-STRATA_NUMBER = None
-SIZE = "10"
+# WEIGHTS_VECTOR = None
+SIZE = "10,20,30"
 DISSIMILARITY = "Bhattacharyya"
 
 
@@ -61,8 +61,8 @@ def main(trj_filename, top_filename, out_prefix):
             SELECTION,
             "--sampler",
             SAMPLER,
-            "--strata-number",
-            STRATA_NUMBER,
+            # "--weights-vector",
+            # WEIGHTS_VECTOR,
             "--size",
             str(SIZE),
             "--dissimilarity",
