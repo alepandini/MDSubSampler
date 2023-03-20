@@ -174,11 +174,13 @@ class ProteinData:
                 self.trajectory_data.trajectory[t_idx]
                 W.write(protein)
 
-    def cast_output_traj_to_numpy(self, outfile, subsampled_traj):
+    def cast_output_traj_to_numpy(self, outfile, subsampled_traj, unit="nanometer"):
         coordinates_numpy = []
         for ts in subsampled_traj:
             coordinates_numpy.append(deepcopy(ts.positions))
         coordinates_numpy = np.array(coordinates_numpy)
+        if unit == "nanometer":
+            coordinates_numpy = coordinates_numpy/10
         np.save(outfile, coordinates_numpy)
 
     def add_property(self, protein_property, property_name):
