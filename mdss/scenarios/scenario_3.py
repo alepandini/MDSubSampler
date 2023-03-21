@@ -39,7 +39,7 @@ PROPERTY = "RMSD"
 SELECTION = "name CA"
 SAMPLER = "WeightedSampler"
 # WEIGHTS_VECTOR = None
-SIZE = "10,20,30"
+SIZE = "10"
 DISSIMILARITY = "Bhattacharyya"
 
 
@@ -67,6 +67,7 @@ def main(trj_filename, top_filename, out_prefix):
             str(SIZE),
             "--dissimilarity",
             DISSIMILARITY,
+            "--fit",
         ]
     )
     print(dissimilarity_score)
