@@ -88,7 +88,7 @@ def check_file_exists(filepath):
         raise FileNotFoundError("File {} does not exist".format(filepath))
 
 
-def write_output_files(output_folder, file_prefix, p_prop, s_prop, p_data, p=None):
+def write_output_files(output_folder, file_prefix, p_prop, s_prop, p_data, p=None, unit="nanometer"):
     p_format = "_" if p is None else f"_{p}_"
 
     filename = "{}{}{}.dat".format(
@@ -116,7 +116,7 @@ def write_output_files(output_folder, file_prefix, p_prop, s_prop, p_data, p=Non
     )
     filepath = os.path.join(output_folder, filename)
     subsampled_traj = p_data.frame_selection_iterator(s_prop.frame_indices)
-    p_data.cast_output_traj_to_numpy(filepath, subsampled_traj)
+    p_data.cast_output_traj_to_numpy(filepath, subsampled_traj, unit)
 
 
 def plot_property(output_folder, file_prefix, p_prop, s_prop, p=None):
