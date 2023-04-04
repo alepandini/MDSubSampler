@@ -235,10 +235,10 @@ class ProteinData:
 
         Attributes
         -----------
-        protein_property: ProteinProperty object
-
+        protein_property: ProteinProperty class object
+               The object has access to all methods and attributes of ProteinData class
         property_name: str
-           property name
+               property name
 
         Returns
         -----------
