@@ -43,12 +43,24 @@ class ProteinData:
         self.property_dict = {}
 
     def _read_topology(self, topology_filename):
+        """
+        Loads topology file
+
+        Attributes
+        -----------
+        topology_filename: str,
+            path to topology file
+
+        Returns
+        -----------
+        topology data
+        """
         top_data = mda.Universe(topology_filename)
         return top_data
 
     def _read_trajectory(self, trajectory_filename, topology_filename):
         """
-        Load trajectory and topology files into Universe to build the object
+        Loads trajectory and topology files into Universe to build the object
 
         Attributes
         -----------
@@ -59,7 +71,7 @@ class ProteinData:
 
         Returns
         -----------
-        Number of atoms exist in object
+        trajetory data
         """
         trajectory_data = mda.Universe(
             topology_filename,
@@ -71,7 +83,7 @@ class ProteinData:
 
     def _select_CA_atoms(self):
         """
-        Reads C-Alpha from the first frame of trajectory
+        Reads c-alpha from the first frame of trajectory
 
         Returns
         -----------
@@ -82,7 +94,11 @@ class ProteinData:
 
     def _frames_of_trajectory(self):
         """
-        Creates a dictionary with frame number and timestep for full trajectory
+        Creates a dictionary with frame number and timestep for protein trajectory
+
+        Returns
+        -----------
+        frames of protein trajectory
         """
         frames = []
         for x in range(len(self.trajectory_data.trajectory)):
@@ -101,7 +117,11 @@ class ProteinData:
 
     def _frame_indices_of_trajectory(self):
         """
-        Creates list with frames' indices for full trajectory
+        Creates list with frame indices for protein trajectory
+
+        Returns
+        -----------
+        Frame indices from protein trajectory
         """
         frame_indices = []
         for x in range(len(self.trajectory_data.trajectory)):
@@ -110,6 +130,9 @@ class ProteinData:
 
     def frame_selection_iterator(self, selection_of_frames):
         """
+        Creates a new object with similar attributes to a trajectory object from a
+        specific selection of frames that can be used for further analysis.
+
         Attributes
         -----------
         selection_of_frames: int,
@@ -117,8 +140,7 @@ class ProteinData:
 
         Returns
         -----------
-        FrameIteratorIndices object with the selected frames: This object has similar
-        attributes to a trajectory object and can be used for further analysis.
+        FrameIteratorIndices object with the selected frames
         """
         trajectory_data = self.trajectory_data.trajectory
         mask = np.array([False for _ in trajectory_data])
@@ -142,6 +164,8 @@ class ProteinData:
 
     def frame_selection_indices(self, selection_of_frames):
         """
+        Creates a list with only selected frames from a protein trajectory
+
         Attributes
         -----------
         selection_of_frames: int,
@@ -168,33 +192,74 @@ class ProteinData:
         return indices_of_selected_frames
 
     def write_xtc_file(self, outfilepath, selected_frames):
+        """
+        Writes an xtc file containing only specific frames from a protein trajectory
+
+        Attributes
+        -----------
+        outfilepath: str
+            path to output file
+        selected_frames: int ot list,
+            single frame or list of frames from trajectory
+        """
         protein = self.trajectory_data.select_atoms("protein")
         with mda.Writer(outfilepath, protein.n_atoms) as W:
             for t_idx in selected_frames:
                 self.trajectory_data.trajectory[t_idx]
                 W.write(protein)
 
-    def cast_output_traj_to_numpy(self, outfile, subsampled_traj, unit="nanometer"):
+    def cast_output_traj_to_numpy(self, outfilepath, subsampled_traj, unit="nanometer"):
+        """
+        Casts an xtc file into a numpy array that can be readable
+
+        Attributes
+        -----------
+        outfilepath: str
+            path to output file
+        subsampled_traj: .xtc file
+           subsampled trajectory file
+        unit: str
+            unit for coordinates values
+        """
         coordinates_numpy = []
         for ts in subsampled_traj:
             coordinates_numpy.append(deepcopy(ts.positions))
         coordinates_numpy = np.array(coordinates_numpy)
         if unit == "nanometer":
-            coordinates_numpy = coordinates_numpy/10
-        np.save(outfile, coordinates_numpy)
+            coordinates_numpy = coordinates_numpy / 10
+        np.save(outfilepath, coordinates_numpy)
 
     def add_property(self, protein_property, property_name):
         """
         Gets key from property dictionary
+
+        Attributes
+        -----------
+        protein_property: ProteinProperty object
+
+        property_name: str
+           property name
+
+        Returns
+        -----------
+        String that contains the propety name and timestamp.
         """
         timestamp = str(datetime.now().timestamp())
         key = "{}_{}".format(property_name, timestamp)
         self.property_dict[key] = protein_property
+        import code
+
+        code.interact(local=locals())
         return key
 
-    def property_data_report(self, filepath):
+    def property_data_report(self, outfilepath):
         """
-        Creates a report with key information and statistics for property
+        Creates a .json report with key information and statistics for property
+
+        Attributes
+        -----------
+        outfilepath: str
+            path to output file
         """
         report_dict = {}
         for k, v in self.property_dict.items():
@@ -210,5 +275,5 @@ class ProteinData:
                 report_dict[k]["sample_percent"] = (
                     100 * len(v.frame_indices) / len(v.ref_property.frame_indices)
                 )
-        with open(filepath, "w") as f:
+        with open(outfilepath, "w") as f:
             json.dump(report_dict, f, indent=2)
