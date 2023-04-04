@@ -54,7 +54,7 @@ class ProteinProperty:
 
     def _add_reference_to_protein_data(self):
         """
-        Method that links the ProteinProperty and ProteinData classes
+        Links ProteinProperty and ProteinData classes
         """
         if self.protein_data is not None:
             property_key = self.protein_data.add_property(self, self.display_name)
@@ -63,6 +63,15 @@ class ProteinProperty:
     def discretize_vector(self, min_value=None, max_value=None, n_bins=100):
         """
         Discretises vector for Bhatta and KL distances
+
+        Attributes
+        ----------
+        min_value: int
+            minimum value for vector
+        max_value: int
+            maximum value for vector
+        n_bins: int
+            number of bins for discretized vector
 
         Returns
         -----------
@@ -93,6 +102,11 @@ class ProteinProperty:
     def set_reference_coordinates(self, frame_index=None):
         """
         Sets up on first frame and extracts copy of coordinates
+
+        Attributes
+        ----------
+        frame_index: int
+            frame index of reference frame
         """
         if self.protein_data is not None:
             if frame_index is None:
@@ -122,7 +136,12 @@ class ProteinProperty:
 
     def write_property_vector(self, outfilepath):
         """
-        Saves vector with calculations of specific property
+        Creates file with calculations of specific property
+
+        Attributes
+        ----------
+        outfilepath: str
+            path to output file
         """
         with open(outfilepath, "w") as f:
             for i, value in zip(self.frame_indices, self.property_vector):
@@ -130,7 +149,12 @@ class ProteinProperty:
 
     def write_discretized_property_vector(self, outfilepath):
         """
-        Saves discretised vector with calculations of specific property
+        Creates discretised vector file with calculations of specific property
+
+        Attributes
+        ----------
+        outfilepath: str
+            path to output file
         """
         if len(self.property_distribution_dict) < 1:
             self.discretize_vector()
@@ -141,6 +165,11 @@ class ProteinProperty:
     def write_property_distribution_dict(self, outfilepath):
         """
         Creates dictionary with information for property distribution
+
+        Attributes
+        ----------
+        outfilepath: str
+            path to output file
         """
         if len(self.property_distribution_dict) < 1:
             self.discretize_vector()
@@ -152,6 +181,20 @@ class ProteinProperty:
 class SampledProperty(ProteinProperty):
     """
     Represents sampled protein property on individual frames from trajectory
+
+    Attributes
+    ----------
+    original_property: vector
+        vector with calculated property for full trajectory
+    sampled_property_vector: vector
+        vector with calculated property for sample trajectory
+    sampled_frame_indices: list
+        list with frame indices of sampled trajectory
+    samples_indices: list
+        list with samples indices
+    sample_size: int
+        size of subsampled trajectory
+    dissimilarity_measure: Dissimilarity class object
     """
 
     def __init__(
@@ -182,6 +225,10 @@ class SampledProperty(ProteinProperty):
     def _get_dissimilarity_to_ref(self, dissimilarity_measure):
         """
         Measures dissimilarity between full and sampled property
+
+        Attributes
+        ----------
+        dissimilarity_measure: Dissimilarity class object
         """
         diss_obj = dissimilarity_measure(self, self.ref_property)
         diss_obj.calculate_dissimilarity()

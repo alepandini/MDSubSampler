@@ -231,12 +231,12 @@ class ProteinData:
 
     def add_property(self, protein_property, property_name):
         """
-        Gets key from property dictionary
+        Retrieves key from property dictionary
 
         Attributes
         -----------
         protein_property: ProteinProperty class object
-               The object has access to all methods and attributes of ProteinData class
+               The object has access to all methods and attributes of ProteinProperty class
         property_name: str
                property name
 
