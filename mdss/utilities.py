@@ -1,21 +1,8 @@
-"""
-The utilities file consists of the following functions:
-
-- Function that checks the memory size of the machine that the user is using.
-- Function that checks the trajectory size that the user has used as an input.
-- Function that checks the number of threads that are available in the system 
-  (to impelent later).
-- Function that checks that the XTC and topology files are not empty and contain 
-  at least X number of frames.
-- Function that checks that the number of selected residues that are used as an
-  input matches the number of residues in the XTC file.
-- Function that checks that the PDB/XTC files are present in the given directory.
-
-"""
 import os
 import psutil
-import mdss.protein_data as pd
 import mdss.graph as g
+from mdss.log_setup import log
+import mdss.protein_data as pd
 
 
 class NotEnoughMemoryError(Exception):
@@ -27,15 +14,27 @@ class EmptyTrajectoryError(Exception):
 
 
 def check_file_size(filepath):
+    """
+    Checks file size and machine memory to ensure there is enough memory in the system
+    """
     mem = psutil.virtual_memory()
     file_size = os.path.getsize(filepath)
     if file_size > mem:
+        log.error(
+            "{:15s} The size of {} is larger than the available memory".format(
+                "STEPS", filepath
+            )
+        )
         raise NotEnoughMemoryError(
             "The size of {} is larger than the available memory".format(filepath)
         )
 
 
 def check_trajectory_size(trajectory_file_path, topology_file_path):
+    """
+    Checks trajectory size and that trajectory and topology files are not empty and
+    contain at least X number of frames.
+    """
     protein_data = pd.ProteinData(
         trajectory_file_path,
         topology_file_path,
@@ -47,6 +46,7 @@ def check_trajectory_size(trajectory_file_path, topology_file_path):
         ).trajectory
     )
     if trajectory_size == 0:
+        log.error("{:15s} The trajectory has no frames in it ".format("STEPS"))
         raise EmptyTrajectoryError(
             "The trajectory has no frames in it "
             "(trajectory file = {}, "
@@ -55,11 +55,15 @@ def check_trajectory_size(trajectory_file_path, topology_file_path):
     return trajectory_size
 
 
-def check_multiple_trajectories_size(list_of_traj, list_of_top):
+def check_multiple_trajectories_size(list_of_trajectory_files, topology_file_path):
+    """
+    Checks size of multiple trajectories and that trajectory and topology files are not
+    empty and contain at least X number of frames.
+    """
     errors = []
-    for traj, top in zip(list_of_traj, list_of_top):
+    for traj in list_of_trajectory_files:
         try:
-            check_trajectory_size(traj, top)
+            check_trajectory_size(traj, topology_file_path)
         except EmptyTrajectoryError as e:
             errors.add(e)
 
@@ -72,6 +76,10 @@ def check_multiple_trajectories_size(list_of_traj, list_of_top):
 
 
 def check_number_of_residues(trajectory_file_path, topology_file_path, atom_selection):
+    """
+    Checks that the number of selected residues that are used as an
+    input matches the number of residues in the XTC file.
+    """
     protein_data = pd.ProteinData(
         trajectory_file_path,
         topology_file_path,
@@ -80,15 +88,46 @@ def check_number_of_residues(trajectory_file_path, topology_file_path, atom_sele
     if len(atom_selection) > len(
         protein_data.trajectory_data.select_atoms(atom_selection)
     ):
+        log.error(
+            "{:15s} The atom selection is greater than the imported XTC file".format(
+                "STEPS"
+            )
+        )
         raise Exception("The atom selection is greater than the imported XTC file")
 
 
 def check_file_exists(filepath):
+    """
+    Checks that file exists in a given filepath
+    """
     if not os.path.isfile(filepath):
         raise FileNotFoundError("File {} does not exist".format(filepath))
 
 
-def write_output_files(output_folder, file_prefix, p_prop, s_prop, p_data, p=None, unit="nanometer"):
+def write_output_files(
+    output_folder, file_prefix, p_prop, s_prop, p_data, p=None, unit="nanometer"
+):
+    """
+    Writes all output files
+
+    Attributes
+    -----------
+    output_folder: str,
+            file path for output folder
+    file_prefix: str,
+            prefix that was given as a choice by the user
+    p_prop: list
+            list with values of property for full trajectory to plot
+    s_prop: list
+            list with values of property for sample trajectory to plot
+    p_data: ProteinData Class object
+
+    p: int
+       percentage of sample trajectory
+    unit: str
+       unit that the property will be calculated and saved
+    """
+
     p_format = "_" if p is None else f"_{p}_"
 
     filename = "{}{}{}.dat".format(
@@ -120,6 +159,27 @@ def write_output_files(output_folder, file_prefix, p_prop, s_prop, p_data, p=Non
 
 
 def plot_property(output_folder, file_prefix, p_prop, s_prop, p=None):
+    """
+    Plots overlapped property distributions of full and sample trajectory
+
+    Attributes
+    -----------
+    output_folder: str,
+            file path for output folder
+    file_prefix: str,
+            prefix that was given as a choice by the user
+    p_prop: list
+            list with values of property for full trajectory to plot
+    s_prop: list
+            list with values of property for sample trajectory to plot
+    p: int
+       percentage of sample trajectory
+
+    Returns
+    -----------
+    png file with overlay property distribution of full and sample trajectories
+
+    """
     p_format = "_" if p is None else f"_{p}_"
     filename = "{}{}{}_{}.png".format(
         file_prefix, p_format, p_prop.display_name, "plot"
@@ -127,19 +187,3 @@ def plot_property(output_folder, file_prefix, p_prop, s_prop, p=None):
     filepath = os.path.join(output_folder, filename)
     graph = g.PropertyPlot(p_prop, s_prop, filepath)
     graph.plot(p_prop.display_name, p_prop, s_prop, p, filepath)
-
-
-# This will run only if this file is run as a script
-if __name__ == "__main__":
-    trajectory_file_path = "data/MD01_1lym_example_fit_short.xtc"
-    topology_file_path = "data/MD01_1lym_example.gro"
-    list_of_trajectories = [
-        "data/MD01_1lym_example_fit_short.xtc",
-        "data/MD01_1lym_example_fit_short.xtc",
-    ]
-    list_of_topologies = ["data/MD01_1lym_example.gro", "data/MD01_1lym_example.gro"]
-    check_file_size(trajectory_file_path, topology_file_path)
-    check_trajectory_size(trajectory_file_path, topology_file_path)
-    check_file_exists(trajectory_file_path, topology_file_path)
-    check_multiple_trajectories_size(list_of_trajectories, list_of_topologies)
-    check_number_of_residues(trajectory_file_path, topology_file_path, "name CA")
