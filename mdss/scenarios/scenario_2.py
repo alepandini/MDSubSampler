@@ -72,7 +72,6 @@ def main(trj_filename, top_filename, out_prefix):
             "--dissimilarity",
             DISSIMILARITY,
             "--fit",
-            "--step-recording",
         ]
     )
 
