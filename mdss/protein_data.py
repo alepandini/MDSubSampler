@@ -229,11 +229,13 @@ class ProteinData:
         if unit == "nanometer":
             coordinates_numpy = coordinates_numpy / 10
         np.save(outfilepath, coordinates_numpy)
+        return coordinates_numpy
 
     def convert_numpy_to_2D(self, infilepath, outfilepath):
-        a = np.load(infilepath)
-        a.shape
-        return a
+        (x, y, z) = infilepath.shape
+        outfile = np.reshape(infilepath, (x, y * z))
+        np.save(outfilepath, outfile)
+        return outfile
 
     def input_prep_machine_learning(self, infilepath, outfilepath):
         """
@@ -248,10 +250,11 @@ class ProteinData:
         unit: str
             unit for coordinates values
         """
-
         training_data, testing_data = train_test_split(
             infilepath, test_size=0.3, random_state=25
         )
+        np.save(outfilepath, training_data)
+        np.save(outfilepath, testing_data)
         return training_data, testing_data
 
     def add_property(self, protein_property, property_name):
@@ -272,9 +275,6 @@ class ProteinData:
         timestamp = str(datetime.now().timestamp())
         key = "{}_{}".format(property_name, timestamp)
         self.property_dict[key] = protein_property
-        import code
-
-        code.interact(local=locals())
         return key
 
     def property_data_report(self, outfilepath):
