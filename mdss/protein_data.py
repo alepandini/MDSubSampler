@@ -230,7 +230,12 @@ class ProteinData:
             coordinates_numpy = coordinates_numpy / 10
         np.save(outfilepath, coordinates_numpy)
 
-    def input_prep_machine_learning(self, outfilepath, inputfilepath):
+    def convert_numpy_to_2D(self, infilepath, outfilepath):
+        a = np.load(infilepath)
+        a.shape
+        return a
+
+    def input_prep_machine_learning(self, infilepath, outfilepath):
         """
         Prepares input for machine learning
 
@@ -238,14 +243,14 @@ class ProteinData:
         -----------
         outfilepath: str
             path to output file
-        subsampled_traj: .xtc file
+        subsampled_traj: .xtc files
            subsampled trajectory file
         unit: str
             unit for coordinates values
         """
 
         training_data, testing_data = train_test_split(
-            inputfilepath, test_size=0.3, random_state=25
+            infilepath, test_size=0.3, random_state=25
         )
         return training_data, testing_data
 
