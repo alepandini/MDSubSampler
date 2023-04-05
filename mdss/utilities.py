@@ -158,7 +158,12 @@ def write_output_files(
     coordinates_array = p_data.cast_output_traj_to_numpy(
         filepath, subsampled_traj, unit
     )
+    filename = "{}{}{}{}".format(
+        file_prefix, p_format, p_prop.display_name, "_ML_input"
+    )
+    filepath = os.path.join(output_folder, filename)
     ml_input_array = p_data.convert_numpy_to_2D(coordinates_array, filepath)
+
     p_data.input_prep_machine_learning(ml_input_array, filepath)
 
 
