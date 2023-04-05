@@ -1,3 +1,4 @@
+from sklearn.model_selection import train_test_split
 from datetime import datetime
 from copy import deepcopy
 from re import L
@@ -228,6 +229,25 @@ class ProteinData:
         if unit == "nanometer":
             coordinates_numpy = coordinates_numpy / 10
         np.save(outfilepath, coordinates_numpy)
+
+    def input_prep_machine_learning(self, outfilepath, inputfilepath):
+        """
+        Prepares input for machine learning
+
+        Attributes
+        -----------
+        outfilepath: str
+            path to output file
+        subsampled_traj: .xtc file
+           subsampled trajectory file
+        unit: str
+            unit for coordinates values
+        """
+
+        training_data, testing_data = train_test_split(
+            inputfilepath, test_size=0.3, random_state=25
+        )
+        return training_data, testing_data
 
     def add_property(self, protein_property, property_name):
         """
