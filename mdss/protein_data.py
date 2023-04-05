@@ -237,9 +237,9 @@ class ProteinData:
         np.save(outfilepath, outfile)
         return outfile
 
-    def input_prep_machine_learning(self, infilepath, outfilepath):
+    def input_prep_ML(self, infilepath, outfilepath):
         """
-        Prepares input for machine learning
+        Prepares input for Machine Learning
 
         Attributes
         -----------
