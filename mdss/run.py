@@ -130,6 +130,7 @@ def sampling_workflow(arg_list):
             s_prop=sampled_property,
             p_data=p_data,
             p=args.size,
+            machine_learning=args.machine_learning,
         )
         plot_property(
             output_folder=args.output_folder,

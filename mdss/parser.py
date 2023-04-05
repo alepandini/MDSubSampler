@@ -155,6 +155,12 @@ def parse_args(arg_list):
         help="In case of user input is a list of samples then all samples generated are recorded",
     )
 
+    parser.add_argument(
+        "--machine-learning",
+        dest="machine_learning",
+        action="store_true",
+        help="Files that can be used for Machine Learning will be generated in the output folder",
+    )
     args = parser.parse_args(arg_list)
 
     if args.property in [

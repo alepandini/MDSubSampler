@@ -234,6 +234,8 @@ class ProteinData:
     def convert_numpy_to_2D(self, infilepath, outfilepath):
         (x, y, z) = infilepath.shape
         outfile = np.reshape(infilepath, (x, y * z))
+        print("------")
+        print(outfilepath)
         np.save(outfilepath, outfile)
         return outfile
 
