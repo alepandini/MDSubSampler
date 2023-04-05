@@ -237,7 +237,7 @@ class ProteinData:
         np.save(outfilepath, outfile)
         return outfile
 
-    def input_prep_ML(self, infilepath, outfilepath):
+    def ML_input_prep(self, infilepath, outfilepath_training, outfilepath_testing):
         """
         Prepares input for Machine Learning
 
@@ -253,9 +253,8 @@ class ProteinData:
         training_data, testing_data = train_test_split(
             infilepath, test_size=0.3, random_state=25
         )
-        np.save(outfilepath, training_data)
-        np.save(outfilepath, testing_data)
-        return training_data, testing_data
+        np.save(outfilepath_training, training_data)
+        np.save(outfilepath_testing, testing_data)
 
     def add_property(self, protein_property, property_name):
         """

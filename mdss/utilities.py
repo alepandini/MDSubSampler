@@ -162,9 +162,16 @@ def write_output_files(
         file_prefix, p_format, p_prop.display_name, "_ML_input"
     )
     filepath = os.path.join(output_folder, filename)
-    ml_input_array = p_data.convert_numpy_to_2D(coordinates_array, filepath)
-
-    p_data.input_prep_machine_learning(ml_input_array, filepath)
+    ML_input = p_data.convert_numpy_to_2D(coordinates_array, filepath)
+    filename_train = "{}{}{}{}".format(
+        file_prefix, p_format, p_prop.display_name, "_ML_train"
+    )
+    filepath_train = os.path.join(output_folder, filename_train)
+    filename_test = "{}{}{}{}".format(
+        file_prefix, p_format, p_prop.display_name, "_ML_test"
+    )
+    filepath_test = os.path.join(output_folder, filename_test)
+    p_data.ML_input_prep(ML_input, filepath_train, filepath_test)
 
 
 def plot_property(output_folder, file_prefix, p_prop, s_prop, p=None):
