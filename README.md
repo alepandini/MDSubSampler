@@ -1,6 +1,4 @@
-# Project Name
-
-**MDSubSampler: Molecular Dynamics SubSampler**
+# MDSubSampler: Molecular Dynamics SubSampler
 
 MDSubSampler is a Python library and toolkit for a posteriori subsampling of multiple trajectory data for further analysis. This toolkit implements uniform, random, stratified sampling, bootstrapping and targeted sampling to preserve the original distribution of relevant geometrical properties.
 
@@ -58,24 +56,24 @@ $ pip install MDSubSampler
 ### Workflow
 
 Input:
-<br />Molecular Dynamics trajectory 
-<br />Geometric property
-<br />Atom selection [optional - default is "name CA"]
-<br />Reference structure [optional] 
-<br />Sample size or range of sizes
-<br />Dissimilarity measure [optional - default is "Bhattacharyya"]
+- Molecular Dynamics trajectory 
+- Geometric property
+- Atom selection [optional - default is "name CA"]
+- Reference structure [optional] 
+- Sample size or range of sizes
+- Dissimilarity measure [optional - default is "Bhattacharyya"]
 
 Output:
-<br />.dat file with calculated property for full trajectory (user input)
-<br />.dat file(s) with calculated property for one or all sample sizes input
-<br />.xtc file(s) with sample trajectory for one or all sample sizes
-<br />.npy file(s) with sample trajectory for one or all sample sizes 
-<br />.npy training set for ML purposes for sample trajectory (optional)
-<br />.npy testing set for ML purposes for sample trajectory (optional)
-<br />.npy file(s) with sample trajectory for one or for all sample sizes 
-<br />.png file with overlapped property distribution of reference and sample
-<br />.json file report with important statistics from the analysis
-<br />.txt log file with essential analysis steps and information
+- .dat file with calculated property for full trajectory (user input)
+- .dat file(s) with calculated property for one or all sample sizes input
+- .xtc file(s) with sample trajectory for one or all sample sizes
+- .npy file(s) with sample trajectory for one or all sample sizes 
+- .npy training set for ML purposes for sample trajectory (optional)
+- .npy testing set for ML purposes for sample trajectory (optional)
+- .npy file(s) with sample trajectory for one or for all sample sizes 
+- .png file with overlapped property distribution of reference and sample
+- .json file report with important statistics from the analysis
+- .txt log file with essential analysis steps and information
 
 ### Scenarios
 
