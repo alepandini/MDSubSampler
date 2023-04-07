@@ -26,13 +26,13 @@ class RMSD(ProteinProperty):
 
     def calculate_property(self, frame_index=None):
         """
-        Calculates RMSD property of frame list for a selection of atoms
+        Calculates RMSD property for all trajectory frames for a selection of atoms
         """
 
         if self.set_reference_coordinates(frame_index):
             for frame in self.protein_data.frame_indices:
                 """
-                Go through the trajectory and for each frame I compare with my reference frame
+                Goes through the trajectory and for each frame I compare with my reference frame
                 """
                 self.protein_data.trajectory_data.trajectory[frame]
 
@@ -68,7 +68,7 @@ class DistanceBetweenAtoms(ProteinProperty):
     protein_data: ProteinData class object
         The object has access to all methods and attributes of ProteinData class
     atom_selection: list
-        List with 2 atoms or 2 group of atoms
+        List of atom selection with 2 atoms or 2 group of atoms
     """
 
     display_name = "Distance_between_atoms"
@@ -86,7 +86,7 @@ class DistanceBetweenAtoms(ProteinProperty):
 
     def calculate_property(self, frame_index=None):
         """
-        Calculates distance between two given set of atoms
+        Calculates distance between two given set of atoms for all trajectory frames
         """
         if self.set_reference_coordinates(frame_index):
             atom_selection_1 = self.protein_data.trajectory_data.select_atoms(
@@ -98,8 +98,8 @@ class DistanceBetweenAtoms(ProteinProperty):
 
             for frame in self.protein_data.frame_indices:
                 """
-                Go through the trajectory and for each frame the distance between the given
-                atoms is calculated
+                Goes through the trajectory and for each frame the distance between
+                the given atoms is calculated
                 """
                 self.protein_data.trajectory_data.trajectory[frame]
                 dist = distances.distance_array(
@@ -128,12 +128,12 @@ class RadiusOfGyrationProperty(ProteinProperty):
 
     def calculate_property(self):
         """
-        Calculates radius of gyration of atoms in each frame
+        Calculates radius of gyration of atoms for all trajectory frames
         """
         self.time = []
         for frame in self.protein_data.frame_indices:
             """
-            Go through the trajectory and for the atoms of each frame the rog is calculated
+            Goes through the trajectory and for the atoms of each frame the rog is calculated
             """
             self.protein_data.trajectory_data.trajectory[frame]
             self.time.append(self.protein_data.trajectory_data.trajectory.time)
@@ -175,7 +175,7 @@ class Angles(ProteinProperty):
 
     def calculate_property(self, frame_index=None):
         """
-        Calculates angle between three given atoms
+        Calculates angle between three given atoms for all trajectory frames
         """
         if self.set_reference_coordinates(frame_index):
             atom_selection_1 = self.protein_data.trajectory_data.select_atoms(
@@ -190,7 +190,7 @@ class Angles(ProteinProperty):
 
             for frame in self.protein_data.frame_indices:
                 """
-                Go through the trajectory and for each frame the angle between the given
+                Goes through the trajectory and for each frame the angle between the given
                 atoms is calculated
                 """
 
