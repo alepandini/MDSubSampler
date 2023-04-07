@@ -6,7 +6,7 @@ import math
 
 class PropertyPlot:
     """
-    Represents the vector plot after property calculation
+    Represents vector plot after property calculation
 
     Attributes
     -----------
@@ -24,23 +24,34 @@ class PropertyPlot:
         self.frame_indices = property.frame_indices
         self.outfilepath = outfilepath
 
-    def convert_list_to_data_frame(self, list):
+    def convert_list_to_data_frame(self, calculated_property):
         """
-        Convert lists with property to pandas dataframe
+        Converts list with calculated property to pandas dataframe
+
+        Attributes
+        -----------
+        calculated_property: list
+            A list that contains a specific calculated property for protein trajectory
         """
-        df = pd.DataFrame(list)
+        df = pd.DataFrame(calculated_property)
         return df
 
     def plot(
         self, property_name, reference_df, sample_df, sample_size, outfilepath=None
     ):
         """
-        Plots distribution of a given property vector and saves the file.
+        Plots overlapped distribution of full and sample trajectory and saves file
 
         Attributes
         -----------
-        prefix: str
-            Prefix that will be used in filename when saved in outfilepath
+        property_name: str
+            Name of property that is calculated
+        reference_df: dataframe
+            dataframe with calculated property for full protein trajectory
+        sample_df: dataframe
+            dataframe with calculated property for sample protein trajectory
+        sample_size: int
+            size of sample trajectory
         outfilepath : str
             Path where output file with plot will be saved
         """
