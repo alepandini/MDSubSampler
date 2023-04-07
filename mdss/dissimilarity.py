@@ -55,8 +55,8 @@ class Dissimilarity:
 
 class Bhattacharyya(Dissimilarity):
     """
-    Represents the Bhattacharyya dissimilarity between target (sample traj) and reference
-    (original traj) properties
+    Represents the Bhattacharyya dissimilarity between target (sample trajectory)
+    and reference (original trajectory) properties
 
     Attributes
     ----------
@@ -75,8 +75,8 @@ class Bhattacharyya(Dissimilarity):
 
     def calculate_dissimilarity(self):
         """
-        Calculates Bhattacharyya distance between target (sample traj) and reference
-        (original traj) properties
+        Calculates Bhattacharyya distance between target (sample trajectory)
+        and reference (original trajectory) properties
         """
         self.dissimilarity = dictances.bhattacharyya(
             self.target_property.property_distribution_dict,
@@ -91,8 +91,8 @@ class Bhattacharyya(Dissimilarity):
 
 class KullbackLeibler(Dissimilarity):
     """
-    Represents the Kullback-Leibler divergence between target (sample traj) and reference
-    (original traj) properties
+    Represents the Kullback-Leibler divergence between target (sample trajectory)
+    and reference (original trajectory) properties
 
     Attributes
     ----------
@@ -111,8 +111,8 @@ class KullbackLeibler(Dissimilarity):
 
     def calculate_dissimilarity(self):
         """
-        Calculates Kullback-Leibler divergence between target (sample traj) and reference
-        (original traj) properties
+        Calculates Kullback-Leibler divergence between target (sample trajectory)
+        and reference (original trajectory) properties
         """
         P = list(self.target_property.property_distribution_dict.values())
         Q = list(self.ref_property.property_distribution_dict.values())
@@ -126,8 +126,8 @@ class KullbackLeibler(Dissimilarity):
 
 class Pearson(Dissimilarity):
     """
-    Represents the Pearson distance between target (sample traj) and reference
-    (original traj) properties
+    Represents the Pearson distance between target (sample trajectory) and reference
+    (original trajectory) properties
 
     Attributes
     ----------
@@ -146,8 +146,8 @@ class Pearson(Dissimilarity):
 
     def calculate_dissimilarity(self):
         """
-        Calculates pearson distance between target (sample traj) and reference
-        (original traj) properties
+        Calculates pearson distance between target (sample trajectory) and reference
+        (original trajectory) properties
         """
         self.dissimilarity = dictances.pearson(
             self.target_property.property_distribution_dict,
