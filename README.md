@@ -23,10 +23,6 @@ Python 3.9.1
     - [Scenarios](#scenarios)
     - [Parser](#parser)
     - [Development](#development)
-  - [Contributing](#contributing)
-  - [Credits](#credits)
-  - [Built With](#built-with)
-  - [Versioning](#versioning)
   - [Authors](#authors)
   - [License](#license)
 
@@ -37,13 +33,6 @@ These instructions will get you a copy of the project up and running on your loc
 ## Installation
 
 **BEFORE YOU INSTALL:** please read the [prerequisites](#prerequisites)
-
-Start by either downloading the turball file from https://github.com/alepandini/MDSubSampler to your local machine or cloning this repo on your local machine:
-
-```sh
-$ git clone git@github.com:alepandini/MDSubSampler.git
-$ cd MDSubSampler
-```
 
 To install and set up the library, run:
 
@@ -80,47 +69,58 @@ Output:
 To run scenarios 1,2 or 3 you can download your protein trajectory and topology file (.xtc and .gro files) to the data folder and then run the following:
 
 ```sh
-$ python mdss/scenarios/scenario_1.py data/<YourInputXTCFile> data/<YourInputPDBFile> <YourPrefix>
+$ python mdss/scenarios/scenario_1.py data/<YourTrajectoryFile>.xtc data/<YourTopologyfile>.gro <YourPrefix>
 ```
 
 ### Parser
 
-If you are a terminal lover you can use the terminal to run the code and make a choice for the parser arguments. For example you can run the following:
-
+If you are a terminal lover you can use the terminal to run the code and make a choice for the parser arguments. To see all options and choices run:
 
 ```sh
-$ python mdss/run.py --traj "data/<YourTrajectoryFile>.xtc" --top "data/<YourTopologyfile>.gro" --prefix "<YourPrefix>" --output-folder "data/<YourResultsfoldername>" --property='DistanceBetweenAtoms' --atom-selection='G55,P127' --sampler='BootstrappingSampler' --n-iterations=50 --size=11000 --dissimilarity='Bhattacharyya'
+$ python mdss/run.py --help
+```
+Once you have made a selection of arguments, your command can look like the following example:
+
+```sh
+$ python mdss/run.py \
+    --traj "data/<YourTrajectoryFile>.xtc" \
+    --top "data/<YourTopologyFile>.gro" \
+    --prefix "<YourPrefix>" \
+    --output-folder "data/<YourResultsFolder>" \
+    --property='DistanceBetweenAtoms' \
+    --atom-selection='G55,P127' \
+    --sampler='BootstrappingSampler' \
+    --n-iterations=50 \
+    --size=<SampleSize> \
+    --dissimilarity='Bhattacharyya'
 ```
 
 ### Development
 
-Finally, if you want to develop the library further you can start by installing poetry:
+Start by either downloading the tarball file from https://github.com/alepandini/MDSubSampler to your local machine or cloning this repo on your local machine:
 
 ```sh
-$ curl -sSL https://install.python-poetry.org | python3 -
+$ git clone git@github.com:alepandini/MDSubSampler.git
+$ cd MDSubSampler
 ```
 
-Then you can run the following:
+Following that, download and install poetry from https://python-poetry.org/docs/#installation
+
+
+Finally, run the following:
 
 ```sh
 $ poetry install
-Installing dependencies from lock file
-No dependencies to install or update
-Installing the current project: mdsubsampler (0.1.0)
 $ poetry build
-Building mdsubsampler (0.1.0)
-  - Building sdist
-  - Built mdsubsampler-0.1.0.tar.gz
-  - Building wheel
-  - Built mdsubsampler-0.1.0-py3-none-any.whl
 $ poetry shell
-(mdsubsampler-py3.9) ~/
 ```
-Following that you can start developing the code and commit changes to GitHub. 
+You can now start developing the library.
 
 ### Authors
 
 * **Namir Oues** - [namiroues](https://github.com/namiroues)
 * **Alessandro Pandini** [alepandini](https://github.com/alepandini)
 
+### License
 
+The library is licensed by **GPL-3.0**
