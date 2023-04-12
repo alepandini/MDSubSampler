@@ -77,7 +77,7 @@ Output:
 
 ### Scenarios
 
-To run scenarios 1,2 or 3 you can download your protein trajectory to the data folder and then run the following:
+To run scenarios 1,2 or 3 you can download your protein trajectory and topology file (.xtc and .gro files) to the data folder and then run the following:
 
 ```sh
 $ python mdss/scenarios/scenario_1.py data/<YourInputXTCFile> data/<YourInputPDBFile> <YourPrefix>
@@ -89,7 +89,7 @@ If you are a terminal lover you can use the terminal to run the code and make a 
 
 
 ```sh
-$ python mdss/run.py --traj "data/input.xtc" --top "data/input.gro" --prefix "<YourPrefix>" --output-folder "data/results" --property='DistanceBetweenAtoms' --atom-selection='G55,P127' --sampler='BootstrappingSampler' --n-iterations=50 --size=11000 --dissimilarity='Bhattacharyya'
+$ python mdss/run.py --traj "data/<YourTrajectoryFile>.xtc" --top "data/<YourTopologyfile>.gro" --prefix "<YourPrefix>" --output-folder "data/<YourResultsfoldername>" --property='DistanceBetweenAtoms' --atom-selection='G55,P127' --sampler='BootstrappingSampler' --n-iterations=50 --size=11000 --dissimilarity='Bhattacharyya'
 ```
 
 ### Development
