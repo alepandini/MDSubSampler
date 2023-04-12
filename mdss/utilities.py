@@ -120,9 +120,9 @@ def write_output_files(
     Attributes
     -----------
     output_folder: str,
-            file path for output folder
+            file path for output folder given as user input
     file_prefix: str,
-            prefix that was given as a choice by the user
+            prefix given as user input
     p_prop: list
             list with values of property for full trajectory to plot
     s_prop: list
@@ -189,7 +189,7 @@ def plot_property(output_folder, file_prefix, p_prop, s_prop, p=None):
     Attributes
     -----------
     output_folder: str,
-            file path for output folder
+            file path for output folder given as user input
     file_prefix: str,
             prefix that was given as a choice by the user
     p_prop: list

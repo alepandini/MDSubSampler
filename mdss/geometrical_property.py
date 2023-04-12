@@ -9,6 +9,7 @@ import numpy as np
 class RMSD(ProteinProperty):
     """
     Represents RMSD property class
+    
     Attributes
     ----------
     protein_data: ProteinData class object

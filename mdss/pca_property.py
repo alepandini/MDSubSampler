@@ -8,7 +8,14 @@ class TrjPCAProj(ProteinProperty):
     """
     Represents PCA property class. This class is used for calculation of pca_space
     vector with number of columns being equal to the number of PCs and the number
-    of rows being equal to the number of frames in the trajectory.
+    of rows being equal to the number of frames in the trajectory
+
+    Attributes
+    ----------
+    protein_data: ProteinData class object
+        The object has access to all methods and attributes of ProteinData class
+    atom_selection: str
+        Atom selection for property calculation
     """
 
     display_name = "TrjPCAProj"

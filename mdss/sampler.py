@@ -14,6 +14,12 @@ class ProteinSampler:
     ----------
     protein_property: ProteinProperty class object
         The object has access to all methods and attributes of ProteinProperty class
+    protein_data: ProteinData class object
+        The object has access to all methods and attributes of ProteinData class
+    output_folder: str
+        Path to output file given as user input
+    file_prefix: str,
+        Prefix given as user input
     dissimilarity_measure: Dissimilarity class object
         Dissimilarity measure between full and sample trajectory
     """
@@ -63,6 +69,18 @@ class ProteinSampler:
     def scan_sample_size(
         self, perc_vector=None, dissimilarity_threshold=None, step_recording=False
     ):
+        """
+         Scans sample size list (user input), performs sampling for each size and returns output
+
+         Attributes
+         ----------
+         perc_vector: list
+             Contains list of sample size percentages of full trajectory size
+         dissimilarity_threshold: int
+             Threshold for dissimilarity measure to get the best sample size from the list
+        step_recording: Boolean
+             Returns output files for all sample sizes from the list
+        """
         selected_size = None
         selected_sample_key = None
         if perc_vector is None:
@@ -146,10 +164,16 @@ class RandomSampler(ProteinSampler):
      ----------
     protein_property: ProteinProperty class object
         The object has access to all methods and attributes of ProteinProperty class
-    seed: int
-        Number that initialise a random-number generator
+    protein_data: ProteinData class object
+        The object has access to all methods and attributes of ProteinData class
+    output_folder: str
+        Path to output file given as user input
+    file_prefix: str,
+        Prefix given as user input
+    seed_number: int,
+       Initialise a random-number generator and ensures reproducibility
     dissimilarity_measure: Dissimilarity class object
-        Default measure is Bhattacharyya
+        Dissimilarity measure between full and sample trajectory
     """
 
     display_name = "Random Sampling"
@@ -178,7 +202,8 @@ class RandomSampler(ProteinSampler):
         Attributes
         ----------
         size: int
-            The sample size - user's choice
+            Sample size - user input
+
         Returns
         ----------
         A sampled_protein_property object
@@ -198,10 +223,16 @@ class StratifiedSampler(ProteinSampler):
     ----------
     protein_property: ProteinProperty class object
         The object has access to all methods and attributes of ProteinProperty class
+    protein_data: ProteinData class object
+        The object has access to all methods and attributes of ProteinData class
+    output_folder: str
+        Path to output file given as user input
+    file_prefix: str,
+        Prefix given as user input
     strata_vector: list
         2D list that consists of strata lables one for each point
     dissimilarity_measure: Dissimilarity class object
-        Default measure is Bhattacharyya
+        Dissimilarity measure between full and sample trajectory
     """
 
     display_name = "Stratified Sampling"
@@ -238,7 +269,8 @@ class StratifiedSampler(ProteinSampler):
         Attributes
         ----------
         size: int
-            The sample size - user's choice
+            Sample size user input
+
         Returns
         ----------
         A sampled_protein_property object
@@ -305,14 +337,21 @@ class StratifiedSampler(ProteinSampler):
 class UniformSampler(ProteinSampler):
     """
     Represents Uniform Sampler
+
     Attributes
     ----------
     protein_property: ProteinProperty class object
         The object has access to all methods and attributes of ProteinProperty class
+    protein_data: ProteinData class object
+        The object has access to all methods and attributes of ProteinData class
+    output_folder: str
+        Path to output file given as user input
+    file_prefix: str,
+        Prefix given as user input
     strata_number: int
         The number of intervals where sampling is done.
     dissimilarity_measure: Dissimilarity class object
-        Default measure is Bhattacharyya
+        Dissimilarity measure between full and sample trajectory
     """
 
     display_name = "Uniform Sampling"
@@ -346,6 +385,7 @@ class UniformSampler(ProteinSampler):
     def sample(self, size):
         """
         Performs Uniform Sampling
+
         Returns
         ----------
         A sampled_protein_property object
@@ -368,12 +408,18 @@ class WeightedSampler(ProteinSampler):
     ----------
     protein_property: ProteinProperty class object
         The object has access to all methods and attributes of ProteinProperty class
-    seed: int
-        Number that initialise a random-number generator
+    protein_data: ProteinData class object
+        The object has access to all methods and attributes of ProteinData class
+    output_folder: str
+        Path to output file given as user input
+    file_prefix: str,
+        Prefix given as user input
+    seed_number: int,
+       Initialise a random-number generator and ensures reproducibility
     weights_vector:
         Vector of weights for each element in the sample
     dissimilarity_measure: Dissimilarity class object
-        Default measure is Bhattacharyya
+        Dissimilarity measure between full and sample trajectory
     """
 
     display_name = "Weighted Sampling"
@@ -418,10 +464,12 @@ class WeightedSampler(ProteinSampler):
     def sample(self, size):
         """
         Performs Weighted Sampling
+
         Attributes
         ----------
         size: int
-            The sample size - user's choice
+            Sample size - user input
+
         Returns
         ----------
         A sampled_protein_property object
@@ -448,16 +496,23 @@ class WeightedSampler(ProteinSampler):
 class BootstrappingSampler(ProteinSampler):
     """
     Represents Bootstrapping Sampler
+
     Attributes
     ----------
-    protein_property: ProteinProperty class object
+     protein_property: ProteinProperty class object
         The object has access to all methods and attributes of ProteinProperty class
+    protein_data: ProteinData class object
+        The object has access to all methods and attributes of ProteinData class
+    output_folder: str
+        Path to output file given as user input
+    file_prefix: str,
+        Prefix given as user input
     number_of_iterations: int
-        This is the number of times the random sampling method is performed
-    seed: int
-        Number that initialise a random-number generator
+        Number of times the random sampling method is performed
+    seed_number: int,
+       Initialise a random-number generator and ensures reproducibility
     dissimilarity_measure: Dissimilarity class object
-        Default measure is Bhattacharyya
+        Dissimilarity measure between full and sample trajectory
     """
 
     display_name = "Bootstrapping Sampling"
@@ -485,10 +540,12 @@ class BootstrappingSampler(ProteinSampler):
     def sample(self, size):
         """
         Performs Bootstrapping sampling
+
         Attributes
         ----------
         size: int
-            The sample size - user's choice
+            Sample size - user input
+
         Returns
         ----------
         A sampled_protein_property object
