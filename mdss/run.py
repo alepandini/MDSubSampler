@@ -12,10 +12,11 @@ import sys
 
 def sampling_workflow(arg_list):
     """
-    Implements sampling of data and measures dissimilarity between distributions
+    Implements data sampling, measures dissimilarity between distributions and returns all output files
+
     Attributes
     -----------
-    arg_list: List of arguments that were inputed by the user in the parser
+    arg_list: List of arguments - user input from parser
     """
     args = p.parse_args(arg_list)
     print(args)
@@ -24,7 +25,7 @@ def sampling_workflow(arg_list):
     if not os.path.exists(args.output_folder):
         os.makedirs(args.output_folder)
     """
-    Create property class object with user's input property
+    Create property class object with user input selection of geometric property
     """
     property_class = p.PROPERTY_CLASS_MAPPING[args.property]
     """
@@ -42,8 +43,8 @@ def sampling_workflow(arg_list):
         property = property_class(p_data, args.atom_selection, args.fit)
         property.calculate_property()
     """
-    Create sampler class object with user's input sampler
-    Depending on the sampler ensure necessary arguments were provided
+    Create sampler class object with user input selection of sampling method sampler
+    Depending on sampling strategy ensure necessary arguments were provided
     """
     sampler_class = p.SAMPLER_CLASS_MAPPING[args.sampler]
     if args.sampler == "RandomSampler":
@@ -94,7 +95,7 @@ def sampling_workflow(arg_list):
             dissimilarity_measure=dissimilarity_class_dict[args.dissimilarity],
         )
     """
-    Generate all output files in case of list of sample sizes as input
+    Generate all output files in case of user input is list of sample sizes 
     """
     if isinstance(args.size, list):
         sampled_property = sampler.scan_sample_size(
@@ -106,7 +107,7 @@ def sampling_workflow(arg_list):
         sampled_property = sampler.sample(round(int(args.size) * p_data.n_frames / 100))
 
     """
-    Create dissimilarity class object with user's input dissimilarity
+    Create dissimilarity class object user input selection of dissimilarity measure
     """
     dissimilarity_class = p.DISSIMILARITY_CLASS_MAPPING[args.dissimilarity]
     dissimilarity_object = dissimilarity_class(property, sampled_property)
@@ -117,7 +118,7 @@ def sampling_workflow(arg_list):
     filepath = os.path.join(args.output_folder, filename)
     property.write_property_vector(filepath)
     """
-    Generate all output files in case of a single sample size as input
+    Generate all output files in case of user input is a single sample size
     """
     if not isinstance(args.size, list):
         log.info(
@@ -145,7 +146,7 @@ def sampling_workflow(arg_list):
             )
         )
     """
-    Create file with data report that includes important statistics about trajectory
+    Generate data report file that includes important statistics about trajectory
     """
     filename = "{}_{}.json".format(args.file_prefix, "stats_report")
     filepath = os.path.join(args.output_folder, filename)
