@@ -12,14 +12,6 @@ import pytest
         ),
         (g.RadiusOfGyrationProperty, "name CA"),
         (g.Angles, ["name CA", "name CA", "name CA"]),
-        # (
-        #     mdss_geometrical_property.DihedralAnglePhi,
-        #     ["name CA", "name CA", "name CA", "name CA"],
-        # ),
-        # (
-        #     mdss_geometrical_property.DihedralAnglePsi,
-        #     ["name CA", "name CA", "name CA", "name CA"],
-        # ),
     ],
 )
 def test_property_vector_and_indices_have_same_length(
