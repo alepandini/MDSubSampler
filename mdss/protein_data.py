@@ -303,3 +303,5 @@ class ProteinData:
                 )
         with open(outfilepath, "w") as f:
             json.dump(report_dict, f, indent=2)
+
+        return report_dict
