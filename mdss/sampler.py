@@ -230,7 +230,7 @@ class StratifiedSampler(ProteinSampler):
     file_prefix: str,
         Prefix given as user input
     strata_vector: list
-        2D list that consists of strata lables one for each point
+        2D list that consists of strata labels one for each point
     dissimilarity_measure: Dissimilarity class object
         Dissimilarity measure between full and sample trajectory
     """
