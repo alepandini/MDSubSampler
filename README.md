@@ -39,7 +39,7 @@ These instructions will get you a copy of the project up and running on your loc
 To install and set up the library, run:
 
 ```sh
-$ pip install MDSubSampler
+pip install MDSubSampler
 ```
 
 ## Usage 
@@ -71,7 +71,7 @@ Output:
 To run scenarios 1,2 or 3 you can download your protein trajectory and topology file (.xtc and .gro files) to the data folder and then run the following:
 
 ```sh
-$ python mdss/scenarios/scenario_1.py data/<YourTrajectoryFile>.xtc data/<YourTopologyfile>.gro <YourPrefix>
+python mdss/scenarios/scenario_1.py data/<YourTrajectoryFile>.xtc data/<YourTopologyfile>.gro <YourPrefix>
 ```
 
 ### Parser
@@ -79,31 +79,33 @@ $ python mdss/scenarios/scenario_1.py data/<YourTrajectoryFile>.xtc data/<YourTo
 If you are a terminal lover you can use the terminal to run the code and make a choice for the parser arguments. To see all options and choices run:
 
 ```sh
-$ python mdss/run.py --help
+python mdss/run.py --help
 ```
 Once you have made a selection of arguments, your command can look like the following example:
 
 ```sh
-$ python mdss/run.py \
-    --traj "data/<YourTrajectoryFile>.xtc" \
-    --top "data/<YourTopologyFile>.gro" \
-    --prefix "<YourPrefix>" \
-    --output-folder "data/<YourResultsFolder>" \
-    --property='DistanceBetweenAtoms' \
-    --atom-selection='G55,P127' \
-    --sampler='BootstrappingSampler' \
-    --n-iterations=50 \
-    --size=<SampleSize> \
-    --dissimilarity='Bhattacharyya'
+python mdss/run.py \
+  --traj "data/<YourTrajectoryFile>.xtc" \
+  --top "data/<YourTopologyFile>.gro" \
+  --prefix "<YourPrefix>" \
+  --output-folder "data/<YourResultsFolder>" \
+  --property='DistanceBetweenAtoms' \
+  --atom-selection='G55,P127' \
+  --sampler='BootstrappingSampler' \
+  --n-iterations=50 \
+  --size=<SampleSize> \
+  --dissimilarity='Bhattacharyya'
 ```
 
 ### Development
 
+#### With Poetry
+
 Start by either downloading the tarball file from https://github.com/alepandini/MDSubSampler to your local machine or cloning this repo on your local machine:
 
 ```sh
-$ git clone git@github.com:alepandini/MDSubSampler.git
-$ cd MDSubSampler
+git clone git@github.com:alepandini/MDSubSampler.git
+cd MDSubSampler
 ```
 
 Following that, download and install poetry from https://python-poetry.org/docs/#installation
@@ -112,11 +114,41 @@ Following that, download and install poetry from https://python-poetry.org/docs/
 Finally, run the following:
 
 ```sh
-$ poetry install
-$ poetry build
-$ poetry shell
+poetry install
+poetry build
+poetry shell
 ```
 You can now start developing the library.
+
+#### With Docker
+
+Start by installing Docker using this link https://docs.docker.com/get-docker/.
+
+Initially a Docker image will need to be built. To do this run the following command:
+
+```sh
+docker build -t <image name> .
+```
+
+Then run the following command to get access to a shell with all dependencies installed:
+
+```sh
+docker run -it -v $(pwd):/app -e PYTHONPATH=/app <image name> /bin/bash
+```
+
+This will also mirror the local filesystem in the Docker image, so that any local change will
+be reflected in the running container, and vice-versa, using a Docker volume.
+
+The repo also includes two handy scripts to run all of the above faster (an image called
+`subsampler` will be created):
+
+```sh
+./build-docker
+./run-docker
+```
+
+After dropping in the Docker shell, all dependencies will be installed, and the package scripts
+will also be in scope (the `mdss` command and all scenarios declared in `pyproject.toml`).
 
 ### Authors
 
