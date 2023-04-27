@@ -1,5 +1,7 @@
 # MDSubSampler: Molecular Dynamics SubSampler
 
+[![PyPI version](https://badge.fury.io/py/mdsubsampler.svg)](https://badge.fury.io/py/mdsubsampler)
+
 MDSubSampler is a Python library and toolkit for a posteriori subsampling of multiple trajectory data for further analysis. This toolkit implements uniform, random, stratified sampling, bootstrapping and targeted sampling to preserve the original distribution of relevant geometrical properties.
 
 ## Prerequisites
