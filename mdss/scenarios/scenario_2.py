@@ -18,8 +18,8 @@
 
     You should have received a copy of the GNU General Public License 
     along with this program. If not, see <http://www.gnu.org/licenses/>.
-"""
-"""
+
+
 Scenario 002
 
 Purpose:             Given a single MD trajectory sampling different conformations 
@@ -58,7 +58,7 @@ Scenario:
 from mdss.run import sampling_workflow
 import sys
 
-OUT_DIR = "testing"
+OUT_DIR = "results"
 PROPERTY = "RMSD"
 SELECTION = "resid 120:160"
 SAMPLER = "UniformSampler"

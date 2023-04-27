@@ -1,8 +1,9 @@
 [tool.poetry]
 name = "mdsubsampler"
-version = "0.1.0"
+version = "0.0.1"
 description = ""
 authors = ["Namir Oues <namir.oues@brunel.ac.uk>"]
+license = "GPL-3.0-only"
 readme = "README.md"
 packages = [
     { include = "mdss" },
