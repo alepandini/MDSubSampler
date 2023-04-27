@@ -1,4 +1,4 @@
-'''
+"""
     @release_date  : $release_date
     @version       : $release_version
     @author        : Namir Oues
@@ -18,7 +18,7 @@
 
     You should have received a copy of the GNU General Public License 
     along with this program. If not, see <http://www.gnu.org/licenses/>.
-'''
+"""
 from sklearn.model_selection import train_test_split
 from datetime import datetime
 from copy import deepcopy
