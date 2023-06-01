@@ -155,52 +155,54 @@ def write_output_files(
     unit: str
        unit that the property will be calculated and saved
     """
-    if output_folder is not None:
-        p_format = "_" if p is None else f"_{p}_"
+    if output_folder is None:
+        return
 
-        filename = "{}{}{}.dat".format(
-            file_prefix,
-            p_format,
-            p_prop.display_name,
+    p_format = "_" if p is None else f"_{p}_"
+
+    filename = "{}{}{}.dat".format(
+        file_prefix,
+        p_format,
+        p_prop.display_name,
+    )
+    filepath = os.path.join(output_folder, filename)
+
+    s_prop.write_property_vector(filepath)
+
+    filename = "{}{}{}.xtc".format(
+        file_prefix,
+        p_format,
+        p_prop.display_name,
+    )
+    filepath = os.path.join(output_folder, filename)
+    selected_frames = p_data.frame_selection_indices(s_prop.frame_indices)
+    p_data.write_xtc_file(filepath, selected_frames)
+
+    filename = "{}{}{}".format(
+        file_prefix,
+        p_format,
+        p_prop.display_name,
+    )
+    filepath = os.path.join(output_folder, filename)
+    subsampled_traj = p_data.frame_selection_iterator(s_prop.frame_indices)
+    coordinates_array = p_data.cast_output_traj_to_numpy(
+        filepath, subsampled_traj, unit
+    )
+    if machine_learning:
+        filename = "{}{}{}{}".format(
+            file_prefix, p_format, p_prop.display_name, "_ML_input"
         )
         filepath = os.path.join(output_folder, filename)
-
-        s_prop.write_property_vector(filepath)
-
-        filename = "{}{}{}.xtc".format(
-            file_prefix,
-            p_format,
-            p_prop.display_name,
+        ML_input = p_data.convert_numpy_to_2D(coordinates_array, filepath)
+        filename_train = "{}{}{}{}".format(
+            file_prefix, p_format, p_prop.display_name, "_ML_train"
         )
-        filepath = os.path.join(output_folder, filename)
-        selected_frames = p_data.frame_selection_indices(s_prop.frame_indices)
-        p_data.write_xtc_file(filepath, selected_frames)
-
-        filename = "{}{}{}".format(
-            file_prefix,
-            p_format,
-            p_prop.display_name,
+        filepath_train = os.path.join(output_folder, filename_train)
+        filename_test = "{}{}{}{}".format(
+            file_prefix, p_format, p_prop.display_name, "_ML_test"
         )
-        filepath = os.path.join(output_folder, filename)
-        subsampled_traj = p_data.frame_selection_iterator(s_prop.frame_indices)
-        coordinates_array = p_data.cast_output_traj_to_numpy(
-            filepath, subsampled_traj, unit
-        )
-        if machine_learning:
-            filename = "{}{}{}{}".format(
-                file_prefix, p_format, p_prop.display_name, "_ML_input"
-            )
-            filepath = os.path.join(output_folder, filename)
-            ML_input = p_data.convert_numpy_to_2D(coordinates_array, filepath)
-            filename_train = "{}{}{}{}".format(
-                file_prefix, p_format, p_prop.display_name, "_ML_train"
-            )
-            filepath_train = os.path.join(output_folder, filename_train)
-            filename_test = "{}{}{}{}".format(
-                file_prefix, p_format, p_prop.display_name, "_ML_test"
-            )
-            filepath_test = os.path.join(output_folder, filename_test)
-            p_data.ML_input_prep(ML_input, filepath_train, filepath_test)
+        filepath_test = os.path.join(output_folder, filename_test)
+        p_data.ML_input_prep(ML_input, filepath_train, filepath_test)
 
 
 def plot_property(output_folder, file_prefix, p_prop, s_prop, p=None):
@@ -225,10 +227,13 @@ def plot_property(output_folder, file_prefix, p_prop, s_prop, p=None):
     png file with overlay property distribution of full and sample trajectories
 
     """
+    if output_folder is None:
+        return
+
     p_format = "_" if p is None else f"_{p}_"
     filename = "{}{}{}_{}.png".format(
         file_prefix, p_format, p_prop.display_name, "plot"
     )
     filepath = os.path.join(output_folder, filename)
     graph = g.PropertyPlot(p_prop, s_prop, filepath)
-    graph.plot(p_prop.display_name, p_prop, s_prop, p, filepath)
+    return graph.plot(p_prop.display_name, p_prop, s_prop, p, filepath)
