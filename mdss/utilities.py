@@ -158,7 +158,7 @@ def write_output_files(
     if output_folder is None:
         return
 
-    p_format = "_" if p is None else f"_{p}_"
+    p_format = "_" if p is None else f"_{str(p).replace('.', '_')}_"
 
     filename = "{}{}{}.dat".format(
         file_prefix,
@@ -230,7 +230,7 @@ def plot_property(output_folder, file_prefix, p_prop, s_prop, p=None):
     if output_folder is None:
         return
 
-    p_format = "_" if p is None else f"_{p}_"
+    p_format = "_" if p is None else f"_{str(p).replace('.', '_')}_"
     filename = "{}{}{}_{}.png".format(
         file_prefix, p_format, p_prop.display_name, "plot"
     )
