@@ -164,9 +164,10 @@ class ProteinProperty:
         outfilepath: str
             path to output file
         """
-        with open(outfilepath, "w") as f:
-            for i, value in zip(self.frame_indices, self.property_vector):
-                f.write("{} {}\n".format(i, value))
+        if outfilepath is not None:
+            with open(outfilepath, "w") as f:
+                for i, value in zip(self.frame_indices, self.property_vector):
+                    f.write("{} {}\n".format(i, value))
 
     def write_discretized_property_vector(self, outfilepath):
         """
@@ -179,9 +180,12 @@ class ProteinProperty:
         """
         if len(self.property_distribution_dict) < 1:
             self.discretize_vector()
-        with open(outfilepath, "w") as f:
-            for i, value in zip(self.frame_indices, self.discretized_property_vector):
-                f.write("{} {}\n".format(i, value))
+        if outfilepath is not None:
+            with open(outfilepath, "w") as f:
+                for i, value in zip(
+                    self.frame_indices, self.discretized_property_vector
+                ):
+                    f.write("{} {}\n".format(i, value))
 
     def write_property_distribution_dict(self, outfilepath):
         """
@@ -194,9 +198,10 @@ class ProteinProperty:
         """
         if len(self.property_distribution_dict) < 1:
             self.discretize_vector()
-        with open(outfilepath, "w") as f:
-            for (key, value) in self.property_distribution_dict.items():
-                f.write("{} {}\n".format(key, value))
+        if outfilepath is not None:
+            with open(outfilepath, "w") as f:
+                for key, value in self.property_distribution_dict.items():
+                    f.write("{} {}\n".format(key, value))
 
 
 class SampledProperty(ProteinProperty):
