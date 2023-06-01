@@ -102,7 +102,6 @@ class ProteinSampler:
         step_recording: Boolean
              Returns output files for all sample sizes from the list
         """
-        selected_size = None
         selected_sample_key = None
         if perc_vector is None:
             perc_vector = [25, 10, 5, 1, 0.5, 0.1]
@@ -122,9 +121,11 @@ class ProteinSampler:
                             sampled_property.dissimilarity_threshold
                         )
                     if sampled_property.ref_dissimilarity <= dissimilarity_threshold:
-                        selected_size = p
                         selected_sample_key = sampled_property.property_key
-                if step_recording:
+                if (
+                    step_recording
+                    or sampled_property.ref_dissimilarity <= dissimilarity_threshold
+                ):
                     write_output_files(
                         output_folder=self.output_folder,
                         file_prefix=self.file_prefix,
@@ -139,20 +140,6 @@ class ProteinSampler:
                         p_prop=self.protein_property,
                         s_prop=sampled_property,
                         p=p,
-                    )
-                else:
-                    write_output_files(
-                        output_folder=self.output_folder,
-                        file_prefix=self.file_prefix,
-                        p_prop=self.protein_property,
-                        s_prop=sampled_property,
-                        p_data=self.protein_data,
-                    )
-                    plot_property(
-                        output_folder=self.output_folder,
-                        file_prefix=self.file_prefix,
-                        p_prop=self.protein_property,
-                        s_prop=sampled_property,
                     )
 
             log.info(
