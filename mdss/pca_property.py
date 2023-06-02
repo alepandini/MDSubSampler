@@ -27,16 +27,16 @@ from mdss.log_setup import log
 
 class TrjPCAProj(ProteinProperty):
     """
-    Represents PCA property class. This class is used for calculation of pca_space
-    vector with number of columns being equal to the number of PCs and the number
-    of rows being equal to the number of frames in the trajectory
+    Subclass of ProteinProperty class representing PCA property. Calculates pca_space
+    vector while setting number of columns as number of PCs and number of rows as number
+    of frames in the trajectory.
 
-    Attributes
+    Parameters
     ----------
-    protein_data: ProteinData class object
-        The object has access to all methods and attributes of ProteinData class
-    atom_selection: str
-        Atom selection for property calculation
+    protein_data   : ProteinData
+                     An instance of the ProteinData class representing the protein data.
+    atom_selection : str
+                     Atom selection for property calculation.
     """
 
     display_name = "TrjPCAProj"
@@ -49,10 +49,22 @@ class TrjPCAProj(ProteinProperty):
         self.property_matrix = None
 
     def _run_pca(self):
+        """
+        Perform Principal Component Analysis for a given protein trajectoru and
+        selection of atoms and retrieve the principal components.
+        """
         self.pca_model = pca.PCA(self.protein_data.trajectory_data, self.atom_selection)
         self.pca_model.run()
 
     def select_pc(self, pc_index=1):
+        """
+        Select principal components.
+
+        Parameters
+        ----------
+        pc_index : int
+                   Principal component index.
+        """
         if not self.n_pcs:
             print("Warning: values not available. Please calculate property values.")
             log.warning(
@@ -72,7 +84,15 @@ class TrjPCAProj(ProteinProperty):
 
     def calculate_property(self, var_threshold=0.8, pc_filter=False):
         """
-        Calculates pca property including all trajectory frames
+        Perform Principal Component Analysis with all trajectory frames.
+
+        Parameters
+        ----------
+        var_threshold : float
+                        Threshold to compare cumulated variance to pick the right
+                        number of principal components.
+        pc_filter     : Boolean
+
         """
 
         self._run_pca()
