@@ -32,16 +32,16 @@ import json
 
 class ProteinData:
     """
-    Represents protein data
+    Class representing protein data.
 
     Attributes
     -----------
     trajectory_filename : str
-        path to trajectory file
-    topology_filename : str
-        path to topology file
-    config_parameters : str
-        protein's configuration parameters
+                          Path to trajectory file.
+    topology_filename   : str
+                          Path to topology file.
+    config_parameters   : str
+                          Protein's configuration parameters.
     """
 
     def __init__(
@@ -50,7 +50,6 @@ class ProteinData:
         topology_filename,
         config_parameters=None,
     ):
-
         self.trajectory_filename = trajectory_filename
         self.topology_filename = topology_filename
         self.trajectory_data = self._read_trajectory(
@@ -66,34 +65,36 @@ class ProteinData:
 
     def _read_topology(self, topology_filename):
         """
-        Loads topology file
+        Load topology file.
 
-        Attributes
-        -----------
-        topology_filename: str,
-            path to topology file
+        Parameters
+        ----------
+        topology_filename : str
+                            Path to topology file.
 
         Returns
-        -----------
-        topology data
+        -------
+        mda.Universe
+            An instance of the MDAnalysis Universe representing the loaded topology data.
         """
         top_data = mda.Universe(topology_filename)
         return top_data
 
     def _read_trajectory(self, trajectory_filename, topology_filename):
         """
-        Loads trajectory and topology files into Universe to build the object
+        Load trajectory and topology files into Universe to build the object.
 
-        Attributes
+        Parameters
         -----------
-        trajectory_filename: str,
-            path to trajectory file
-        topology_filename: str,
-            path to topology file
+        trajectory_filename : str
+                              Path to trajectory file.
+        topology_filename   : str
+                              Path to topology file.
 
         Returns
         -----------
-        trajetory data
+        mda.Universe
+            An instance of the MDAnalysis Universe representing the loaded trajectory.
         """
         trajectory_data = mda.Universe(
             topology_filename,
@@ -105,22 +106,24 @@ class ProteinData:
 
     def _select_CA_atoms(self):
         """
-        Reads c-alpha from the first frame of trajectory
+        Select C-alpha atoms from the first frame of the trajectory.
 
         Returns
-        -----------
-        Number of CA atoms from AtomGroup
+        -------
+        MDAnalysis.core.groups.AtomGroup
+            An AtomGroup containing the C-alpha atoms from the first frame of the trajectory.
         """
         ca_atom_group = self.trajectory_data.select_atoms("name CA")
         return ca_atom_group
 
     def _frames_of_trajectory(self):
         """
-        Creates a dictionary with frame number and timestep for protein trajectory
+        Generate a dictionary with frame numbers and timesteps for a protein trajectory.
 
         Returns
-        -----------
-        frames of protein trajectory
+        -------
+        list of tuples
+            A list of tuples containing the frame number (index) and corresponding timestep for each frame.
         """
         frames = []
         for x in range(len(self.trajectory_data.trajectory)):
@@ -139,11 +142,13 @@ class ProteinData:
 
     def _frame_indices_of_trajectory(self):
         """
-        Creates list with frame indices for protein trajectory
+        Generate a list of frame indices for a protein trajectory.
 
         Returns
-        -----------
-        Frame indices from protein trajectory
+        -------
+        list
+            A list of integers representing the frame indices from the protein trajectory.
+
         """
         frame_indices = []
         for x in range(len(self.trajectory_data.trajectory)):
@@ -152,17 +157,18 @@ class ProteinData:
 
     def frame_selection_iterator(self, selection_of_frames):
         """
-        Creates a new object with similar attributes to a trajectory object from a
-        specific selection of frames that can be used for further analysis.
+        Create a new object with similar attributes to a trajectory object from a specific selection of frames.
 
-        Attributes
+        Parameters
         -----------
-        selection_of_frames: int,
-            single frame or slice of frames from trajectory
+        selection_of_frames : int or slice
+                              Single frame or slice of frames from the trajectory to select.
 
         Returns
-        -----------
-        FrameIteratorIndices object with the selected frames
+        -------
+        FrameIteratorIndices
+            An instance of the MDAnalysis.coordinates.base.FrameIteratorIndices that is
+            iterable over the frames of a trajectory.
         """
         trajectory_data = self.trajectory_data.trajectory
         mask = np.array([False for _ in trajectory_data])
@@ -186,16 +192,17 @@ class ProteinData:
 
     def frame_selection_indices(self, selection_of_frames):
         """
-        Creates a list with only selected frames from a protein trajectory
+        Generate a list with only selected frames from a protein trajectory
 
-        Attributes
+        Parameters
         -----------
-        selection_of_frames: int,
-            single frame or slice of frames from trajectory
+        selection_of_frames : int or slice
+                              Single frame or slice of frames from the trajectory to select.
 
         Returns
-        -----------
-        List with indices of selected frames
+        -------
+        List
+            Contains indices of selected frames.
         """
         trajectory_data = self.trajectory_data.trajectory
         mask = np.array([False for _ in trajectory_data])
@@ -215,14 +222,14 @@ class ProteinData:
 
     def write_xtc_file(self, outfilepath, selected_frames):
         """
-        Writes an xtc file containing only specific frames from a protein trajectory
+        Generate an xtc file containing only selected frames from a protein trajectory.
 
-        Attributes
+        Parameters
         -----------
-        outfilepath: str
-            path to output file
-        selected_frames: int ot list,
-            single frame or list of frames from trajectory
+        outfilepath     : str
+                          Path where output file is saved.
+        selected_frames : int ot list,
+                          Single frame or list of frames from trajectory.
         """
         protein = self.trajectory_data.select_atoms("protein")
         with mda.Writer(outfilepath, protein.n_atoms) as W:
@@ -232,16 +239,22 @@ class ProteinData:
 
     def cast_output_traj_to_numpy(self, outfilepath, subsampled_traj, unit="nanometer"):
         """
-        Casts an xtc file into a numpy array that can be readable
+        Casts an XTC file into a NumPy array for user readability.
 
-        Attributes
+        Parameters
         -----------
-        outfilepath: str
-            path to output file
-        subsampled_traj: .xtc file
-           subsampled trajectory file
-        unit: str
-            unit for coordinates values
+        outfilepath     : str
+                          Path where output file is saved.
+        subsampled_traj : MDAnalysis.coordinates.XTC.XTCReader
+                          XTC trajectory file.
+        unit            : str
+                          Unit for coordinates values, optional.
+
+        Returns
+        -------
+        numpy.ndarray
+            NumPy array containing the coordinates of the subsampled trajectory.
+
         """
         coordinates_numpy = []
         for ts in subsampled_traj:
@@ -262,16 +275,19 @@ class ProteinData:
 
     def ML_input_prep(self, infilepath, outfilepath_training, outfilepath_testing):
         """
-        Prepares input for Machine Learning
+        Prepares input data for machine learning by splitting the input file into training and testing data.
 
-        Attributes
-        -----------
-        outfilepath: str
-            path to output file
-        subsampled_traj: .xtc files
-           subsampled trajectory file
-        unit: str
-            unit for coordinates values
+        Parameters
+        ----------
+        infilepath            : str
+                                Path to the input file containing the data to be split.
+
+        outfilepath_training  : str
+                                Path where the training data file will be saved.
+
+        outfilepath_testing   : str
+                                Path where the testing data file will be saved.
+
         """
         training_data, testing_data = train_test_split(
             infilepath, test_size=0.3, random_state=25
@@ -281,18 +297,20 @@ class ProteinData:
 
     def add_property(self, protein_property, property_name):
         """
-        Retrieves key from property dictionary
+        Add a protein property to the dictionary.
 
-        Attributes
-        -----------
-        protein_property: ProteinProperty class object
-               The object has access to all methods and attributes of ProteinProperty class
-        property_name: str
-               property name
+        Parameters
+        ----------
+        protein_property : ProteinProperty
+                           An object of the ProteinProperty class that represents the protein property.
+
+        property_name    : str
+                           The name of the property to be added.
 
         Returns
-        -----------
-        String that contains the propety name and timestamp.
+        -------
+        str
+            A string containing the property name and timestamp.
         """
         timestamp = str(datetime.now().timestamp())
         key = "{}_{}".format(property_name, timestamp)
@@ -301,12 +319,17 @@ class ProteinData:
 
     def property_data_report(self, outfilepath):
         """
-        Creates a .json report with key information and statistics for property
+        Create a JSON report with key information and statistics for the property.
 
-        Attributes
-        -----------
-        outfilepath: str
-            path to output file
+        Parameters
+        ----------
+        outfilepath : str
+                      Path to the output file where the JSON report will be saved.
+
+        Returns
+        -------
+        dict
+            A dictionary containing the report information.
         """
         report_dict = {}
         for k, v in self.property_dict.items():
