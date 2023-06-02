@@ -33,7 +33,8 @@ class RMSD(ProteinProperty):
 
     Parameters
     ----------
-    protein_data   : ProteinData class object
+    protein_data   : ProteinData
+                     An instance of the ProteinData class representing the protein data.
     atom_selection : str
                      Atom selection for property calculation.
     fit            : boolean
@@ -92,7 +93,8 @@ class DistanceBetweenAtoms(ProteinProperty):
 
     Parameters
     ----------
-    protein_data   : ProteinData class object
+    protein_data   : ProteinData
+                     An instance of the ProteinData class representing the protein data.
     atom_selection : list
                      List of atom selection with 2 atoms or 2 group of atoms.
     """
@@ -178,7 +180,8 @@ class Angles(ProteinProperty):
 
     Parameters
     ----------
-    protein_data   : ProteinData class object
+    protein_data   : ProteinData
+                     An instance of the ProteinData class representing the protein data.
     atom_selection : list
                      List of atom selection with 3 atoms.
     """
@@ -250,7 +253,8 @@ class DihedralAngles(ProteinProperty):
 
     Parameters
     ----------
-    protein_data   : ProteinData class object
+    protein_data   : ProteinData
+                     An instance of the ProteinData class representing the protein data.
     atom_selection : list
                      List of atom selection with 4 atoms.
     """
