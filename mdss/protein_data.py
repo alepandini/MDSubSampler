@@ -37,11 +37,11 @@ class ProteinData:
     Attributes
     -----------
     trajectory_filename : str
-                          Path to trajectory file.
-    topology_filename   : str
-                          Path to topology file.
-    config_parameters   : str
-                          Protein's configuration parameters.
+        Path to trajectory file.
+    topology_filename : str
+        Path to topology file.
+    config_parameters : str
+        Protein's configuration parameters.
     """
 
     def __init__(
@@ -70,7 +70,7 @@ class ProteinData:
         Parameters
         ----------
         topology_filename : str
-                            Path to topology file.
+            Path to topology file.
 
         Returns
         -------
@@ -87,9 +87,9 @@ class ProteinData:
         Parameters
         -----------
         trajectory_filename : str
-                              Path to trajectory file.
-        topology_filename   : str
-                              Path to topology file.
+            Path to trajectory file.
+        topology_filename : str
+            Path to topology file.
 
         Returns
         -----------
@@ -162,13 +162,13 @@ class ProteinData:
         Parameters
         -----------
         selection_of_frames : int or slice
-                              Single frame or slice of frames from the trajectory to select.
+            Single frame or slice of frames from the trajectory to select.
 
         Returns
         -------
         FrameIteratorIndices
-            An instance of the MDAnalysis.coordinates.base.FrameIteratorIndices that is
-            iterable over the frames of a trajectory.
+            An instance of the MDAnalysis.coordinates.base.FrameIteratorIndices.
+            It is iterable over the frames of a trajectory.
         """
         trajectory_data = self.trajectory_data.trajectory
         mask = np.array([False for _ in trajectory_data])
@@ -197,7 +197,7 @@ class ProteinData:
         Parameters
         -----------
         selection_of_frames : int or slice
-                              Single frame or slice of frames from the trajectory to select.
+            Single frame or slice of frames from the trajectory to select.
 
         Returns
         -------
@@ -226,10 +226,10 @@ class ProteinData:
 
         Parameters
         -----------
-        outfilepath     : str
-                          Path where output file is saved.
+        outfilepath : str
+            Path where output file is saved.
         selected_frames : int ot list,
-                          Single frame or list of frames from trajectory.
+            Single frame or list of frames from trajectory.
         """
         protein = self.trajectory_data.select_atoms("protein")
         with mda.Writer(outfilepath, protein.n_atoms) as W:
@@ -243,12 +243,12 @@ class ProteinData:
 
         Parameters
         -----------
-        outfilepath     : str
-                          Path where output file is saved.
+        outfilepath : str
+            Path where output file is saved.
         subsampled_traj : MDAnalysis.coordinates.XTC.XTCReader
-                          XTC trajectory file.
-        unit            : str, optional
-                          Unit for coordinates valuess.
+            XTC trajectory file.
+        unit : str, optional
+            Unit for coordinates valuess.
 
         Returns
         -------
@@ -279,15 +279,12 @@ class ProteinData:
 
         Parameters
         ----------
-        infilepath            : str
-                                Path to the input file containing the data to be split.
-
-        outfilepath_training  : str
-                                Path where the training data file will be saved.
-
-        outfilepath_testing   : str
-                                Path where the testing data file will be saved.
-
+        infilepath : str
+            Path to the input file containing the data to be split.
+        outfilepath_training : str
+            Path where the training data file will be saved.
+        outfilepath_testing : str
+            Path where the testing data file will be saved.
         """
         training_data, testing_data = train_test_split(
             infilepath, test_size=0.3, random_state=25
@@ -302,10 +299,9 @@ class ProteinData:
         Parameters
         ----------
         protein_property : ProteinProperty
-                           An object of the ProteinProperty class that represents the protein property.
-
-        property_name    : str
-                           The name of the property to be added.
+            An object of the ProteinProperty class that represents the protein property.
+        property_name : str
+            The name of the property to be added.
 
         Returns
         -------
@@ -324,7 +320,7 @@ class ProteinData:
         Parameters
         ----------
         outfilepath : str
-                      Path to the output file where the JSON report will be saved.
+            Path to the output file where the JSON report will be saved.
 
         Returns
         -------
