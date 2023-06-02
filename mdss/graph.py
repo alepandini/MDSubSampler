@@ -27,14 +27,19 @@ import math
 
 class PropertyPlot:
     """
-    Represents vector plot after property calculation
+    Class representing overlaping distribution plot of calculated reference property for
+    full and sample trajectory.
 
-    Attributes
+    Parameters
     -----------
-    protein_property: ProteinProperty class object
-        The object has access to all methods and attributes of ProteinProperty class
-    outfilepath : str
-        path where output file with plot will be saved
+    property         : ProteinProperty
+                       An instance of the ProteinProperty class representing the calculated
+                       reference property for the full protein trajectory.
+    sampled_property : ProteinProperty
+                       An instance of the ProteinProperty class representing the calculated
+                       reference property for the sampled protein trajectory.
+    outfilepath      : str
+                       path where output file is saved.
     """
 
     def __init__(self, property, sampled_property, outfilepath):
@@ -47,12 +52,17 @@ class PropertyPlot:
 
     def convert_list_to_data_frame(self, calculated_property):
         """
-        Converts list with calculated property to pandas dataframe
+        Convert list with calculated property to pandas dataframe.
 
-        Attributes
+        Parameters
         -----------
         calculated_property: list
-            A list that contains a specific calculated property for protein trajectory
+                             Contains the calculated property for protein trajectory.
+
+        Returns
+        -------
+        df
+           Dataframe with calculated reference property for protein trajectory.
         """
         df = pd.DataFrame(calculated_property)
         return df
@@ -61,20 +71,20 @@ class PropertyPlot:
         self, property_name, reference_df, sample_df, sample_size, outfilepath=None
     ):
         """
-        Plots overlapped distribution of full and sample trajectory and saves file
+        Plot overlapped distribution of full and sample trajectory and save file.
 
-        Attributes
+        Parameters
         -----------
-        property_name: str
-            Name of property that is calculated
-        reference_df: dataframe
-            dataframe with calculated property for full protein trajectory
-        sample_df: dataframe
-            dataframe with calculated property for sample protein trajectory
-        sample_size: int
-            size of sample trajectory
-        outfilepath : str
-            Path where output file with plot will be saved
+        property_name : str
+                        Name of calculated reference property.
+        reference_df  : dataframe
+                        Dataframe with calculated property for full (i.e. reference) protein trajectory.
+        sample_df     : dataframe
+                        Dataframe with calculated property for sample protein trajectory.
+        sample_size   : int
+                        Size of sample trajectory.
+        outfilepath   : str
+                        Path where output file is saved.
         """
         if outfilepath is None:
             outfilepath = self.outfilepath
