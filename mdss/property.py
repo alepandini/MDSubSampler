@@ -97,9 +97,6 @@ class ProteinProperty:
         """
         if self.protein_data is not None:
             property_key = self.protein_data.add_property(self, self.display_name)
-            import code
-
-            code.interact(local=locals())
             return property_key
 
     def discretize_vector(self, min_value=None, max_value=None, n_bins=100):
