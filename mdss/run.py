@@ -33,11 +33,12 @@ import sys
 
 def sampling_workflow(arg_list):
     """
-    Implements data sampling, measures dissimilarity between distributions and returns all output files
+    Implement data sampling, measure dissimilarity between distributions, and return all output files.
 
-    Attributes
-    -----------
-    arg_list: List of arguments - user input from parser
+    Parameters
+    ----------
+    arg_list : list
+               A list of arguments representing the user input from the parser.
     """
     args = p.parse_args(arg_list)
     print(args)
@@ -46,12 +47,12 @@ def sampling_workflow(arg_list):
     if not os.path.exists(args.output_folder):
         os.makedirs(args.output_folder)
     """
-    Create property class object with user input selection of geometric property
+    Create property class object with user input selection of geometric property.
     """
     property_class = p.PROPERTY_CLASS_MAPPING[args.property]
     """
     Check if user input includes an xvg file with precalculated property
-    otherwise read protein trajectory from input files and calculate property
+    otherwise read protein trajectory from input files and calculate property.
     """
     if args.xvg_file is not None:
         property = property_class.from_xvg(args.xvg_file)
@@ -65,7 +66,7 @@ def sampling_workflow(arg_list):
         property.calculate_property()
     """
     Create sampler class object with user input selection of sampling method sampler
-    Depending on sampling strategy ensure necessary arguments were provided
+    Depending on sampling strategy ensure necessary arguments were provided.
     """
     sampler_class = p.SAMPLER_CLASS_MAPPING[args.sampler]
     if args.sampler == "RandomSampler":
@@ -116,7 +117,7 @@ def sampling_workflow(arg_list):
             dissimilarity_measure=dissimilarity_class_dict[args.dissimilarity],
         )
     """
-    Generate all output files in case of user input is list of sample sizes 
+    Generate all output files in case of user input is list of sample sizes.
     """
     if isinstance(args.size, list):
         sampled_property = sampler.scan_sample_size(
@@ -128,18 +129,18 @@ def sampling_workflow(arg_list):
         sampled_property = sampler.sample(round(int(args.size) * p_data.n_frames / 100))
 
     """
-    Create dissimilarity class object user input selection of dissimilarity measure
+    Create dissimilarity class object user input selection of dissimilarity measure.
     """
     dissimilarity_class = p.DISSIMILARITY_CLASS_MAPPING[args.dissimilarity]
     dissimilarity_object = dissimilarity_class(property, sampled_property)
     """
-    Generate file with calculated property for full trajectory
+    Generate file with calculated property for full trajectory.
     """
     filename = "{}_{}.dat".format(args.file_prefix, property_class.display_name)
     filepath = os.path.join(args.output_folder, filename)
     property.write_property_vector(filepath)
     """
-    Generate all output files in case of user input is a single sample size
+    Generate all output files in case of user input is a single sample size.
     """
     if not isinstance(args.size, list):
         log.info(
@@ -167,7 +168,7 @@ def sampling_workflow(arg_list):
             )
         )
     """
-    Generate data report file that includes important statistics about trajectory
+    Generate data report file that includes important statistics about trajectory.
     """
     filename = "{}_{}.json".format(args.file_prefix, "stats_report")
     filepath = os.path.join(args.output_folder, filename)
