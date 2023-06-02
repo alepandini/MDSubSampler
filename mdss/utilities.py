@@ -36,7 +36,17 @@ class EmptyTrajectoryError(Exception):
 
 def check_file_size(filepath):
     """
-    Checks file size and machine memory to ensure there is enough memory in the system
+    Check file size and machine memory to ensure there is enough memory in the system.
+
+    Parameters
+    ----------
+    filepath : str
+        Path to the file that will be checked.
+
+    Raises
+    ------
+    NotEnoughMemoryError
+        If the size of the file exceeds the available memory.
     """
     mem = psutil.virtual_memory()
     file_size = os.path.getsize(filepath)
@@ -55,6 +65,23 @@ def check_trajectory_size(trajectory_file_path, topology_file_path):
     """
     Checks trajectory size and that trajectory and topology files are not empty and
     contain at least X number of frames.
+
+    Parameters
+    ----------
+    trajectory_file_path : str
+        Path to the trajectory file.
+    topology_file_path : str
+        Path to the topology file.
+
+    Returns
+    -------
+    trajectory_size : int
+        Number of frames in the trajectory.
+
+    Raises
+    ------
+    EmptyTrajectoryError
+        If the trajectory file is empty or contains no frames.
     """
     protein_data = pd.ProteinData(
         trajectory_file_path,
@@ -80,6 +107,20 @@ def check_multiple_trajectories_size(list_of_trajectory_files, topology_file_pat
     """
     Checks size of multiple trajectories and that trajectory and topology files are not
     empty and contain at least X number of frames.
+
+    Parameters
+    ----------
+    list_of_trajectory_files : list
+        List of trajectory file paths.
+    topology_file_path : str
+        Path to the topology file.
+
+    Raises
+    ------
+    EmptyTrajectoryError
+        If any of the trajectory files is empty or contains no frames.
+    RuntimeError
+        If one or more trajectory files have empty or no frames.
     """
     errors = []
     for traj in list_of_trajectory_files:
@@ -100,6 +141,20 @@ def check_number_of_residues(trajectory_file_path, topology_file_path, atom_sele
     """
     Checks that the number of selected residues that are used as an
     input matches the number of residues in the XTC file.
+
+    Parameters
+    ----------
+    trajectory_file_path : str
+        Path to the trajectory file.
+    topology_file_path : str
+        Path to the topology file.
+    atom_selection : str
+        Atom selection string.
+
+    Raises
+    ------
+    Exception
+        If the number of selected residues is greater than the number of residues in the XTC file.
     """
     protein_data = pd.ProteinData(
         trajectory_file_path,
@@ -119,7 +174,17 @@ def check_number_of_residues(trajectory_file_path, topology_file_path, atom_sele
 
 def check_file_exists(filepath):
     """
-    Checks that file exists in a given filepath
+    Checks that a file exists at the specified filepath.
+
+    Parameters
+    ----------
+    filepath : str
+        Path to the file.
+
+    Raises
+    ------
+    FileNotFoundError
+        If the file does not exist.
     """
     if not os.path.isfile(filepath):
         raise FileNotFoundError("File {} does not exist".format(filepath))
@@ -136,24 +201,26 @@ def write_output_files(
     machine_learning=False,
 ):
     """
-    Writes all output files
+    Writes all output files.
 
-    Attributes
-    -----------
-    output_folder: str,
-            file path for output folder given as user input
-    file_prefix: str,
-            prefix given as user input
-    p_prop: list
-            list with values of property for full trajectory to plot
-    s_prop: list
-            list with values of property for sample trajectory to plot
-    p_data: ProteinData Class object
-
-    p: int
-       percentage of sample trajectory
-    unit: str
-       unit that the property will be calculated and saved
+    Parameters
+    ----------
+    output_folder : str
+        File path for the output folder given as user input.
+    file_prefix : str
+        Prefix given as user input.
+    p_prop : list
+        List with values of the property for the full trajectory to plot.
+    s_prop : list
+        List with values of the property for the sample trajectory to plot.
+    p_data : ProteinData
+        ProteinData class object.
+    p : int, optional
+        Percentage of the sample trajectory.
+    unit : str, optional
+        Unit that the property will be calculated and saved. Default is "nanometer".
+    machine_learning : bool, optional
+        Indicates whether machine learning input files should be generated. Default is False.
     """
     if output_folder is None:
         return
@@ -207,24 +274,25 @@ def write_output_files(
 
 def plot_property(output_folder, file_prefix, p_prop, s_prop, p=None):
     """
-    Plots overlapped property distributions of full and sample trajectory
+    Plots overlapped property distributions of the full and sample trajectories.
 
-    Attributes
-    -----------
-    output_folder: str,
-            file path for output folder given as user input
-    file_prefix: str,
-            prefix that was given as a choice by the user
-    p_prop: list
-            list with values of property for full trajectory to plot
-    s_prop: list
-            list with values of property for sample trajectory to plot
-    p: int
-       percentage of sample trajectory
+    Parameters
+    ----------
+    output_folder : str
+        File path for the output folder given as user input.
+    file_prefix : str
+        Prefix that was given as a choice by the user.
+    p_prop : list
+        List with values of the property for the full trajectory to plot.
+    s_prop : list
+        List with values of the property for the sample trajectory to plot.
+    p : int, optional
+        Percentage of the sample trajectory.
 
     Returns
-    -----------
-    png file with overlay property distribution of full and sample trajectories
+    -------
+    str
+        Path to the generated PNG file with the overlay property distribution.
 
     """
     if output_folder is None:
