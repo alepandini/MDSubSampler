@@ -27,16 +27,17 @@ from math import isinf
 
 class Dissimilarity:
     """
-    Represents dissimilarity measure between property of full and sample trajectory
+    Class representing dissimilarity measure of calculated property between full
+    and sample trajectory.
 
-    Attributes
+    Parameters
     ----------
     target_property : ProteinProperty object
-        Refers to the calculated property of the sampled or target protein trajectory
-    ref_property : ProteinProperty object
-        Refers to the reference calculated property (e.g. for the full protein trajectory)
-    n_bins : int
-        number of bins for generating the discretized vector
+                      Calculated reference property for sampled trajectory.
+    ref_property    : ProteinProperty object
+                      Calculated reference property for full trajectory.
+    n_bins          : int
+                      number of bins for generation the discretized vector.
     """
 
     display_name = None
@@ -62,8 +63,13 @@ class Dissimilarity:
 
     def calculate_dissimilarity(self):
         """
-        Calculates dissimilarity between average values of target (sample trajectory)
-        and reference (original trajectory) properties
+        Calculate dissimilarity between average property value of sample
+        (i.e. target) and full (i.e. reference) trajectory.
+
+        Returns
+        -------
+        float
+             The difference between the two average property values.
         """
         self.dissimilarity = abs(
             self.target_property.avg_value - self.ref_property.avg_value
@@ -76,15 +82,15 @@ class Dissimilarity:
 
 class Bhattacharyya(Dissimilarity):
     """
-    Represents the Bhattacharyya dissimilarity between target (sample trajectory)
-    and reference (original trajectory) properties
+    A subclass of Dissimilarity class that represents Bhattacharyya dissimilarity measure
+    of calculated property between full (i.e. reference) and sample (i.e. target) trajectory.
 
-    Attributes
+    Parameters
     ----------
     target_property : ProteinProperty object
-        Refers to the calculated property of the sampled or target protein trajectory
-    ref_property : ProteinProperty object
-        Refers to the reference calculated property (e.g. for the full protein trajectory)
+                      Calculated reference property for sampled trajectory.
+    ref_property    : ProteinProperty object
+                      Calculated reference property for full trajectory.
     """
 
     display_name = "Bhattacharyya"
@@ -96,8 +102,13 @@ class Bhattacharyya(Dissimilarity):
 
     def calculate_dissimilarity(self):
         """
-        Calculates Bhattacharyya distance between target (sample trajectory)
-        and reference (original trajectory) properties
+        Calculate Bhattacharyya distance between average property value of sample
+        (i.e. target) and full (i.e. reference) trajectory.
+
+        Returns
+        -------
+        float
+             The Bhattacharyya distance between the two average property values.
         """
         self.dissimilarity = dictances.bhattacharyya(
             self.target_property.property_distribution_dict,
@@ -112,15 +123,15 @@ class Bhattacharyya(Dissimilarity):
 
 class KullbackLeibler(Dissimilarity):
     """
-    Represents the Kullback-Leibler divergence between target (sample trajectory)
-    and reference (original trajectory) properties
+    A subclass of Dissimilarity class that represents Kullback-Leibler divergence
+    of calculated property between full (i.e. reference) and sample (i.e. target) trajectory.
 
-    Attributes
+    Parameters
     ----------
     target_property : ProteinProperty object
-        Refers to the calculated property of the sampled or target protein trajectory
-    ref_property : ProteinProperty object
-        Refers to the reference calculated property (e.g. for the full protein trajectory)
+                      Calculated reference property for sampled trajectory.
+    ref_property    : ProteinProperty object
+                      Calculated reference property for full trajectory.
     """
 
     display_name = "KullbackLeibler"
@@ -132,8 +143,13 @@ class KullbackLeibler(Dissimilarity):
 
     def calculate_dissimilarity(self):
         """
-        Calculates Kullback-Leibler divergence between target (sample trajectory)
-        and reference (original trajectory) properties
+        Calculate Kullback-Leibler divergence between average property value
+        of sample (i.e. target) and full (i.e. reference) trajectory.
+
+        Returns
+        -------
+        float
+             The Kullback-Leibler distance between the two average property values.
         """
         P = list(self.target_property.property_distribution_dict.values())
         Q = list(self.ref_property.property_distribution_dict.values())
@@ -147,15 +163,15 @@ class KullbackLeibler(Dissimilarity):
 
 class Pearson(Dissimilarity):
     """
-    Represents the Pearson distance between target (sample trajectory) and reference
-    (original trajectory) properties
+    A subclass of Dissimilarity class that represents Pearson dissimilarity measure of
+    calculated property between full (i.e. reference) and sample (i.e. target) trajectory.
 
-    Attributes
+    Parameters
     ----------
     target_property : ProteinProperty object
-        Refers to the calculated property of the sampled or target protein trajectory
-    ref_property : ProteinProperty object
-        Refers to the reference calculated property (e.g. for the full protein trajectory)
+                      Calculated reference property for sampled trajectory.
+    ref_property    : ProteinProperty object
+                      Calculated reference property for full trajectory.
     """
 
     display_name = "Pearson"
@@ -167,8 +183,13 @@ class Pearson(Dissimilarity):
 
     def calculate_dissimilarity(self):
         """
-        Calculates pearson distance between target (sample trajectory) and reference
-        (original trajectory) properties
+        Calculate Pearson distance between average property value of sample
+        (i.e. target) and full (i.e. reference) trajectory.
+
+        Returns
+        -------
+        float
+             The Pearson distance between the two average property values.
         """
         self.dissimilarity = dictances.pearson(
             self.target_property.property_distribution_dict,
