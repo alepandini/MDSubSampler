@@ -39,7 +39,7 @@ class PropertyPlot:
                        An instance of the ProteinProperty class representing the calculated
                        reference property for the sampled protein trajectory.
     outfilepath      : str
-                       path where output file is saved.
+                       Path where output file is saved.
     """
 
     def __init__(self, property, sampled_property, outfilepath):
