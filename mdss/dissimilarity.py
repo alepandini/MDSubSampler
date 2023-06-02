@@ -32,10 +32,12 @@ class Dissimilarity:
 
     Parameters
     ----------
-    target_property : ProteinProperty class object
-                      Calculated reference property for sampled trajectory.
-    ref_property    : ProteinProperty class object
-                      Calculated reference property for full trajectory.
+    target_property : ProteinProperty
+                      An instance of the ProteinProperty class representing the calculated reference
+                      property for sampled trajectory.
+    ref_property    : ProteinProperty
+                      An instance of the ProteinProperty class representing the calculated reference
+                      property for full trajectory.
     n_bins          : int
                       number of bins for generation the discretized vector.
     """
@@ -87,10 +89,12 @@ class Bhattacharyya(Dissimilarity):
 
     Parameters
     ----------
-    target_property : ProteinProperty class object
-                      Calculated reference property for sampled trajectory.
-    ref_property    : ProteinProperty class object
-                      Calculated reference property for full trajectory.
+    target_property : ProteinProperty
+                      An instance of the ProteinProperty class representing the calculated reference
+                      property for sampled trajectory.
+    ref_property    : ProteinProperty
+                      An instance of the ProteinProperty class representing the calculated reference
+                      property for full trajectory.
     """
 
     display_name = "Bhattacharyya"
@@ -128,10 +132,12 @@ class KullbackLeibler(Dissimilarity):
 
     Parameters
     ----------
-    target_property : ProteinProperty class object
-                      Calculated reference property for sampled trajectory.
-    ref_property    : ProteinProperty class object
-                      Calculated reference property for full trajectory.
+    target_property : ProteinProperty
+                      An instance of the ProteinProperty class representing the calculated reference
+                      property for sampled trajectory.
+    ref_property    : ProteinProperty
+                      An instance of the ProteinProperty class representing the calculated reference
+                      property for full trajectory.
     """
 
     display_name = "KullbackLeibler"
@@ -168,10 +174,12 @@ class Pearson(Dissimilarity):
 
     Parameters
     ----------
-    target_property : ProteinProperty class object
-                      Calculated reference property for sampled trajectory.
-    ref_property    : ProteinProperty class object
-                      Calculated reference property for full trajectory.
+    target_property : ProteinProperty
+                      An instance of the ProteinProperty class representing the calculated reference
+                      property for sampled trajectory.
+    ref_property    : ProteinProperty
+                      An instance of the ProteinProperty class representing the calculated reference
+                      property for full trajectory.
     """
 
     display_name = "Pearson"
