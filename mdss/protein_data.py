@@ -247,8 +247,8 @@ class ProteinData:
                           Path where output file is saved.
         subsampled_traj : MDAnalysis.coordinates.XTC.XTCReader
                           XTC trajectory file.
-        unit            : str
-                          Unit for coordinates values, optional.
+        unit            : str, optional
+                          Unit for coordinates valuess.
 
         Returns
         -------
