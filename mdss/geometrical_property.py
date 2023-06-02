@@ -29,15 +29,16 @@ import numpy as np
 
 class RMSD(ProteinProperty):
     """
-    Represents RMSD property class
+    Subclass of ProteinProperty class representing RMSD geometric property.
 
-    Attributes
+    Parameters
     ----------
-    protein_data: ProteinData class object
-        The object has access to all methods and attributes of ProteinData class
-    atom_selection: str
-        Atom selection for property calculation
-    fit : performs RMSD superposition if True
+    protein_data   : ProteinData class object
+    atom_selection : str
+                     Atom selection for property calculation.
+    fit            : boolean
+                     If True, performs superposition of all structures to the
+                     referene structure before RMSD calculation.
     """
 
     display_name = "RMSD"
@@ -48,14 +49,17 @@ class RMSD(ProteinProperty):
 
     def calculate_property(self, frame_index=None):
         """
-        Calculates RMSD property for all trajectory frames for a selection of atoms
+        Calculate RMSD property for all trajectory frames for a selection of atoms.
+
+        Parameters
+        ----------
+        frame_index : int
+                      Reference structure (i.e. frame) from inputed protein trajectory.
         """
 
         if self.set_reference_coordinates(frame_index):
             for frame in self.protein_data.frame_indices:
-                """
-                Goes through the trajectory and for each frame I compare with my reference frame
-                """
+                # Goes through the trajectory and for each frame I compare with my reference frame
                 self.protein_data.trajectory_data.trajectory[frame]
 
                 self.property_vector.append(
@@ -83,17 +87,17 @@ class RMSD(ProteinProperty):
 
 class DistanceBetweenAtoms(ProteinProperty):
     """
-    Represents Distance between atoms property class
+    Subclass of ProteinProperty class representing distance geometric property between
+    2 atoms or 2 group of atoms.
 
-    Attributes
+    Parameters
     ----------
-    protein_data: ProteinData class object
-        The object has access to all methods and attributes of ProteinData class
-    atom_selection: list
-        List of atom selection with 2 atoms or 2 group of atoms
+    protein_data   : ProteinData class object
+    atom_selection : list
+                     List of atom selection with 2 atoms or 2 group of atoms.
     """
 
-    display_name = "Distance_between_atoms"
+    display_name = "DBA"
 
     def __init__(self, protein_data, atom_selection):
         if not isinstance(atom_selection, list) or len(atom_selection) != 2:
@@ -108,7 +112,12 @@ class DistanceBetweenAtoms(ProteinProperty):
 
     def calculate_property(self, frame_index=None):
         """
-        Calculates distance between two given set of atoms for all trajectory frames
+        Calculate distance between 2 given set of atoms for all trajectory frames.
+
+        Parameters
+        ----------
+        frame_index : int
+                      Reference structure (i.e. frame) from inputed protein trajectory.
         """
         if self.set_reference_coordinates(frame_index):
             atom_selection_1 = self.protein_data.trajectory_data.select_atoms(
@@ -119,10 +128,6 @@ class DistanceBetweenAtoms(ProteinProperty):
             )
 
             for frame in self.protein_data.frame_indices:
-                """
-                Goes through the trajectory and for each frame the distance between
-                the given atoms is calculated
-                """
                 self.protein_data.trajectory_data.trajectory[frame]
                 dist = distances.distance_array(
                     atom_selection_1.positions[0], atom_selection_2.positions[1]
@@ -143,20 +148,17 @@ class DistanceBetweenAtoms(ProteinProperty):
 
 class RadiusOfGyrationProperty(ProteinProperty):
     """
-    Represents Radius of Gyration property class
+    Subclass of ProteinProperty class representing radius of gyration geometric property.
     """
 
-    display_name = "Radius of Gyration"
+    display_name = "ROG"
 
     def calculate_property(self):
         """
-        Calculates radius of gyration of atoms for all trajectory frames
+        Calculate radius of gyration for all trajectory frames for a selection of atoms.
         """
         self.time = []
         for frame in self.protein_data.frame_indices:
-            """
-            Goes through the trajectory and for the atoms of each frame the rog is calculated
-            """
             self.protein_data.trajectory_data.trajectory[frame]
             self.time.append(self.protein_data.trajectory_data.trajectory.time)
             self.property_vector.append(
@@ -172,17 +174,16 @@ class RadiusOfGyrationProperty(ProteinProperty):
 
 class Angles(ProteinProperty):
     """
-    Represents Angles property class
+    Subclass of ProteinProperty representing angles geometric property.
 
-    Attributes
+    Parameters
     ----------
-    protein_data: ProteinData class object
-        The object has access to all methods and attributes of ProteinData class
-    atom_selection: list
-       List with selection of 3 atoms
+    protein_data   : ProteinData class object
+    atom_selection : list
+                     List of atom selection with 3 atoms.
     """
 
-    display_name = "Angle between 3 atoms"
+    display_name = "A3A"
 
     def __init__(self, protein_data, atom_selection):
         if not isinstance(atom_selection, list) or len(atom_selection) != 3:
@@ -197,7 +198,12 @@ class Angles(ProteinProperty):
 
     def calculate_property(self, frame_index=None):
         """
-        Calculates angle between three given atoms for all trajectory frames
+        Calculate distance between 3 given atoms for all trajectory frames.
+
+        Parameters
+        ----------
+        frame_index : int
+                      Reference structure (i.e. frame) from inputed protein trajectory.
         """
         if self.set_reference_coordinates(frame_index):
             atom_selection_1 = self.protein_data.trajectory_data.select_atoms(
@@ -211,11 +217,6 @@ class Angles(ProteinProperty):
             )
 
             for frame in self.protein_data.frame_indices:
-                """
-                Goes through the trajectory and for each frame the angle between the given
-                atoms is calculated
-                """
-
                 self.protein_data.trajectory_data.trajectory[frame]
                 atom_1_coordinates = atom_selection_1.positions[0]
                 atom_2_coordinates = atom_selection_2.positions[1]
@@ -245,14 +246,13 @@ class Angles(ProteinProperty):
 
 class DihedralAngles(ProteinProperty):
     """
-    Represents dihedral angles property class
+    Subclass of ProteinProperty class representing dihedral angles geometric property.
 
-    Attributes
+    Parameters
     ----------
-    protein_data: ProteinData class object
-        The object has access to all methods and attributes of ProteinData class
-    atom_selection: list
-        List with selection of 4 atoms
+    protein_data   : ProteinData class object
+    atom_selection : list
+                     List of atom selection with 4 atoms.
     """
 
     def __init__(self, protein_data, atom_selection):
@@ -269,12 +269,20 @@ class DihedralAngles(ProteinProperty):
 
 class DihedralAnglePhi(DihedralAngles):
     """
-    Represents Dihedral angle phi property class
+    Subclass of DihedralAngles class representing dihedral angle phi geometric property.
     """
 
-    display_name = "Dihedral Angle phi between 4 selected atoms"
+    display_name = "DAPHI4A"
 
     def calculate_property(self, frame_index=None):
+        """
+        Calculate dihedral angle phi between 4 given atoms for all trajectory frames.
+
+        Parameters
+        ----------
+        frame_index : int
+                      Reference structure (i.e. frame) from inputed protein trajectory.
+        """
         if self.set_reference_coordinates(frame_index):
             u = self.protein_data.trajectory_data
             for frame in self.protein_data.frame_indices:
@@ -297,12 +305,20 @@ class DihedralAnglePhi(DihedralAngles):
 
 class DihedralAnglePsi(DihedralAngles):
     """
-    Represents Dihedral angle psi property class
+    Subclass of DihedralAngles class representing dihedral angle psi geometric property.
     """
 
-    display_name = "Dihedral Angle psi between 4 selected atoms"
+    display_name = "DAPSI4A"
 
     def calculate_property(self, frame_index=None):
+        """
+        Calculate dihedral angle psi between 4 given atoms for all trajectory frames.
+
+        Parameters
+        ----------
+        frame_index : int
+                      Reference structure (i.e. frame) from inputed protein trajectory.
+        """
         if self.set_reference_coordinates(frame_index):
             u = self.protein_data.trajectory_data
             for frame in self.protein_data.frame_indices:
