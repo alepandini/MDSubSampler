@@ -33,13 +33,12 @@ class RMSD(ProteinProperty):
 
     Attributes
     ----------
-    protein_data   : ProteinData
-                     An instance of the ProteinData class representing the protein data.
-    atom_selection : str
-                     Atom selection for property calculation.
-    fit            : boolean
-                     If True, performs superposition of all structures to the
-                     referene structure before RMSD calculation.
+    protein_data : ProteinData
+        An instance of the ProteinData class representing the protein data.
+    atom_selection : str, optional
+        Atom selection for property calculation. Default value is CA atoms.
+    fit : bool, optional
+        If True, performs superposition of all structures to the referene structure before RMSD calculation.
     """
 
     display_name = "RMSD"
@@ -55,7 +54,7 @@ class RMSD(ProteinProperty):
         Parameters
         ----------
         frame_index : int
-                      Reference structure (i.e. frame) from inputed protein trajectory.
+            Reference structure (i.e. frame) from inputed protein trajectory.
         """
 
         if self.set_reference_coordinates(frame_index):
@@ -88,15 +87,14 @@ class RMSD(ProteinProperty):
 
 class DistanceBetweenAtoms(ProteinProperty):
     """
-    Subclass of ProteinProperty class representing distance geometric property between
-    2 atoms or 2 group of atoms.
+    Subclass of ProteinProperty class representing distance geometric property between 2 atoms or 2 group of atoms.
 
     Attributes
     ----------
-    protein_data   : ProteinData
-                     An instance of the ProteinData class representing the protein data.
+    protein_data : ProteinData
+        An instance of the ProteinData class representing the protein data.
     atom_selection : list
-                     List of atom selection with 2 atoms or 2 group of atoms.
+        List of atom selection with 2 atoms or 2 group of atoms.
     """
 
     display_name = "DBA"
@@ -119,7 +117,7 @@ class DistanceBetweenAtoms(ProteinProperty):
         Parameters
         ----------
         frame_index : int
-                      Reference structure (i.e. frame) from inputed protein trajectory.
+            Reference structure (i.e. frame) from inputed protein trajectory.
         """
         if self.set_reference_coordinates(frame_index):
             atom_selection_1 = self.protein_data.trajectory_data.select_atoms(
@@ -180,10 +178,10 @@ class Angles(ProteinProperty):
 
     Attributes
     ----------
-    protein_data   : ProteinData
-                     An instance of the ProteinData class representing the protein data.
+    protein_data : ProteinData
+        An instance of the ProteinData class representing the protein data.
     atom_selection : list
-                     List of atom selection with 3 atoms.
+        List of atom selection with 3 atoms.
     """
 
     display_name = "A3A"
@@ -206,7 +204,7 @@ class Angles(ProteinProperty):
         Parameters
         ----------
         frame_index : int
-                      Reference structure (i.e. frame) from inputed protein trajectory.
+            Reference structure (i.e. frame) from inputed protein trajectory.
         """
         if self.set_reference_coordinates(frame_index):
             atom_selection_1 = self.protein_data.trajectory_data.select_atoms(
@@ -253,10 +251,10 @@ class DihedralAngles(ProteinProperty):
 
     Attributes
     ----------
-    protein_data   : ProteinData
-                     An instance of the ProteinData class representing the protein data.
+    protein_data : ProteinData
+        An instance of the ProteinData class representing the protein data.
     atom_selection : list
-                     List of atom selection with 4 atoms.
+        List of atom selection with 4 atoms.
     """
 
     def __init__(self, protein_data, atom_selection):
@@ -285,7 +283,7 @@ class DihedralAnglePhi(DihedralAngles):
         Parameters
         ----------
         frame_index : int
-                      Reference structure (i.e. frame) from inputed protein trajectory.
+            Reference structure (i.e. frame) from inputed protein trajectory.
         """
         if self.set_reference_coordinates(frame_index):
             u = self.protein_data.trajectory_data
@@ -321,7 +319,7 @@ class DihedralAnglePsi(DihedralAngles):
         Parameters
         ----------
         frame_index : int
-                      Reference structure (i.e. frame) from inputed protein trajectory.
+            Reference structure (i.e. frame) from inputed protein trajectory.
         """
         if self.set_reference_coordinates(frame_index):
             u = self.protein_data.trajectory_data
