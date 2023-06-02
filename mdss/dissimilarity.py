@@ -32,9 +32,9 @@ class Dissimilarity:
 
     Parameters
     ----------
-    target_property : ProteinProperty object
+    target_property : ProteinProperty class object
                       Calculated reference property for sampled trajectory.
-    ref_property    : ProteinProperty object
+    ref_property    : ProteinProperty class object
                       Calculated reference property for full trajectory.
     n_bins          : int
                       number of bins for generation the discretized vector.
@@ -82,14 +82,14 @@ class Dissimilarity:
 
 class Bhattacharyya(Dissimilarity):
     """
-    A subclass of Dissimilarity class that represents Bhattacharyya dissimilarity measure
+    Subclass of Dissimilarity class that represents Bhattacharyya dissimilarity measure
     of calculated property between full (i.e. reference) and sample (i.e. target) trajectory.
 
     Parameters
     ----------
-    target_property : ProteinProperty object
+    target_property : ProteinProperty class object
                       Calculated reference property for sampled trajectory.
-    ref_property    : ProteinProperty object
+    ref_property    : ProteinProperty class object
                       Calculated reference property for full trajectory.
     """
 
@@ -123,14 +123,14 @@ class Bhattacharyya(Dissimilarity):
 
 class KullbackLeibler(Dissimilarity):
     """
-    A subclass of Dissimilarity class that represents Kullback-Leibler divergence
+    Subclass of Dissimilarity class that represents Kullback-Leibler divergence
     of calculated property between full (i.e. reference) and sample (i.e. target) trajectory.
 
     Parameters
     ----------
-    target_property : ProteinProperty object
+    target_property : ProteinProperty class object
                       Calculated reference property for sampled trajectory.
-    ref_property    : ProteinProperty object
+    ref_property    : ProteinProperty class object
                       Calculated reference property for full trajectory.
     """
 
@@ -163,14 +163,14 @@ class KullbackLeibler(Dissimilarity):
 
 class Pearson(Dissimilarity):
     """
-    A subclass of Dissimilarity class that represents Pearson dissimilarity measure of
+    Subclass of Dissimilarity class that represents Pearson dissimilarity measure of
     calculated property between full (i.e. reference) and sample (i.e. target) trajectory.
 
     Parameters
     ----------
-    target_property : ProteinProperty object
+    target_property : ProteinProperty class object
                       Calculated reference property for sampled trajectory.
-    ref_property    : ProteinProperty object
+    ref_property    : ProteinProperty class object
                       Calculated reference property for full trajectory.
     """
 
