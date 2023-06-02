@@ -30,7 +30,7 @@ class PropertyPlot:
     Class representing overlaping distribution plot of calculated reference property for
     full and sample trajectory.
 
-    Parameters
+    Attributes
     -----------
     property         : ProteinProperty
                        An instance of the ProteinProperty class representing the calculated

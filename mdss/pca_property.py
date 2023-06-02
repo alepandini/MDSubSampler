@@ -31,7 +31,7 @@ class TrjPCAProj(ProteinProperty):
     vector while setting number of columns as number of PCs and number of rows as number
     of frames in the trajectory.
 
-    Parameters
+    Attributes
     ----------
     protein_data   : ProteinData
                      An instance of the ProteinData class representing the protein data.

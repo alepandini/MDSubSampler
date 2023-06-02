@@ -1,23 +1,23 @@
 """
-    @release_date  : $release_date
-    @version       : $release_version
-    @author        : Namir Oues
-    
-    This file is part of the MDSubSampler software 
-    (https://github.com/alepandini/MDSubSampler).
-    Copyright (c) 2023 Namir Oues and Alessandro Pandini.
+@release_date  : $release_date
+@version       : $release_version
+@author        : Namir Oues
 
-    This program is free software: you can redistribute it and/or modify 
-    it under the terms of the GNU General Public License as published by  
-    the Free Software Foundation, version 3.
+This file is part of the MDSubSampler software 
+(https://github.com/alepandini/MDSubSampler).
+Copyright (c) 2023 Namir Oues and Alessandro Pandini.
 
-    This program is distributed in the hope that it will be useful, but 
-    WITHOUT ANY WARRANTY; without even the implied warranty of 
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
-    General Public License for more details.
+This program is free software: you can redistribute it and/or modify 
+it under the terms of the GNU General Public License as published by  
+the Free Software Foundation, version 3.
 
-    You should have received a copy of the GNU General Public License 
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
+This program is distributed in the hope that it will be useful, but 
+WITHOUT ANY WARRANTY; without even the implied warranty of 
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+General Public License for more details.
+
+You should have received a copy of the GNU General Public License 
+along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 import dictances
 from scipy.special import rel_entr
@@ -27,10 +27,9 @@ from math import isinf
 
 class Dissimilarity:
     """
-    Class representing dissimilarity measure of calculated property between full
-    and sample trajectory.
+    Class representing dissimilarity measure of calculated property between full and sample trajectory.
 
-    Parameters
+    Attributes
     ----------
     target_property : ProteinProperty
                       An instance of the ProteinProperty class representing the calculated reference
@@ -87,7 +86,7 @@ class Bhattacharyya(Dissimilarity):
     Subclass of Dissimilarity class that represents Bhattacharyya dissimilarity measure
     of calculated property between full (i.e. reference) and sample (i.e. target) trajectory.
 
-    Parameters
+    Attributes
     ----------
     target_property : ProteinProperty
                       An instance of the ProteinProperty class representing the calculated reference
@@ -130,7 +129,7 @@ class KullbackLeibler(Dissimilarity):
     Subclass of Dissimilarity class that represents Kullback-Leibler divergence
     of calculated property between full (i.e. reference) and sample (i.e. target) trajectory.
 
-    Parameters
+    Attributes
     ----------
     target_property : ProteinProperty
                       An instance of the ProteinProperty class representing the calculated reference
@@ -172,7 +171,7 @@ class Pearson(Dissimilarity):
     Subclass of Dissimilarity class that represents Pearson dissimilarity measure of
     calculated property between full (i.e. reference) and sample (i.e. target) trajectory.
 
-    Parameters
+    Attributes
     ----------
     target_property : ProteinProperty
                       An instance of the ProteinProperty class representing the calculated reference

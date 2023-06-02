@@ -31,7 +31,7 @@ class RMSD(ProteinProperty):
     """
     Subclass of ProteinProperty class representing RMSD geometric property.
 
-    Parameters
+    Attributes
     ----------
     protein_data   : ProteinData
                      An instance of the ProteinData class representing the protein data.
@@ -91,7 +91,7 @@ class DistanceBetweenAtoms(ProteinProperty):
     Subclass of ProteinProperty class representing distance geometric property between
     2 atoms or 2 group of atoms.
 
-    Parameters
+    Attributes
     ----------
     protein_data   : ProteinData
                      An instance of the ProteinData class representing the protein data.
@@ -178,7 +178,7 @@ class Angles(ProteinProperty):
     """
     Subclass of ProteinProperty representing angles geometric property.
 
-    Parameters
+    Attributes
     ----------
     protein_data   : ProteinData
                      An instance of the ProteinData class representing the protein data.
@@ -251,7 +251,7 @@ class DihedralAngles(ProteinProperty):
     """
     Subclass of ProteinProperty class representing dihedral angles geometric property.
 
-    Parameters
+    Attributes
     ----------
     protein_data   : ProteinData
                      An instance of the ProteinData class representing the protein data.
