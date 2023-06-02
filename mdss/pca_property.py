@@ -33,10 +33,10 @@ class TrjPCAProj(ProteinProperty):
 
     Attributes
     ----------
-    protein_data   : ProteinData
-                     An instance of the ProteinData class representing the protein data.
-    atom_selection : str
-                     Atom selection for property calculation.
+    protein_data : ProteinData
+        An instance of the ProteinData class representing the protein data.
+    atom_selection : str, optional
+        Atom selection for property calculation. Default selection is CA atoms.
     """
 
     display_name = "TrjPCAProj"
@@ -50,8 +50,8 @@ class TrjPCAProj(ProteinProperty):
 
     def _run_pca(self):
         """
-        Perform Principal Component Analysis for a given protein trajectoru and
-        selection of atoms and retrieve the principal components.
+        Perform Principal Component Analysis for a given protein trajectory and selection of atoms.
+        Retrieve principal components.
         """
         self.pca_model = pca.PCA(self.protein_data.trajectory_data, self.atom_selection)
         self.pca_model.run()
@@ -62,8 +62,8 @@ class TrjPCAProj(ProteinProperty):
 
         Parameters
         ----------
-        pc_index : int
-                   Principal component index.
+        pc_index : int, optional
+            Principal component index. Default option is index 1.
         """
         if not self.n_pcs:
             print("Warning: values not available. Please calculate property values.")
@@ -88,11 +88,12 @@ class TrjPCAProj(ProteinProperty):
 
         Parameters
         ----------
-        var_threshold : float
-                        Threshold to compare cumulated variance to pick the right
-                        number of principal components.
-        pc_filter     : Boolean
-
+        var_threshold : float, optional
+            Threshold to compare cumulated variance to pick the right number of principal components.
+            Default is 0.8.
+        pc_filter : bool, optional
+            Flag to indicate whether to use the filtered number of principal components.
+            If True, `self.ed_n_pcs` will be used; otherwise, `self.n_pcs` will be used.
         """
 
         self._run_pca()

@@ -27,19 +27,18 @@ import math
 
 class PropertyPlot:
     """
-    Class representing overlaping distribution plot of calculated reference property for
-    full and sample trajectory.
+    Class representing overlaping distribution plot of calculated reference property for full and sample trajectory.
 
     Attributes
     -----------
-    property         : ProteinProperty
-                       An instance of the ProteinProperty class representing the calculated
-                       reference property for the full protein trajectory.
+    property : ProteinProperty
+        An instance of the ProteinProperty class representing the calculated reference property for
+        the full protein trajectory.
     sampled_property : ProteinProperty
-                       An instance of the ProteinProperty class representing the calculated
-                       reference property for the sampled protein trajectory.
-    outfilepath      : str
-                       Path where output file is saved.
+        An instance of the ProteinProperty class representing the calculated reference property for
+        the sampled protein trajectory.
+    outfilepath : str
+        Path where output file is saved.
     """
 
     def __init__(self, property, sampled_property, outfilepath):
@@ -57,12 +56,12 @@ class PropertyPlot:
         Parameters
         -----------
         calculated_property: list
-                             Contains the calculated property for protein trajectory.
+            Contains the calculated property for protein trajectory.
 
         Returns
         -------
-        df
-           Dataframe with calculated reference property for protein trajectory.
+        dataframe
+            Dataframe with calculated reference property for protein trajectory.
         """
         df = pd.DataFrame(calculated_property)
         return df
@@ -76,15 +75,15 @@ class PropertyPlot:
         Parameters
         -----------
         property_name : str
-                        Name of calculated reference property.
-        reference_df  : dataframe
-                        Dataframe with calculated property for full (i.e. reference) protein trajectory.
-        sample_df     : dataframe
-                        Dataframe with calculated property for sample protein trajectory.
-        sample_size   : int
-                        Size of sample trajectory.
-        outfilepath   : str
-                        Path where output file is saved.
+            Name of calculated reference property.
+        reference_df : dataframe
+            Dataframe with calculated property for full (i.e. reference) protein trajectory.
+        sample_df : dataframe
+            Dataframe with calculated property for sample protein trajectory.
+        sample_size : int
+            Size of sample trajectory.
+        outfilepath : str
+            Path where output file is saved.
         """
         if outfilepath is None:
             outfilepath = self.outfilepath

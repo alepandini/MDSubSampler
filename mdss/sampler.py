@@ -29,20 +29,23 @@ from mdss.utilities import plot_property
 
 class ProteinSampler:
     """
-    Represents Sampler Class
+    Class representing samplers used to sample a protein trajectory.
 
     Attributes
     ----------
-    protein_property: ProteinProperty class object
-        The object has access to all methods and attributes of ProteinProperty class
-    protein_data: ProteinData class object
-        The object has access to all methods and attributes of ProteinData class
-    output_folder: str
-        Path to output file given as user input
-    file_prefix: str,
-        Prefix given as user input
-    dissimilarity_measure: Dissimilarity class object
-        Dissimilarity measure between full and sample trajectory
+    protein_property : ProteinProperty
+        An instance of the ProteinProperty class representing the reference property.
+    protein_data : ProteinData
+        An instance of the ProteinData class representing the protein data.
+    output_folder : str
+        Path to the output file where results will be saved, given as user input.
+    file_prefix : str
+        Prefix for output file naming, given as user input.
+    dissimilarity_measure : Dissimilarity, optional
+        An instance of the Dissimilarity class representing the dissimilarity measure. Default is Bhattacharyya.
+
+    display_name : None
+        Placeholder attribute. It is not used in the class implementation.
     """
 
     display_name = None
@@ -67,11 +70,34 @@ class ProteinSampler:
         self.dissimilarity_measure = dissimilarity_measure
 
     def _create_data_list(self):
+        """
+        Create a list of data tuples from the property vector and frame indices.
+
+        Returns
+        -------
+        list
+            A list of data tuples where each tuple consists of an index and a property-index pair.
+        """
         property_indices_tuples = list(zip(self.property_vector, self.frame_indices))
         data_list = [(i, v) for i, v in enumerate(property_indices_tuples)]
         return data_list
 
     def _create_sampled_property(self, sampled_data_vector, size):
+        """
+        Create a sampled property object based on the sampled data vector.
+
+        Parameters
+        ----------
+        sampled_data_vector : list
+            A list of sampled data tuples, where each tuple contains an index and a property-index pair.
+        size : int
+            The size of the sampled property.
+
+        Returns
+        -------
+        SampledProperty
+            A SampledProperty object representing the sampled property with the corresponding frame indices and sample indices.
+        """
         self.sampled_property_vector = [r[1][0] for r in sampled_data_vector]
         self.sampled_frame_indices = [r[1][1] for r in sampled_data_vector]
         sampled_protein_property = SampledProperty(
@@ -91,17 +117,23 @@ class ProteinSampler:
         self, perc_vector=None, dissimilarity_threshold=None, step_recording=False
     ):
         """
-         Scans sample size list (user input), performs sampling for each size and returns output
+        Perform sampling for each size in the sample size list, and return the output.
 
-         Attributes
-         ----------
-         perc_vector: list
-             Contains list of sample size percentages of full trajectory size
-         dissimilarity_threshold: int
-             Threshold for dissimilarity measure to get the best sample size from the list
-        step_recording: Boolean
-             Returns output files for all sample sizes from the list
+        Parameters
+        ----------
+        perc_vector : list, optional
+            A list of sample size percentages of the full trajectory size. Default is [25, 10, 5, 1, 0.5, 0.1].
+        dissimilarity_threshold : int, optional
+            The threshold for the dissimilarity measure to select the best sample size from the list. Default is None.
+        step_recording : bool, optional
+            Whether to return output files for all sample sizes from the list. Default is False.
+
+        Returns
+        -------
+        SampledProperty or None
+            The selected SampledProperty object that meets the dissimilarity threshold, or None if no sample meets the threshold.
         """
+
         selected_sample_key = None
         if perc_vector is None:
             perc_vector = [25, 10, 5, 1, 0.5, 0.1]
@@ -166,22 +198,25 @@ class ProteinSampler:
 
 class RandomSampler(ProteinSampler):
     """
-    Represents Random Sampler
+    Subclass of ProteinSampler class representing a random sampler for protein trajectories.
 
     Attributes
-     ----------
-    protein_property: ProteinProperty class object
-        The object has access to all methods and attributes of ProteinProperty class
-    protein_data: ProteinData class object
-        The object has access to all methods and attributes of ProteinData class
-    output_folder: str
-        Path to output file given as user input
-    file_prefix: str,
-        Prefix given as user input
-    seed_number: int,
-       Initialise a random-number generator and ensures reproducibility
-    dissimilarity_measure: Dissimilarity class object
-        Dissimilarity measure between full and sample trajectory
+    ----------
+    protein_property : ProteinProperty
+        An instance of the ProteinProperty class representing the reference property.
+    protein_data : ProteinData
+        An instance of the ProteinData class representing the protein data.
+    output_folder : str
+        Path to the output file where results will be saved, given as user input.
+    file_prefix : str
+        Prefix for output file naming, given as user input.
+    seed_number : int, optional
+        Seed number to initialize the random-number generator and ensure reproducibility. Default is 1999.
+    dissimilarity_measure : Dissimilarity, optional
+        An instance of the Dissimilarity class representing the dissimilarity measure. Default is Bhattacharyya.
+
+    display_name : str
+        The display name of the random sampler. Set to "Random Sampling".
     """
 
     display_name = "Random Sampling"
@@ -206,15 +241,17 @@ class RandomSampler(ProteinSampler):
 
     def sample(self, size):
         """
-        Performs Random Sampling
-        Attributes
+        Performs random sampling.
+
+        Parameters
         ----------
-        size: int
-            Sample size - user input
+        size : int
+            Sample size specified by the user.
 
         Returns
-        ----------
-        A sampled_protein_property object
+        -------
+        SampledProteinProperty
+            An object of the SampledProteinProperty class containing the sampled data.
         """
         self.samples_indices = list(np.repeat(0, size))
         data_list = self._create_data_list()
@@ -227,20 +264,25 @@ class RandomSampler(ProteinSampler):
 
 class StratifiedSampler(ProteinSampler):
     """
-    Represents Stratified sampler class
+    Subclass of ProteinSampler class representing a stratified sampler for protein trajectories.
+
+    Attributes
     ----------
-    protein_property: ProteinProperty class object
-        The object has access to all methods and attributes of ProteinProperty class
-    protein_data: ProteinData class object
-        The object has access to all methods and attributes of ProteinData class
-    output_folder: str
-        Path to output file given as user input
-    file_prefix: str,
-        Prefix given as user input
-    strata_vector: list
-        2D list that consists of strata labels one for each point
-    dissimilarity_measure: Dissimilarity class object
-        Dissimilarity measure between full and sample trajectory
+    protein_property : ProteinProperty
+        An instance of the ProteinProperty class representing the reference property.
+    protein_data : ProteinData
+        An instance of the ProteinData class representing the protein data.
+    output_folder : str
+        Path to the output file where results will be saved, given as user input.
+    file_prefix : str
+        Prefix for output file naming, given as user input.
+    strata_vector : list
+        A 1D list containing the strata labels for each data point.
+    dissimilarity_measure : Dissimilarity, optional
+        An instance of the Dissimilarity class representing the dissimilarity measure. Default is Bhattacharyya.
+
+    display_name : str
+        The display name of the stratified sampler. Set to "Stratified Sampling".
     """
 
     display_name = "Stratified Sampling"
@@ -273,15 +315,23 @@ class StratifiedSampler(ProteinSampler):
 
     def sample(self, size):
         """
-        Performs Stratified Sampling
-        Attributes
+        Performs stratified sampling.
+
+        Parameters
         ----------
-        size: int
-            Sample size user input
+        size : int
+            The sample size specified by the user.
 
         Returns
-        ----------
-        A sampled_protein_property object
+        -------
+        SampledProperty
+            A SampledProperty object representing the sampled protein property.
+
+        Raises
+        ------
+        TypeError
+            If the specified size is less than half the number of layers.
+
         """
         population_size = sum(len(layer) for layer in self.layers.values())
         if population_size == len(self.protein_property.property_vector):
@@ -344,22 +394,25 @@ class StratifiedSampler(ProteinSampler):
 
 class UniformSampler(ProteinSampler):
     """
-    Represents Uniform Sampler
+    Subclass of ProteinSampler class representing a uniform sampler for protein trajectories.
 
     Attributes
     ----------
-    protein_property: ProteinProperty class object
-        The object has access to all methods and attributes of ProteinProperty class
-    protein_data: ProteinData class object
-        The object has access to all methods and attributes of ProteinData class
-    output_folder: str
-        Path to output file given as user input
-    file_prefix: str,
-        Prefix given as user input
-    strata_number: int
+    protein_property : ProteinProperty
+        An instance of the ProteinProperty class representing the reference property.
+    protein_data : ProteinData
+        An instance of the ProteinData class representing the protein data.
+    output_folder : str
+        Path to the output file where results will be saved, given as user input.
+    file_prefix : str
+        Prefix for output file naming, given as user input.
+    strata_number : int
         The number of intervals where sampling is done.
-    dissimilarity_measure: Dissimilarity class object
-        Dissimilarity measure between full and sample trajectory
+    dissimilarity_measure : Dissimilarity, optional
+        An instance of the Dissimilarity class representing the dissimilarity measure. Default is Bhattacharyya.
+
+    display_name : str
+        The display name of the uniform sampler. Set to "Uniform Sampling".
     """
 
     display_name = "Uniform Sampling"
@@ -392,12 +445,19 @@ class UniformSampler(ProteinSampler):
 
     def sample(self, size):
         """
-        Performs Uniform Sampling
+        Performs uniform sampling.
+
+        Parameters
+        ----------
+        size : int
+            The sample size specified by the user.
 
         Returns
-        ----------
-        A sampled_protein_property object
+        -------
+        SampledProperty
+            A SampledProperty object representing the sampled protein property.
         """
+
         strat_sampler = StratifiedSampler(
             self.protein_property,
             self.protein_data,
@@ -412,22 +472,27 @@ class UniformSampler(ProteinSampler):
 
 class WeightedSampler(ProteinSampler):
     """
-    Represents Wighted Sampler
+    Subclass of ProteinSampler class representing a weighted sampler for protein trajectories.
+
+    Attributes
     ----------
-    protein_property: ProteinProperty class object
-        The object has access to all methods and attributes of ProteinProperty class
-    protein_data: ProteinData class object
-        The object has access to all methods and attributes of ProteinData class
-    output_folder: str
-        Path to output file given as user input
-    file_prefix: str,
-        Prefix given as user input
-    seed_number: int,
-       Initialise a random-number generator and ensures reproducibility
-    weights_vector:
-        Vector of weights for each element in the sample
-    dissimilarity_measure: Dissimilarity class object
-        Dissimilarity measure between full and sample trajectory
+    protein_property : ProteinProperty
+        An instance of the ProteinProperty class representing the reference property.
+    protein_data : ProteinData
+        An instance of the ProteinData class representing the protein data.
+    output_folder : str
+        Path to the output file where results will be saved, given as user input.
+    file_prefix : str
+        Prefix for output file naming, given as user input.
+    seed_number : int
+        Seed number to initialize the random-number generator and ensure reproducibility. Default is 1999.
+    weights_vector : list, optional
+        Vector of weights for each element in the sample. If not provided, the weights will be estimated from the discretized property vector.
+    dissimilarity_measure : Dissimilarity, optional
+        An instance of the Dissimilarity class representing the dissimilarity measure. Default is Bhattacharyya.
+
+    display_name : str
+        The display name of the weighted sampler. Set to "Weighted Sampling".
     """
 
     display_name = "Weighted Sampling"
@@ -471,16 +536,17 @@ class WeightedSampler(ProteinSampler):
 
     def sample(self, size):
         """
-        Performs Weighted Sampling
+        Performs Weighted Sampling.
 
-        Attributes
+        Parameters
         ----------
-        size: int
-            Sample size - user input
+        size : int
+            The sample size specified by the user.
 
         Returns
         ----------
-        A sampled_protein_property object
+        SampledProperty
+            A SampledProperty object representing the sampled protein property.
         """
         if len(self.weights) != len(self.property_vector):
             print("Warning: weights vector of different size from property vector")
@@ -503,24 +569,27 @@ class WeightedSampler(ProteinSampler):
 
 class BootstrappingSampler(ProteinSampler):
     """
-    Represents Bootstrapping Sampler
+    Subclass of ProteinSampler class representing a bootstrapping sampler for protein trajectories.
 
     Attributes
     ----------
-     protein_property: ProteinProperty class object
-        The object has access to all methods and attributes of ProteinProperty class
-    protein_data: ProteinData class object
-        The object has access to all methods and attributes of ProteinData class
-    output_folder: str
-        Path to output file given as user input
-    file_prefix: str,
-        Prefix given as user input
-    number_of_iterations: int
-        Number of times the random sampling method is performed
-    seed_number: int,
-       Initialise a random-number generator and ensures reproducibility
-    dissimilarity_measure: Dissimilarity class object
-        Dissimilarity measure between full and sample trajectory
+    protein_property : ProteinProperty
+        An instance of the ProteinProperty class representing the reference property.
+    protein_data : ProteinData
+        An instance of the ProteinData class representing the protein data.
+    output_folder : str
+        Path to the output file where results will be saved, given as user input.
+    file_prefix : str
+        Prefix for output file naming, given as user input.
+    number_of_iterations : int
+        Number of times the random sampling method is performed.
+    seed_number : int
+        Seed number to initialize the random-number generator and ensure reproducibility. Default is 1999.
+    dissimilarity_measure : Dissimilarity, optional
+        An instance of the Dissimilarity class representing the dissimilarity measure. Default is Bhattacharyya.
+
+    display_name : str
+        The display name of the bootstrapping sampler. Set to "Bootstrapping Sampling".
     """
 
     display_name = "Bootstrapping Sampling"
@@ -547,16 +616,17 @@ class BootstrappingSampler(ProteinSampler):
 
     def sample(self, size):
         """
-        Performs Bootstrapping sampling
+        Performs Bootstrapping sampling.
 
-        Attributes
+        Parameters
         ----------
-        size: int
-            Sample size - user input
+        size : int
+            Sample size specified by the user.
 
         Returns
-        ----------
-        A sampled_protein_property object
+        -------
+        SampledProteinProperty
+            An object of the SampledProteinProperty class containing the sampled data.
         """
         data_list = self._create_data_list()
         sampled_data_vector = []

@@ -38,7 +38,7 @@ def sampling_workflow(arg_list):
     Parameters
     ----------
     arg_list : list
-               A list of arguments representing the user input from the parser.
+        A list of arguments representing the user input from the parser.
     """
     args = p.parse_args(arg_list)
     print(args)
