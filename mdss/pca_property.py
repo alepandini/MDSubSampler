@@ -42,6 +42,16 @@ class TrjPCAProj(ProteinProperty):
     display_name = "TrjPCAProj"
 
     def __init__(self, protein_data, atom_selection="name CA"):
+        """
+        Initialize the TrjPCAProj object.
+
+        Parameters
+        ----------
+        protein_data : ProteinData
+            An instance of the ProteinData class representing the protein data.
+        atom_selection : str, optional
+            Atom selection for property calculation. Default selection is CA atoms.
+        """
         super().__init__(protein_data, atom_selection)
         self.pca_model = None
         self.n_pcs = None
@@ -64,6 +74,13 @@ class TrjPCAProj(ProteinProperty):
         ----------
         pc_index : int, optional
             Principal component index. Default option is index 1.
+
+        Notes
+        -----
+        If property values are not available, a warning message is printed.
+        If the specified PC index is larger than the number of PCs, a warning message is printed.
+        The selected principal component is assigned to the `property_vector` attribute.
+        The PC index is stored in the `pc_index` attribute.
         """
         if not self.n_pcs:
             print("Warning: values not available. Please calculate property values.")

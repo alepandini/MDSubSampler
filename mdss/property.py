@@ -41,6 +41,21 @@ class ProteinProperty:
     display_name = None
 
     def __init__(self, protein_data, atom_selection="name CA"):
+        """
+        Initialize the ProteinProperty object.
+
+        Parameters
+        ----------
+        protein_data : ProteinData
+            An instance of the ProteinData class representing the protein data.
+        atom_selection : str, optional
+            Atom selection for property calculation. Default string value is CA atoms"
+
+        Notes
+        -----
+        If the provided `protein_data` is not an instance of `ProteinData`, a warning
+        message is printed and `protein_data` attribute is set to None.
+        """
         if not isinstance(protein_data, ProteinData):
             log.warning(
                 "{:12s} An instance of ProteinData is required. protein_data attribute set to None".format(
@@ -106,9 +121,9 @@ class ProteinProperty:
         Parameters
         ----------
         min_value : int
-            Minimum value for vector.
+            Minimum value for vector. Default is None.
         max_value : int
-            Maximum value for vector.
+            Maximum value for vector. Default is None.
         n_bins : int, optional
             Number of bins for discretized vector. Default value is 100.
         """
@@ -140,13 +155,17 @@ class ProteinProperty:
 
         Parameters
         ----------
-        frame_index : int
-            Reference structure (i.e. frame) from inputed protein trajectory.
+        frame_index : int, optional
+            Reference structure (i.e. frame) from input protein trajectory. Default is None.
 
         Returns
         -------
         Boolean
             False if property is not associated to a protein data object, otherwise True.
+
+        Notes
+        -----
+        If associated protein data is not available, a warning message is printed.
         """
         if self.protein_data is not None:
             if frame_index is None:
@@ -239,8 +258,9 @@ class SampledProperty(ProteinProperty):
         Contains samples indices.
     sample_size : int
         Size of sampled trajectory.
-    dissimilarity_measure : Dissimilarity
+    dissimilarity_measure : Dissimilarity, optional
         An instance of the Dissimilarity class representing the dissimilarity measure.
+        Default is Bhattacharyya.
     """
 
     def __init__(
@@ -252,6 +272,25 @@ class SampledProperty(ProteinProperty):
         sample_size,
         dissimilarity_measure=Bhattacharyya,
     ):
+        """
+        Initialize SampledProperty object.
+
+        Parameters
+        ----------
+        original_property : vector
+            Contains calculated reference property for full trajectory.
+        sampled_property_vector : vector
+            Contains calculated reference property for sampled trajectory.
+        sampled_frame_indices : list
+            Contains frame indices for sampled trajectory.
+        samples_indices : list
+            Contains samples indices.
+        sample_size : int
+            Size of sampled trajectory.
+        dissimilarity_measure : Dissimilarity, optional
+            An instance of the Dissimilarity class representing the dissimilarity measure.
+            Default is Bhattacharyya.
+        """
         self.protein_data = original_property.protein_data
         self.atom_selection = original_property.atom_selection
         self.ref_property = original_property

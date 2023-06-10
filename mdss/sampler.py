@@ -58,6 +58,22 @@ class ProteinSampler:
         file_prefix,
         dissimilarity_measure=Bhattacharyya,
     ):
+        """
+        Initialize ProtienSampler object.
+
+        Parameters
+        ----------
+        protein_property : ProteinProperty
+            An instance of the ProteinProperty class representing the reference property.
+        protein_data : ProteinData
+            An instance of the ProteinData class representing the protein data.
+        output_folder : str
+            Path to the output file where results will be saved, given as user input.
+        file_prefix : str
+            Prefix for output file naming, given as user input.
+        dissimilarity_measure : Dissimilarity, optional
+            An instance of the Dissimilarity class representing the dissimilarity measure. Default is Bhattacharyya.
+        """
         self.protein_property = protein_property
         self.protein_data = protein_data
         self.property_vector = protein_property.property_vector
@@ -132,6 +148,12 @@ class ProteinSampler:
         -------
         SampledProperty or None
             The selected SampledProperty object that meets the dissimilarity threshold, or None if no sample meets the threshold.
+
+        Notes
+        -----
+        If no sample meets the dissimilarity threshold, a warning message is printed, and None is returned.
+        Otherwise, the selected SampledProperty object is returned.
+        If percentage values provided are not less than 100, a warning message is printed.
         """
 
         selected_sample_key = None
@@ -230,6 +252,24 @@ class RandomSampler(ProteinSampler):
         seed_number=1999,
         dissimilarity_measure=Bhattacharyya,
     ):
+        """
+        Initialise RandomSampler object.
+
+        Parameters
+        ----------
+        protein_property : ProteinProperty
+            An instance of the ProteinProperty class representing the reference property.
+        protein_data : ProteinData
+            An instance of the ProteinData class representing the protein data.
+        output_folder : str
+            Path to the output file where results will be saved, given as user input.
+        file_prefix : str
+            Prefix for output file naming, given as user input.
+        seed_number : int, optional
+            Seed number to initialize the random-number generator and ensure reproducibility. Default is 1999.
+        dissimilarity_measure : Dissimilarity, optional
+            An instance of the Dissimilarity class representing the dissimilarity measure. Default is Bhattacharyya.]
+        """
         random.seed(seed_number)
         super().__init__(
             protein_property=protein_property,
@@ -296,6 +336,24 @@ class StratifiedSampler(ProteinSampler):
         strata_vector,
         dissimilarity_measure=Bhattacharyya,
     ):
+        """
+        Initialise StratifiedSampler object.
+
+        Parameters
+        ----------
+        protein_property : ProteinProperty
+            An instance of the ProteinProperty class representing the reference property.
+        protein_data : ProteinData
+            An instance of the ProteinData class representing the protein data.
+        output_folder : str
+            Path to the output file where results will be saved, given as user input.
+        file_prefix : str
+            Prefix for output file naming, given as user input.
+        strata_vector : list
+            A 1D list containing the strata labels for each data point.
+        dissimilarity_measure : Dissimilarity, optional
+            An instance of the Dissimilarity class representing the dissimilarity measure. Default is Bhattacharyya.
+        """
         self.strata_vector = strata_vector
         strata_labels = sorted(set(strata_vector))
         self.layers = {}
@@ -332,6 +390,11 @@ class StratifiedSampler(ProteinSampler):
         TypeError
             If the specified size is less than half the number of layers.
 
+        Notes
+        -----
+        If strata size is smaller than required sample. Then a warnign message 'Sampling with replacement.'
+        is printed.
+        If strata vector is incosistent in size with property vector a warning message is printed.
         """
         population_size = sum(len(layer) for layer in self.layers.values())
         if population_size == len(self.protein_property.property_vector):
@@ -426,6 +489,24 @@ class UniformSampler(ProteinSampler):
         strata_number,
         dissimilarity_measure=Bhattacharyya,
     ):
+        """
+        Initialise UniformSampler object.
+
+        Parameters
+        ----------
+        protein_property : ProteinProperty
+            An instance of the ProteinProperty class representing the reference property.
+        protein_data : ProteinData
+            An instance of the ProteinData class representing the protein data.
+        output_folder : str
+            Path to the output file where results will be saved, given as user input.
+        file_prefix : str
+            Prefix for output file naming, given as user input.
+        strata_number : int
+            The number of intervals where sampling is done.
+        dissimilarity_measure : Dissimilarity, optional
+            An instance of the Dissimilarity class representing the dissimilarity measure. Default is Bhattacharyya.
+        """
         super().__init__(
             protein_property=protein_property,
             protein_data=protein_data,
@@ -507,6 +588,26 @@ class WeightedSampler(ProteinSampler):
         weights_vector=None,
         dissimilarity_measure=Bhattacharyya,
     ):
+        """
+        Initialise WeightedSampler object.
+
+        Parameters
+        ----------
+        protein_property : ProteinProperty
+            An instance of the ProteinProperty class representing the reference property.
+        protein_data : ProteinData
+            An instance of the ProteinData class representing the protein data.
+        output_folder : str
+            Path to the output file where results will be saved, given as user input.
+        file_prefix : str
+            Prefix for output file naming, given as user input.
+        seed_number : int
+            Seed number to initialize the random-number generator and ensure reproducibility. Default is 1999.
+        weights_vector : list, optional
+            Vector of weights for each element in the sample. If not provided, the weights will be estimated from the discretized property vector.
+        dissimilarity_measure : Dissimilarity, optional
+            An instance of the Dissimilarity class representing the dissimilarity measure. Default is Bhattacharyya.
+        """
         random.seed(seed_number)
         super().__init__(
             protein_property=protein_property,
@@ -547,6 +648,10 @@ class WeightedSampler(ProteinSampler):
         ----------
         SampledProperty
             A SampledProperty object representing the sampled protein property.
+
+        Notes
+        -----
+        If weights vector has a different size from property vector, a warning message is printed.
         """
         if len(self.weights) != len(self.property_vector):
             print("Warning: weights vector of different size from property vector")
@@ -604,6 +709,26 @@ class BootstrappingSampler(ProteinSampler):
         seed_number=1999,
         dissimilarity_measure=Bhattacharyya,
     ):
+        """
+        Initilise BootstrappingSampler object.
+
+        Parameters
+        ----------
+        protein_property : ProteinProperty
+            An instance of the ProteinProperty class representing the reference property.
+        protein_data : ProteinData
+            An instance of the ProteinData class representing the protein data.
+        output_folder : str
+            Path to the output file where results will be saved, given as user input.
+        file_prefix : str
+            Prefix for output file naming, given as user input.
+        number_of_iterations : int
+            Number of times the random sampling method is performed.
+        seed_number : int
+            Seed number to initialize the random-number generator and ensure reproducibility. Default is 1999.
+        dissimilarity_measure : Dissimilarity, optional
+            An instance of the Dissimilarity class representing the dissimilarity measure. Default is Bhattacharyya.
+        """
         random.seed(seed_number)
         self.number_of_iterations = number_of_iterations
         super().__init__(

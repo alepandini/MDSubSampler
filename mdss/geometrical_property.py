@@ -39,11 +39,25 @@ class RMSD(ProteinProperty):
         Atom selection for property calculation. Default value is CA atoms.
     fit : bool, optional
         If True, performs superposition of all structures to the referene structure before RMSD calculation.
+        Default is False.
     """
 
     display_name = "RMSD"
 
     def __init__(self, protein_data, atom_selection="name CA", fit=False):
+        """
+        Initialize the RMSD object.
+
+        Parameters
+        ----------
+        protein_data : ProteinData
+            An instance of the ProteinData class representing the protein data.
+        atom_selection : str, optional
+            Atom selection for property calculation. Default value is CA atoms.
+        fit : bool, optional
+            If True, performs superposition of all structures to the referene structure before RMSD calculation.
+            Default is False.
+        """
         self.fit = fit
         super().__init__(protein_data, atom_selection)
 
@@ -53,13 +67,20 @@ class RMSD(ProteinProperty):
 
         Parameters
         ----------
-        frame_index : int
-            Reference structure (i.e. frame) from inputed protein trajectory.
+        frame_index : int, optional
+            Reference structure (i.e. frame) from input protein trajectory. Default in None.
+
+        Notes
+        -----
+        For each frame in the protein trajectory, the RMSD between the selected atoms and the reference coordinates is calculated.
+        The calculated RMSD values are stored in the `property_vector` attribute.
+        The frame indices are stored in the `frame_indices` attribute.
+        The property vector is then processed to calculate statistics and discretize the vector.
+        If associated protein data is not available, a warning message is printed.
         """
 
         if self.set_reference_coordinates(frame_index):
             for frame in self.protein_data.frame_indices:
-                # Goes through the trajectory and for each frame I compare with my reference frame
                 self.protein_data.trajectory_data.trajectory[frame]
 
                 self.property_vector.append(
@@ -100,6 +121,22 @@ class DistanceBetweenAtoms(ProteinProperty):
     display_name = "DBA"
 
     def __init__(self, protein_data, atom_selection):
+        """
+        Initialize the DistanceBetweenAtoms object.
+
+        Parameters
+        ----------
+        protein_data : ProteinData
+            An instance of the ProteinData class representing the protein data.
+        atom_selection : list
+            List of atom selection with two atoms or two groups of atoms.
+
+        Raises
+        ------
+        RuntimeError
+            If `atom_selection` is not a list of two selections.
+        """
+
         if not isinstance(atom_selection, list) or len(atom_selection) != 2:
             log.error(
                 "{:18s} Expecting atom_selection to be a list of 2 selections in DistanceBetweenAtoms class".format(
@@ -116,8 +153,12 @@ class DistanceBetweenAtoms(ProteinProperty):
 
         Parameters
         ----------
-        frame_index : int
-            Reference structure (i.e. frame) from inputed protein trajectory.
+        frame_index : int, optional
+            Reference structure (i.e. frame) from input protein trajectory. Default is None.
+
+        Notes
+        -----
+        If associated protein data is not available, a warning message is printed.
         """
         if self.set_reference_coordinates(frame_index):
             atom_selection_1 = self.protein_data.trajectory_data.select_atoms(
@@ -187,6 +228,21 @@ class Angles(ProteinProperty):
     display_name = "A3A"
 
     def __init__(self, protein_data, atom_selection):
+        """
+        Initialize the Angles object.
+
+        Parameters
+        ----------
+        protein_data : ProteinData
+            An instance of the ProteinData class representing the protein data.
+        atom_selection : list
+            List of atom selection with with 3 atoms.
+
+        Raises
+        ------
+        RuntimeError
+            If `atom_selection` is not a list of 3 selections.
+        """
         if not isinstance(atom_selection, list) or len(atom_selection) != 3:
             log.error(
                 "{:18s} Expecting atom_selection to be a list of 3 selections in Angles class".format(
@@ -203,8 +259,12 @@ class Angles(ProteinProperty):
 
         Parameters
         ----------
-        frame_index : int
-            Reference structure (i.e. frame) from inputed protein trajectory.
+        frame_index : int, optional
+            Reference structure (i.e. frame) from input protein trajectory. Deafault is None.
+
+        Notes
+        -----
+        If associated protein data is not available, a warning message is printed.
         """
         if self.set_reference_coordinates(frame_index):
             atom_selection_1 = self.protein_data.trajectory_data.select_atoms(
@@ -258,6 +318,22 @@ class DihedralAngles(ProteinProperty):
     """
 
     def __init__(self, protein_data, atom_selection):
+        """
+        Initialize the DihedralAngles object.
+
+        Parameters
+        ----------
+        protein_data : ProteinData
+            An instance of the ProteinData class representing the protein data.
+        atom_selection : list
+            List of atom selection with with 4 atoms.
+
+        Raises
+        ------
+        RuntimeError
+            If `atom_selection` is not a list of 4 selections.
+        """
+
         if not isinstance(atom_selection, list) or len(atom_selection) != 4:
             log.error(
                 "{:18s} Expecting atom_selection to be a list of 4 selections in DihedralAngles class".format(
@@ -282,8 +358,12 @@ class DihedralAnglePhi(DihedralAngles):
 
         Parameters
         ----------
-        frame_index : int
-            Reference structure (i.e. frame) from inputed protein trajectory.
+        frame_index : int, optional
+            Reference structure (i.e. frame) from input protein trajectory. Default is None.
+
+        Notes
+        -----
+        If associated protein data is not available, a warning message is printed.
         """
         if self.set_reference_coordinates(frame_index):
             u = self.protein_data.trajectory_data
@@ -318,8 +398,12 @@ class DihedralAnglePsi(DihedralAngles):
 
         Parameters
         ----------
-        frame_index : int
-            Reference structure (i.e. frame) from inputed protein trajectory.
+        frame_index : int, optional
+            Reference structure (i.e. frame) from inputed protein trajectory. Default is None.
+
+        Notes
+        -----
+        If associated protein data is not available, a warning message is printed.
         """
         if self.set_reference_coordinates(frame_index):
             u = self.protein_data.trajectory_data

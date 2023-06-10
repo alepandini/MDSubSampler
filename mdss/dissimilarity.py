@@ -36,12 +36,24 @@ class Dissimilarity:
     ref_property : ProteinProperty
         An instance of the ProteinProperty class representing the calculated reference property for full trajectory.
     n_bins : int, optional
-        Number of bins for generation the discretized vector.
+        Number of bins for generation the discretized vector. Default value is 100.
     """
 
     display_name = None
 
     def __init__(self, target_property, ref_property, n_bins=100):
+        """
+        Initialize the Dissimilarity object.
+
+        Parameters
+        ----------
+        target_property : ProteinProperty
+            An instance of the ProteinProperty class representing the calculated reference property for the sampled trajectory.
+        ref_property : ProteinProperty
+            An instance of the ProteinProperty class representing the calculated reference property for the full trajectory.
+        n_bins : int, optional
+            Number of bins for generating the discretized vector. Default value is 100.
+        """
         self.dissimilarity_name = "average"
         self.target_property = target_property
         self.ref_property = ref_property
@@ -96,6 +108,16 @@ class Bhattacharyya(Dissimilarity):
     display_name = "Bhattacharyya"
 
     def __init__(self, target_property, ref_property):
+        """
+        Initialize the Bhattacharyya object.
+
+        Parameters
+        ----------
+        target_property : ProteinProperty
+            An instance of the ProteinProperty class representing the calculated reference property for the sampled trajectory.
+        ref_property : ProteinProperty
+            An instance of the ProteinProperty class representing the calculated reference property for the full trajectory.
+        """
         super().__init__(target_property, ref_property)
         self.dissimilarity_name = "Bhattacharyya"
         self.dissimilarity_threshold = 0.2
@@ -138,6 +160,18 @@ class KullbackLeibler(Dissimilarity):
     display_name = "KullbackLeibler"
 
     def __init__(self, target_property, ref_property):
+        """
+        Initialize the KullbackLeibler object.
+
+        Parameters
+        ----------
+        target_property : ProteinProperty
+            An instance of the ProteinProperty class representing the calculated reference
+            property for the sampled trajectory.
+        ref_property : ProteinProperty
+            An instance of the ProteinProperty class representing the calculated reference
+            property for the full trajectory.
+        """
         super().__init__(target_property, ref_property)
         self.dissimilarity_name = "Kullback-Leibler"
         self.dissimilarity_threshold = 0.2
@@ -179,6 +213,18 @@ class Pearson(Dissimilarity):
     display_name = "Pearson"
 
     def __init__(self, target_property, ref_property):
+        """
+        Initialize the Pearson object.
+
+        Parameters
+        ----------
+        target_property : ProteinProperty
+            An instance of the ProteinProperty class representing the calculated reference
+            property for the sampled trajectory.
+        ref_property : ProteinProperty
+            An instance of the ProteinProperty class representing the calculated reference
+            property for the full trajectory.
+        """
         super().__init__(target_property, ref_property)
         self.dissimilarity_name = "Pearson"
         self.dissimilarity_threshold = 0.2

@@ -40,8 +40,8 @@ class ProteinData:
         Path to trajectory file.
     topology_filename : str
         Path to topology file.
-    config_parameters : str
-        Protein's configuration parameters.
+    config_parameters : str, optional
+        Protein's configuration parameters. Default is None.
     """
 
     def __init__(
@@ -50,6 +50,19 @@ class ProteinData:
         topology_filename,
         config_parameters=None,
     ):
+        """
+        Initialise ProteinData object.
+
+        Parameters
+        -----------
+        trajectory_filename : str
+            Path to trajectory file.
+        topology_filename : str
+            Path to topology file.
+        config_parameters : str, optional
+            Protein's configuration parameters. Default is None.
+        """
+
         self.trajectory_filename = trajectory_filename
         self.topology_filename = topology_filename
         self.trajectory_data = self._read_trajectory(
@@ -160,7 +173,7 @@ class ProteinData:
         Create a new object with similar attributes to a trajectory object from a specific selection of frames.
 
         Parameters
-        -----------
+        ----------
         selection_of_frames : int or slice
             Single frame or slice of frames from the trajectory to select.
 
@@ -169,6 +182,17 @@ class ProteinData:
         FrameIteratorIndices
             An instance of the MDAnalysis.coordinates.base.FrameIteratorIndices.
             It is iterable over the frames of a trajectory.
+
+        Raises
+        ------
+        TypeError
+            If the `selection_of_frames` parameter is neither an integer nor a slice.
+
+        Notes
+        -----
+        The method creates a boolean mask array to indicate the selected frames.
+        If an integer or slice is provided, the corresponding indices in the mask are set to True.
+        The selected frames are extracted from the trajectory data using the mask.
         """
         trajectory_data = self.trajectory_data.trajectory
         mask = np.array([False for _ in trajectory_data])
@@ -203,6 +227,11 @@ class ProteinData:
         -------
         List
             Contains indices of selected frames.
+
+        Raises
+        ------
+        TypeError
+            If the `selection_of_frames` parameter is neither an integer nor a slice.
         """
         trajectory_data = self.trajectory_data.trajectory
         mask = np.array([False for _ in trajectory_data])
@@ -266,10 +295,23 @@ class ProteinData:
         return coordinates_numpy
 
     def convert_numpy_to_2D(self, infilepath, outfilepath):
+        """
+        Convert a 3D numpy array to a 2D numpy array and save it to a file.
+
+        Parameters
+        ----------
+        infilepath : numpy.ndarray
+            The input 3D numpy array to be converted.
+        outfilepath : str
+            The path where the output file will be saved.
+
+        Returns
+        -------
+        numpy.ndarray
+            The converted 2D numpy array.
+        """
         (x, y, z) = infilepath.shape
         outfile = np.reshape(infilepath, (x, y * z))
-        print("------")
-        print(outfilepath)
         np.save(outfilepath, outfile)
         return outfile
 

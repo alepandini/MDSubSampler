@@ -42,6 +42,18 @@ class PropertyPlot:
     """
 
     def __init__(self, property, sampled_property, outfilepath):
+        """
+        Initialize the PropertyPlot object.
+
+        Parameters
+        ----------
+        property : ProteinProperty
+            An instance of the ProteinProperty class representing the calculated reference property for the full protein trajectory.
+        sampled_property : ProteinProperty
+            An instance of the ProteinProperty class representing the calculated reference property for the sampled protein trajectory.
+        outfilepath : str
+            Path where the output file will be saved.
+        """
         self.property = property
         self.property_vector = property.property_vector
         self.sampled_property = sampled_property
