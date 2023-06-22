@@ -73,6 +73,7 @@ To run scenarios 1,2 or 3 you can download your protein trajectory and topology 
 ```sh
 python mdss/scenarios/scenario_1.py data/<YourTrajectoryFile>.xtc data/<YourTopologyfile>.gro <YourPrefix>
 ```
+Scenarios 1,2 and 3 are also available in Jupyter Notebooks format, can be used as templates and can be modified interactively according to the user's needs. 
 
 ### Parser
 
