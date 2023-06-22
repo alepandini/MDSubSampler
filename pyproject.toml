@@ -24,6 +24,7 @@ scikit-learn = "^1.2.2"
 [tool.poetry.group.dev.dependencies]
 black = "^22.10.0"
 ipykernel = "^6.23.1"
+jupyter = "^1.0.0"
 
 [build-system]
 requires = ["poetry-core"]
