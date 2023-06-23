@@ -24,6 +24,7 @@ import psutil
 import mdss.graph as g
 from mdss.log_setup import log
 import mdss.protein_data as pd
+from mdss.pca_property import TrjPCAProj
 
 
 class NotEnoughMemoryError(Exception):
@@ -233,17 +234,24 @@ def write_output_files(
         p_prop.display_name,
     )
     filepath = os.path.join(output_folder, filename)
+    if isinstance(s_prop, TrjPCAProj):
+        if filepath is None:
+            return
 
-    s_prop.write_property_vector(filepath)
+    with open(filepath, "w") as f:
+        for i, values in zip(p_prop.protein_data.frame_indices, p_prop.property_matrix):
+            values_display = " ".join(str(v) for v in values)
+            f.write("{} {}\n".format(i, values_display))
 
-    filename = "{}{}{}.xtc".format(
-        file_prefix,
-        p_format,
-        p_prop.display_name,
-    )
-    filepath = os.path.join(output_folder, filename)
-    selected_frames = p_data.frame_selection_indices(s_prop.frame_indices)
-    p_data.write_xtc_file(filepath, selected_frames)
+    if isinstance(s_prop, TrjPCAProj):
+        filename = "{}{}{}.xtc".format(
+            file_prefix,
+            p_format,
+            p_prop.display_name,
+        )
+        filepath = os.path.join(output_folder, filename)
+        selected_frames = p_data.frame_selection_indices(s_prop.frame_indices)
+        p_data.write_xtc_file(filepath, selected_frames)
 
     filename = "{}{}{}".format(
         file_prefix,
