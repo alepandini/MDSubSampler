@@ -99,7 +99,16 @@ class TrjPCAProj(ProteinProperty):
                 self.property_vector = self.property_matrix[:, (pc_index - 1)]
                 self.pc_index = pc_index
 
-    def calculate_property(self, var_threshold=0.8, pc_filter=False):
+    def write_property_vector(self, outfilepath):
+        if outfilepath is None:
+            return
+
+        with open(outfilepath, "w") as f:
+            for i, values in zip(self.protein_data.frame_indices, self.property_matrix):
+                values_display = " ".join(str(v) for v in values)
+                f.write("{} {}\n".format(i, values_display))
+
+    def calculate_property(self, var_threshold=0.8, pc_filter=True):
         """
         Perform Principal Component Analysis with all trajectory frames.
 
@@ -127,3 +136,4 @@ class TrjPCAProj(ProteinProperty):
             atomgroup, n_components=selected_pcs
         )
         self.select_pc()
+        return self.property_matrix
