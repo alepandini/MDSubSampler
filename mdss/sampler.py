@@ -77,7 +77,7 @@ class ProteinSampler:
         self.protein_property = protein_property
         self.protein_data = protein_data
         self.property_vector = protein_property.property_vector
-        self.frame_indices = protein_property.frame_indices
+        self.frame_indices = protein_data.frame_indices
         self.sampled_property_vector = None
         self.sampled_frame_indices = None
         self.samples_indices = []
@@ -625,7 +625,9 @@ class WeightedSampler(ProteinSampler):
                     "STEPS"
                 )
             )
-            if self.protein_property.discretized_property_vector is None:
+
+            if not self.protein_property.discretized_property_vector:
+                self.protein_property._property_statistics()
                 self.protein_property.discretize_vector()
             self.weights = []
             for value in self.protein_property.discretized_property_vector:
@@ -663,13 +665,17 @@ class WeightedSampler(ProteinSampler):
         else:
             self.samples_indices = list(np.repeat(0, size))
             data_list = self._create_data_list()
-            sampled_data_vector = random.choices(
-                data_list, weights=self.weights, k=size
-            )
-            sampled_protein_property = self._create_sampled_property(
-                sampled_data_vector, size
-            )
-            return sampled_protein_property
+
+            if len(data_list) == len(self.weights):
+                sampled_data_vector = random.choices(
+                    data_list, weights=self.weights, k=size
+                )
+                sampled_protein_property = self._create_sampled_property(
+                    sampled_data_vector, size
+                )
+                return sampled_protein_property
+            else:
+                print("Error: The number of weights does not match the population.")
 
 
 class BootstrappingSampler(ProteinSampler):
