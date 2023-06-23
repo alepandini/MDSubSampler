@@ -64,7 +64,6 @@ DISSIMILARITY = "Bhattacharyya"
 
 
 def main(trj_filename, top_filename, out_prefix):
-
     dissimilarity_score = sampling_workflow(
         [
             "--traj",
@@ -90,7 +89,6 @@ def main(trj_filename, top_filename, out_prefix):
             "--fit",
         ]
     )
-    print(dissimilarity_score)
 
 
 def run():
