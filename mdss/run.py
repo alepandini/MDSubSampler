@@ -56,13 +56,21 @@ def sampling_workflow(arg_list):
     """
     if args.xvg_file is not None:
         property = property_class.from_xvg(args.xvg_file)
-    else:
+    elif args.xvg_file is None and args.property == "RMSD":
         p_data = pd.ProteinData(
             args.trajectory_file,
             args.topology_file,
             config_parameters=None,
         )
         property = property_class(p_data, args.atom_selection, args.fit)
+        property.calculate_property()
+    else:
+        p_data = pd.ProteinData(
+            args.trajectory_file,
+            args.topology_file,
+            config_parameters=None,
+        )
+        property = property_class(p_data, args.atom_selection)
         property.calculate_property()
     """
     Create sampler class object with user input selection of sampling method sampler
@@ -132,13 +140,16 @@ def sampling_workflow(arg_list):
     Create dissimilarity class object user input selection of dissimilarity measure.
     """
     dissimilarity_class = p.DISSIMILARITY_CLASS_MAPPING[args.dissimilarity]
-    dissimilarity_object = dissimilarity_class(property, sampled_property)
+    if args.property != "TrjPCAProj":
+        dissimilarity_object = dissimilarity_class(property, sampled_property)
+
     """
     Generate file with calculated property for full trajectory.
     """
     filename = "{}_{}.dat".format(args.file_prefix, property_class.display_name)
     filepath = os.path.join(args.output_folder, filename)
     property.write_property_vector(filepath)
+
     """
     Generate all output files in case of user input is a single sample size.
     """
@@ -155,13 +166,14 @@ def sampling_workflow(arg_list):
             p=args.size,
             machine_learning=args.machine_learning,
         )
-        plot_property(
-            output_folder=args.output_folder,
-            file_prefix=args.file_prefix,
-            p_prop=property,
-            s_prop=sampled_property,
-            p=args.size,
-        )
+        if args.property != "TrjPCAProj":
+            plot_property(
+                output_folder=args.output_folder,
+                file_prefix=args.file_prefix,
+                p_prop=property,
+                s_prop=sampled_property,
+                p=args.size,
+            )
         log.info(
             "{:15s} Output files for selected sample size were generated successfully".format(
                 "OUTPUT"
@@ -170,10 +182,11 @@ def sampling_workflow(arg_list):
     """
     Generate data report file that includes important statistics about trajectory.
     """
-    filename = "{}_{}.json".format(args.file_prefix, "stats_report")
-    filepath = os.path.join(args.output_folder, filename)
-    p_data.property_data_report(filepath)
-    log.info("{:15s} Statistics report was generated successfully".format("OUTPUT"))
+    if args.property != "TrjPCAProj":
+        filename = "{}_{}.json".format(args.file_prefix, "stats_report")
+        filepath = os.path.join(args.output_folder, filename)
+        p_data.property_data_report(filepath)
+        log.info("{:15s} Statistics report was generated successfully".format("OUTPUT"))
 
 
 def main(arg_list):
