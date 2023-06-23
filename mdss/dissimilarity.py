@@ -248,8 +248,7 @@ class Pearson(Dissimilarity):
         return self.dissimilarity
 
 
-dissimilarity_class_dict = {
-    """
+"""
     Dictionary mapping dissimilarity names to their corresponding dissimilarity classes.
 
     Keys:
@@ -263,7 +262,8 @@ dissimilarity_class_dict = {
     Dissimilarity : Dissimilarity
         Generic dissimilarity class.
 
-    """
+"""
+dissimilarity_class_dict = {
     "Bhattacharyya": Bhattacharyya,
     "KullbackLeibler": KullbackLeibler,
     "Pearson": Pearson,
