@@ -202,10 +202,12 @@ class ProteinProperty:
         outfilepath : str
             Path where output file is saved.
         """
-        if outfilepath is not None:
-            with open(outfilepath, "w") as f:
-                for i, value in zip(self.frame_indices, self.property_vector):
-                    f.write("{} {}\n".format(i, value))
+        if outfilepath is None:
+            return
+
+        with open(outfilepath, "w") as f:
+            for i, value in zip(self.frame_indices, self.property_vector):
+                f.write("{} {}\n".format(i, value))
 
     def write_discretized_property_vector(self, outfilepath):
         """
