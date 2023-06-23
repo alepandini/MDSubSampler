@@ -140,8 +140,7 @@ def sampling_workflow(arg_list):
     Create dissimilarity class object user input selection of dissimilarity measure.
     """
     dissimilarity_class = p.DISSIMILARITY_CLASS_MAPPING[args.dissimilarity]
-    if args.property != "TrjPCAProj":
-        dissimilarity_object = dissimilarity_class(property, sampled_property)
+    dissimilarity_object = dissimilarity_class(property, sampled_property)
 
     """
     Generate file with calculated property for full trajectory.
@@ -166,14 +165,13 @@ def sampling_workflow(arg_list):
             p=args.size,
             machine_learning=args.machine_learning,
         )
-        if args.property != "TrjPCAProj":
-            plot_property(
-                output_folder=args.output_folder,
-                file_prefix=args.file_prefix,
-                p_prop=property,
-                s_prop=sampled_property,
-                p=args.size,
-            )
+        plot_property(
+            output_folder=args.output_folder,
+            file_prefix=args.file_prefix,
+            p_prop=property,
+            s_prop=sampled_property,
+            p=args.size,
+        )
         log.info(
             "{:15s} Output files for selected sample size were generated successfully".format(
                 "OUTPUT"
@@ -182,11 +180,10 @@ def sampling_workflow(arg_list):
     """
     Generate data report file that includes important statistics about trajectory.
     """
-    if args.property != "TrjPCAProj":
-        filename = "{}_{}.json".format(args.file_prefix, "stats_report")
-        filepath = os.path.join(args.output_folder, filename)
-        p_data.property_data_report(filepath)
-        log.info("{:15s} Statistics report was generated successfully".format("OUTPUT"))
+    # filename = "{}_{}.json".format(args.file_prefix, "stats_report")
+    # filepath = os.path.join(args.output_folder, filename)
+    # p_data.property_data_report(filepath)
+    # log.info("{:15s} Statistics report was generated successfully".format("OUTPUT"))
 
 
 def main(arg_list):

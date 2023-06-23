@@ -99,14 +99,14 @@ class TrjPCAProj(ProteinProperty):
                 self.property_vector = self.property_matrix[:, (pc_index - 1)]
                 self.pc_index = pc_index
 
-    def write_property_vector(self, outfilepath):
-        if outfilepath is None:
-            return
+    # def write_property_vector(self, outfilepath):
+    #     if outfilepath is None:
+    #         return
 
-        with open(outfilepath, "w") as f:
-            for i, values in zip(self.protein_data.frame_indices, self.property_matrix):
-                values_display = " ".join(str(v) for v in values)
-                f.write("{} {}\n".format(i, values_display))
+    #     with open(outfilepath, "w") as f:
+    #         for i, values in zip(self.protein_data.frame_indices, self.property_matrix):
+    #             values_display = " ".join(str(v) for v in values)
+    #             f.write("{} {}\n".format(i, values_display))
 
     def calculate_property(self, var_threshold=0.8, pc_filter=True):
         """
@@ -136,4 +136,7 @@ class TrjPCAProj(ProteinProperty):
             atomgroup, n_components=selected_pcs
         )
         self.select_pc()
-        return self.property_matrix
+        self.property_vector = self.property_matrix[:, 0]
+        self._property_statistics()
+        self.discretize_vector()
+        return self.property_vector
