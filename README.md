@@ -4,6 +4,12 @@
 
 MDSubSampler is a Python library and toolkit for a posteriori subsampling of multiple trajectory data for further analysis. This toolkit implements uniform, random, stratified sampling, bootstrapping and targeted sampling to preserve the original distribution of relevant geometrical properties.
 
+## Citation
+
+When using MDSubSampler, please cite the following paper:
+
+N. Oues, S. C. Dantu, R. J. Patel, A. Pandini. MDSubSampler: a posteriori sampling of important protein conformations from biomolecular simulations. Bioinformatics (2023), btad427, https://doi.org/10.1093/bioinformatics/btad427
+
 ## Prerequisites
 
 This project requires Python (version 3.9.1 or later). To make sure you have the right version available on your machine, try running the following command. 
@@ -16,6 +22,7 @@ Python 3.9.1
 ## Table of contents
 
 - [Project Name](#project-name)
+  - [Citation] (#citation)
   - [Prerequisites](#prerequisites)
   - [Table of contents](#table-of-contents)
   - [Getting Started](#getting-started)
