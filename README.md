@@ -22,7 +22,7 @@ Python 3.9.1
 ## Table of contents
 
 - [Project Name](#project-name)
-  - [Citation] (#citation)
+  - [Citation](#citation)
   - [Prerequisites](#prerequisites)
   - [Table of contents](#table-of-contents)
   - [Getting Started](#getting-started)
