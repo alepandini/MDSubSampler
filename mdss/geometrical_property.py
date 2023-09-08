@@ -171,8 +171,8 @@ class DistanceBetweenAtoms(ProteinProperty):
             for frame in self.protein_data.frame_indices:
                 self.protein_data.trajectory_data.trajectory[frame]
                 dist = distances.distance_array(
-                    atom_selection_1.positions[0], atom_selection_2.positions[1]
-                )
+                    atom_selection_1.positions[0], atom_selection_2.positions[0]
+                )[0][0]
                 self.property_vector.append(dist)
                 self.frame_indices.append(frame)
 
