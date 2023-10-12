@@ -149,3 +149,7 @@ testing/
 
 #results
 results/
+
+#code formatting
+.vscode
+.DS_Store
