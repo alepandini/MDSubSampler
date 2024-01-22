@@ -113,7 +113,7 @@ class ProteinData:
             topology_filename,
             trajectory_filename,
             permissive=False,
-            topology_format="GRO",
+            topology_format="PDB",
         )
         return trajectory_data
 
