@@ -774,32 +774,32 @@ scipy = "*"
 
 [[package]]
 name = "gsd"
-version = "3.2.0"
+version = "3.2.1"
 description = "General simulation data file format."
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "gsd-3.2.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:45aa1d9c4023d9e9c0809430719367dc7040a5c0073df743e7fb7131fc965fae"},
-    {file = "gsd-3.2.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:7c67d6fa4d4b9ece284f6c0adf309642c5ad857b3d0c3434a412279da0badd87"},
-    {file = "gsd-3.2.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:0a806fa27282aea0e74f5aa48e95e185e3fcf7619d56be8a3f4b01bb704d1ce6"},
-    {file = "gsd-3.2.0-cp310-cp310-win_amd64.whl", hash = "sha256:2391fc704766b67e76cb9b01cd2f10f0e2c5dae0e16f62fa88d50fa8e8f7bdc6"},
-    {file = "gsd-3.2.0-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:99fbae9c3f6078234f502bb69f2be4196da71ff27b3193241e9e133e9511085e"},
-    {file = "gsd-3.2.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:e303eaa950ab4b98142e39d3a887bcc007149393c4dc975748ddb5522fa30dbf"},
-    {file = "gsd-3.2.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:a7300884e2cd0769409899a80ec1a9af4dd8886275dd5464835c5a3d841398d2"},
-    {file = "gsd-3.2.0-cp311-cp311-win_amd64.whl", hash = "sha256:55dda5373febd2f1d16b1df1303d9491864d3e45a07cd04be191dd65e673eb66"},
-    {file = "gsd-3.2.0-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:5431372640368c25c37bd353464f40de68cc6946cc190c31f563a36687da490d"},
-    {file = "gsd-3.2.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:955c7fa00e2b6971c200736fa148b367e1a1d3b76dfca91c314435e5f04dce97"},
-    {file = "gsd-3.2.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:ceb76fb3ad08e4b3c212ae89816b8e61b26d09bea3fc2648cc3e29b1fd4d1849"},
-    {file = "gsd-3.2.0-cp312-cp312-win_amd64.whl", hash = "sha256:8cba120c4d82fdbdd0f14f701ec469a222a571ed7e61ed6be77309ef6cef639b"},
-    {file = "gsd-3.2.0-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:f0092b6413b207c25cab5ec4396efe85f04bb2583ede9744599122764c422c9f"},
-    {file = "gsd-3.2.0-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:8000b4296388b43041260f63a062739a2623d61571a3f0a71d6b46c91a4f1417"},
-    {file = "gsd-3.2.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:b5ab6cec0e2b5d02c4da453b53860e5e65c39f277d57106c83e924a2cad8f89b"},
-    {file = "gsd-3.2.0-cp38-cp38-win_amd64.whl", hash = "sha256:49004c22d3b7be39e01e46ad0017b4e4668347f112b5c45519e7fb666b10f632"},
-    {file = "gsd-3.2.0-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:b1ce6fc7719c8a288dbfa877636b5b6135b2b12078619ef5b7fe80b2888b818f"},
-    {file = "gsd-3.2.0-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:99c9224d3f55f9045349f9a86ca10fa68127bd2a332054e1300cb8b29b5347fa"},
-    {file = "gsd-3.2.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:d6cf264ab98456515231a8454fa844cf0489e943b3fcf7eb56308dafc06384ac"},
-    {file = "gsd-3.2.0-cp39-cp39-win_amd64.whl", hash = "sha256:19447ae4ad319e17a48aa6bfeb3827b8c9fa294baba52297ced4f65a3100d2ae"},
-    {file = "gsd-3.2.0.tar.gz", hash = "sha256:cf3c8419ec66085b2b9853577058861d9e738bfe397b0170ead821b866ab49b9"},
+    {file = "gsd-3.2.1-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:9bb17dc07ed4cc51f6f366fb535e232771f216a2dedccf7b58f787d2e0b8938c"},
+    {file = "gsd-3.2.1-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:e05ed95ee46e0a346742e78abaf9f7e0bfae2d42c73b7bf3051ca943c84cbd93"},
+    {file = "gsd-3.2.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:1c8cd33be69612a14729164c6bd8559e239f102f14675740cde1ed0d1f5ef472"},
+    {file = "gsd-3.2.1-cp310-cp310-win_amd64.whl", hash = "sha256:766c7aff3118ae60778e2323888eb956c6e3a5bac8b4d2ae8977583caa3f4ec0"},
+    {file = "gsd-3.2.1-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:fc49d81964b8eff2469f7c00cdaada9be22999972a076f831b22f87283339f39"},
+    {file = "gsd-3.2.1-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:5e5d75ce83e4365d423edde06e0e0d490f9f0ef67895d8c63657263a6235f65c"},
+    {file = "gsd-3.2.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:7e2a3dfb8035a33cd03bad1044464e8285401e54e9ed5fcdd433a3a4e26bd623"},
+    {file = "gsd-3.2.1-cp311-cp311-win_amd64.whl", hash = "sha256:b3ce2353d05c6c54d7389ed26fa5d80b29dd213a390105be7d9a89b40cf5fed8"},
+    {file = "gsd-3.2.1-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:2f5023d6fb3050797159e8496819c12287f9d50e213f5deee4cf5b78a6f9132e"},
+    {file = "gsd-3.2.1-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:f7782473e563c99e1b99aa053fa551b293e2a3217d38fbaa3958eea0cc4bddac"},
+    {file = "gsd-3.2.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:0f9134cba73eeade05e5f56419b6c2d29d3c6972eaf2a46741e442eb2358e315"},
+    {file = "gsd-3.2.1-cp312-cp312-win_amd64.whl", hash = "sha256:6da75897e052aba7851e97953bfc628dd795e6c14cb1f34055d4e588df86e3b6"},
+    {file = "gsd-3.2.1-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:f0e3ad5e381d15d8143c1675d355543f48091480d8d81989f412899f64856641"},
+    {file = "gsd-3.2.1-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:866a19d15c18bdee126db1b71a53338337c0fb2ca9158581676e6f7204fc3871"},
+    {file = "gsd-3.2.1-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:5c0cb31a3956636e7deb9ee81fa526c754bb1177b74739d702dd7f08ef99f29e"},
+    {file = "gsd-3.2.1-cp38-cp38-win_amd64.whl", hash = "sha256:9d87911bc9ea9998adf823344a5cf6de29d07b6c38e5e1144e7471c6b9ae0cb4"},
+    {file = "gsd-3.2.1-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:78c302babbed286a238a314741e4787c90defc1ba4a48bacb7161ddd158936d2"},
+    {file = "gsd-3.2.1-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:42eaeebbfd0d99fcbf19e4d499463e7b99c3ed1bb4f28eb5d7eff4f395d4d2f0"},
+    {file = "gsd-3.2.1-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:3c7b82f8bee736b898e0d73836c9b47dd7436a6ceb12e4589b3b135cd32ad66c"},
+    {file = "gsd-3.2.1-cp39-cp39-win_amd64.whl", hash = "sha256:358a7c4914df27b5f314b9f49e6a4051e22005354da4a915e0aacd816c49b8da"},
+    {file = "gsd-3.2.1.tar.gz", hash = "sha256:cf05148e23f169a00c073eb7d8151e8b521e0f962ce460b55d812cae5be326aa"},
 ]
 
 [package.dependencies]
@@ -1249,13 +1249,13 @@ test = ["flaky", "ipykernel", "pre-commit", "pytest (>=7.0)", "pytest-console-sc
 
 [[package]]
 name = "jupyter-server-terminals"
-version = "0.5.1"
+version = "0.5.2"
 description = "A Jupyter Server Extension Providing Terminals."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "jupyter_server_terminals-0.5.1-py3-none-any.whl", hash = "sha256:5e63e947ddd97bb2832db5ef837a258d9ccd4192cd608c1270850ad947ae5dd7"},
-    {file = "jupyter_server_terminals-0.5.1.tar.gz", hash = "sha256:16d3be9cf48be6a1f943f3a6c93c033be259cf4779184c66421709cf63dccfea"},
+    {file = "jupyter_server_terminals-0.5.2-py3-none-any.whl", hash = "sha256:1b80c12765da979513c42c90215481bbc39bd8ae7c0350b4f85bc3eb58d0fa80"},
+    {file = "jupyter_server_terminals-0.5.2.tar.gz", hash = "sha256:396b5ccc0881e550bf0ee7012c6ef1b53edbde69e67cab1d56e89711b46052e8"},
 ]
 
 [package.dependencies]
@@ -2156,13 +2156,13 @@ test = ["appdirs (==1.4.4)", "covdefaults (>=2.3)", "pytest (>=7.4)", "pytest-co
 
 [[package]]
 name = "pluggy"
-version = "1.3.0"
+version = "1.4.0"
 description = "plugin and hook calling mechanisms for python"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "pluggy-1.3.0-py3-none-any.whl", hash = "sha256:d89c696a773f8bd377d18e5ecda92b7a3793cbe66c87060a6fb58c7b6e1061f7"},
-    {file = "pluggy-1.3.0.tar.gz", hash = "sha256:cf61ae8f126ac6f7c451172cf30e3e43d3ca77615509771b3a984a0730651e12"},
+    {file = "pluggy-1.4.0-py3-none-any.whl", hash = "sha256:7db9f7b503d67d1c5b95f59773ebb58a8c1c288129a88665838012cfb07b8981"},
+    {file = "pluggy-1.4.0.tar.gz", hash = "sha256:8c85c2876142a764e5b7548e7d9a0e0ddb46f5185161049a79b7e974454223be"},
 ]
 
 [package.extras]
