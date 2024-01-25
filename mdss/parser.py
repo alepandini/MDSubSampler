@@ -59,7 +59,7 @@ DISSIMILARITY_CLASS_MAPPING = dict(
     (dissimilarity.__name__, dissimilarity) for dissimilarity in DISSIMILARITY_CLASSES
 )
 
-# Function that creates the parser
+
 def parse_args(arg_list):
     parser = argparse.ArgumentParser(description="Subsampler tool")
     parser.add_argument(
