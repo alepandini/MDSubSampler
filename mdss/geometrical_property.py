@@ -19,6 +19,7 @@
     You should have received a copy of the GNU General Public License 
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
+
 from mdss.property import ProteinProperty
 from MDAnalysis.analysis import rms
 from MDAnalysis.analysis import distances
@@ -174,6 +175,88 @@ class DistanceBetweenAtoms(ProteinProperty):
                     atom_selection_1.positions[0], atom_selection_2.positions[0]
                 )[0][0]
                 self.property_vector.append(dist)
+                self.frame_indices.append(frame)
+
+            self._property_statistics()
+            self.discretize_vector()
+        else:
+            print("Property cannot be calculated without associated protein data")
+            log.warning(
+                "{:12s} Property cannot be calculated without associated protein data".format(
+                    "STEPS"
+                )
+            )
+
+
+class COMDistance(ProteinProperty):
+    """
+    Subclass of ProteinProperty class representing the distance between the center of mass of two groups of atoms.
+
+    Attributes
+    ----------
+    protein_data : ProteinData
+        An instance of the ProteinData class representing the protein data.
+    atom_selection : list
+        List of atom selection with 2 group of atoms.
+    """
+
+    display_name = "COMDistance"
+
+    def __init__(self, protein_data, atom_selection):
+        """
+        Initialize the COMDistance object.
+
+        Parameters
+        ----------
+        protein_data : ProteinData
+            An instance of the ProteinData class representing the protein data.
+        atom_selection : list
+            List of atom selection with two groups of atoms.
+
+        Raises
+        ------
+        RuntimeError
+            If `atom_selection` is not a list of two selections.
+        """
+
+        if not isinstance(atom_selection, list) or len(atom_selection) != 2:
+            log.error(
+                "{:18s} Expecting atom_selection to be a list of 2 selections in COMDistance class".format(
+                    "INPUT"
+                )
+            )
+            raise RuntimeError("Expecting atom_selection to be a list of 2 selections")
+
+        super().__init__(protein_data, atom_selection)
+
+    def calculate_property(self, frame_index=None):
+        """
+        Calculate distance between the center of mass of 2 given set of atoms for all trajectory frames.
+
+        Parameters
+        ----------
+        frame_index : int, optional
+            Reference structure (i.e. frame) from input protein trajectory. Default is None.
+
+        Notes
+        -----
+        If associated protein data is not available, a warning message is printed.
+        """
+        if self.set_reference_coordinates(frame_index):
+            atom_selection_1 = self.protein_data.trajectory_data.select_atoms(
+                self.atom_selection[0]
+            )
+            atom_selection_2 = self.protein_data.trajectory_data.select_atoms(
+                self.atom_selection[1]
+            )
+
+            for frame in self.protein_data.frame_indices:
+                self.protein_data.trajectory_data.trajectory[frame]
+                com1 = atom_selection_1.center_of_mass()
+                com2 = atom_selection_2.center_of_mass()
+                dist_angstroms = distances.distance_array(com1, com2)[0][0]
+                dist_nanometers = dist_angstroms * 0.1
+                self.property_vector.append(dist_nanometers)
                 self.frame_indices.append(frame)
 
             self._property_statistics()

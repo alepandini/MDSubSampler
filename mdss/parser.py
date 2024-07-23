@@ -19,6 +19,7 @@
     You should have received a copy of the GNU General Public License 
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
+
 from numpy import require
 import mdss.geometrical_property as gp
 import mdss.pca_property as pca
@@ -31,6 +32,7 @@ import operator as op
 PROPERTY_CLASSES = [
     gp.RMSD,
     gp.DistanceBetweenAtoms,
+    gp.COMDistance,
     gp.RadiusOfGyrationProperty,
     pca.TrjPCAProj,
     gp.DihedralAngles,
