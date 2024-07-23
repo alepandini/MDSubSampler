@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mdsubsampler"
-version = "0.0.6"
+version = "0.0.7"
 description = ""
 authors = ["Namir Oues <namir.oues@brunel.ac.uk>"]
 license = "GPL-3.0-only"
